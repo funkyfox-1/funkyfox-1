@@ -59,7 +59,7 @@ interface ChipProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip({ mv, children, ...rest }, ref) {
   const transform = useTransform(() => `translateX(${mv.x.get()}px) scale(${mv.sx.get()}, ${mv.sy.get()})`);
   return (
-    <motion.button ref={ref} style={{ transform }} {...rest}>
+    <motion.button ref={ref} style={{ transform }} {...(rest as any)}>
       {children}
     </motion.button>
   );

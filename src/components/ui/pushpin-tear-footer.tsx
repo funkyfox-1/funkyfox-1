@@ -216,6 +216,7 @@ export type PushpinTearFooterProps = {
   paper?: string
   sheetInk?: string
   paperInk?: string
+  pinBase?: string
   seed?: number
   height?: number | string
   fontSans?: string
@@ -573,6 +574,7 @@ export default function PushpinTearFooter({
   paper = "#FAF9F6",
   sheetInk = "#ffffff",
   paperInk = "#191919",
+  pinBase = "#E87535",
   seed = 23,
   height = "min(840px, 100svh)",
   fontSans = 'var(--font-sans, "Inter", system-ui, sans-serif)',
@@ -869,7 +871,6 @@ export default function PushpinTearFooter({
   }
 
   // ---- colours ----------------------------------------------------------------
-  const pinBase = "#E87535" // Funky Fox signature orange for the glossy pushpin
   const flapBase = mixHex(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(paper) ? paper : "#f3f3f1", "#ffffff", 0.35)
   const vars = {
     height: typeof height === "number" ? height + "px" : height,
