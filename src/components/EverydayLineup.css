@@ -1,0 +1,148 @@
+/* The Everyday Lineup Category Cards */
+.everyday-lineup-section {
+  position: relative;
+  background-color: #ffffff;
+}
+
+.everyday-lineup-dash {
+  display: inline-block;
+  width: 1.5rem;
+  height: 3px;
+  background-color: #e87535;
+  border-radius: 9999px;
+}
+
+.everyday-lineup-eyebrow {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.6875rem; /* 11px */
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: #737373;
+}
+
+.everyday-lineup-card {
+  position: relative;
+  display: block;
+  border-radius: 2px;
+  overflow: hidden;
+  background-color: #1a1a1a;
+  text-decoration: none;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+}
+
+.everyday-lineup-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.2);
+}
+
+.everyday-lineup-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.everyday-lineup-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.everyday-lineup-card:hover .everyday-lineup-img {
+  transform: scale(1.05);
+}
+
+.everyday-lineup-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1.125rem;
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.5);
+  z-index: 2;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.everyday-lineup-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.05) 0%,
+    rgba(0, 0, 0, 0) 40%,
+    rgba(0, 0, 0, 0.45) 75%,
+    rgba(0, 0, 0, 0.85) 100%
+  );
+  z-index: 1;
+  pointer-events: none;
+}
+
+.everyday-lineup-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.25rem 1.125rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem;
+  z-index: 2;
+}
+
+.everyday-lineup-title {
+  font-family: var(--font-display, "Archivo", sans-serif);
+  font-size: 1.125rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  line-height: 1.15;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+@media (min-width: 1024px) {
+  .everyday-lineup-title {
+    font-size: 1.2rem;
+  }
+}
+
+.everyday-lineup-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.375rem;
+  height: 2.375rem;
+  border-radius: 9999px;
+  background-color: rgba(25, 25, 25, 0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  flex-shrink: 0;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.everyday-lineup-arrow--featured,
+.everyday-lineup-card:hover .everyday-lineup-arrow {
+  background-color: #e87535;
+  border-color: #e87535;
+  color: #ffffff;
+  transform: scale(1.08);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .everyday-lineup-card,
+  .everyday-lineup-img,
+  .everyday-lineup-arrow {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+

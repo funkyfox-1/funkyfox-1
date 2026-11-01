@@ -1,0 +1,937 @@
+import * as React from 'react'
+import { useParams, Link, useNavigate } from 'react-router-dom'
+import {
+  ShoppingBag,
+  Truck,
+  RotateCcw,
+  Minus,
+  Plus,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  X,
+  Ruler,
+  AlertCircle,
+  ArrowRight,
+} from 'lucide-react'
+import { products, formatPrice, getCategoryFallbackImage, ALL_SIZES, type Product } from '../data/products'
+import { PROVISIONAL_SHIPPING_POLICY } from '../config/shipping'
+import { ErrorState } from './feedback'
+import Footer from './Footer'
+import JellyRadio from './ui/JellyRadio'
+import './ProductDetailPage.css'
+
+interface ProductDetailPageProps {
+  addToCart: (product: Product, color?: string, size?: string, quantity?: number) => void
+}
+
+export default function ProductDetailPage({ addToCart }: ProductDetailPageProps) {
+  const { id } = useParams<{ id: string }>()
+  const navigate = useNavigate()
+
+  // Find product by id
+  const product = products.find((p) => p.id === id)
+
+  // Gallery state
+  const images = React.useMemo(() => {
+    if (!product) return []
+    if (product.images && product.images.length > 0) {
+      return product.images
+    }
+    return [product.image]
+  }, [product])
+
+  const [activeImageIndex, setActiveImageIndex] = React.useState<number>(0)
+
+  // Selection states
+  const [selectedColor, setSelectedColor] = React.useState<string>(
+    product?.colors[0]?.name || ''
+  )
+  const [selectedSize, setSelectedSize] = React.useState<string>('')
+  const [quantity, setQuantity] = React.useState<number>(1)
+  const [sizeError, setSizeError] = React.useState<string>('')
+  const [showStickyBar, setShowStickyBar] = React.useState<boolean>(false)
+
+  // Ref to monitor scroll past main purchase controls
+  const mainBuyRef = React.useRef<HTMLDivElement>(null)
+
+  // Accordion open states
+  const [openAccordions, setOpenAccordions] = React.useState<Record<string, boolean>>({
+    details: true,
+    fitFabric: false,
+    shipping: false,
+    returns: false,
+  })
+
+  // Size Guide modal
+  const [isSizeGuideOpen, setIsSizeGuideOpen] = React.useState<boolean>(false)
+
+  // Related products color selection states
+  const [relatedProductColors, setRelatedProductColors] = React.useState<Record<string, string>>({})
+
+  // Reset selections when product id changes
+  React.useEffect(() => {
+    if (product) {
+      setActiveImageIndex(0)
+      setSelectedColor(product.colors[0]?.name || '')
+      setSelectedSize('')
+      setQuantity(1)
+      setSizeError('')
+      window.scrollTo(0, 0)
+    }
+  }, [id, product])
+
+  // IntersectionObserver to show sticky purchase bar when main purchase controls scroll out of viewport (past top)
+  React.useEffect(() => {
+    const el = mainBuyRef.current
+    if (!el) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Sticky bar appears only after the user scrolls down past the main purchase block
+        const scrolledPast = !entry.isIntersecting && entry.boundingClientRect.top < 0
+        setShowStickyBar(scrolledPast)
+      },
+      {
+        root: null,
+        threshold: 0,
+        rootMargin: '0px',
+      }
+    )
+
+    observer.observe(el)
+    return () => {
+      observer.disconnect()
+    }
+  }, [product])
+
+  // Toggle Accordion
+  const toggleAccordion = (key: string) => {
+    setOpenAccordions((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }))
+  }
+
+  // Handle Add to Bag with size validation
+  const handleAddToCart = () => {
+    if (!product) return
+
+    // Size validation
+    if (!selectedSize) {
+      setSizeError('Please choose a size before adding to bag.')
+      // Scroll to size selector if needed
+      const sizeElement = document.getElementById('size-selector-area')
+      if (sizeElement) {
+        sizeElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }
+      return
+    }
+
+    setSizeError('')
+    addToCart(product, selectedColor, selectedSize, quantity)
+  }
+
+  // Handle size selection
+  const handleSelectSize = (size: string) => {
+    setSelectedSize(size)
+    if (sizeError) setSizeError('')
+  }
+
+  // Gallery navigation
+  const nextImage = () => {
+    setActiveImageIndex((prev) => (prev + 1) % images.length)
+  }
+
+  const prevImage = () => {
+    setActiveImageIndex((prev) => (prev - 1 + images.length) % images.length)
+  }
+
+  // Related products (same category first, excluding current product, max 4)
+  const relatedProducts = React.useMemo(() => {
+    if (!product) return []
+    const sameCategory = products.filter(
+      (p) => p.category === product.category && p.id !== product.id
+    )
+    const otherCategories = products.filter(
+      (p) => p.category !== product.category && p.id !== product.id
+    )
+    return [...sameCategory, ...otherCategories].slice(0, 4)
+  }, [product])
+
+  // 404 Product Not Found State
+  if (!product) {
+    return (
+      <div className="pdp-page flex flex-col justify-between min-h-screen">
+        <div className="pdp-container py-16 flex-1 flex flex-col items-center justify-center">
+          <ErrorState
+            heading="PIECE NOT FOUND"
+            message="The clothing piece you are looking for does not exist or has been moved from the catalogue."
+            isTemporary={false}
+            action={{
+              label: 'RETURN TO SHOP',
+              to: '/products',
+            }}
+            secondaryAction={{
+              label: 'HOMEPAGE',
+              to: '/',
+            }}
+          />
+        </div>
+        <Footer />
+      </div>
+    )
+  }
+
+  return (
+    <div className="pdp-page pb-24 sm:pb-28">
+      <div className="pdp-container">
+        {/* Breadcrumb Navigation */}
+        <nav aria-label="Breadcrumb" className="pt-6 sm:pt-8 text-xs font-medium text-soft">
+          <ol className="flex items-center gap-1.5 flex-wrap">
+            <li>
+              <Link to="/#home" className="hover:text-fox transition-colors">
+                Home
+              </Link>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li>
+              <Link to="/products" className="hover:text-fox transition-colors">
+                Shop
+              </Link>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li>
+              <Link
+                to={`/products?category=${encodeURIComponent(product.category)}`}
+                className="hover:text-fox transition-colors"
+              >
+                {product.category}
+              </Link>
+            </li>
+            <li aria-hidden="true">/</li>
+            <li className="text-ink font-semibold truncate max-w-[200px] sm:max-w-none" aria-current="page">
+              {product.name}
+            </li>
+          </ol>
+        </nav>
+
+        {/* 1. PAGE LAYOUT: Two Column Composition */}
+        <div className="pdp-layout">
+          {/* LEFT: 2. PRODUCT IMAGE GALLERY (~58% desktop width) */}
+          <div className="pdp-gallery">
+            <div className="pdp-main-image-wrap rounded-sm shadow-sm">
+              <img
+                src={images[activeImageIndex]}
+                alt={`${product.name} — view ${activeImageIndex + 1}`}
+                className="pdp-main-image"
+                width="1024"
+                height="1536"
+                fetchPriority="high"
+                onError={(e) => {
+                  e.currentTarget.onerror = null
+                  e.currentTarget.src = getCategoryFallbackImage(product.category)
+                }}
+              />
+
+              {/* Stock Status Badge */}
+              {!product.inStock && (
+                <span className="absolute top-4 left-4 bg-ink px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-paper shadow">
+                  Sold Out
+                </span>
+              )}
+
+              {/* Prev / Next buttons for mobile and quick switching */}
+              {images.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={prevImage}
+                    aria-label="Previous product image"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-paper/90 text-ink shadow backdrop-blur transition-all hover:bg-white hover:scale-105 sm:hidden"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={nextImage}
+                    aria-label="Next product image"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-paper/90 text-ink shadow backdrop-blur transition-all hover:bg-white hover:scale-105 sm:hidden"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Thumbnail Navigation (Desktop & Tablet) */}
+            {images.length > 1 && (
+              <div className="hidden sm:flex pdp-thumbnails" aria-label="Product thumbnails">
+                {images.map((img, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setActiveImageIndex(idx)}
+                    aria-label={`Switch to image view ${idx + 1}`}
+                    aria-current={activeImageIndex === idx ? 'true' : undefined}
+                    className={`pdp-thumb-btn ${
+                      activeImageIndex === idx ? 'pdp-thumb-btn--active' : ''
+                    }`}
+                  >
+                    <img
+                      src={img}
+                      alt={`Thumbnail ${idx + 1}`}
+                      className="pdp-thumb-img"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null
+                        e.currentTarget.src = getCategoryFallbackImage(product.category)
+                      }}
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Mobile Indicators */}
+            {images.length > 1 && (
+              <div className="flex sm:hidden pdp-indicators" aria-label="Image slide indicator">
+                {images.map((_, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setActiveImageIndex(idx)}
+                    aria-label={`Jump to image ${idx + 1}`}
+                    className={`pdp-dot ${
+                      activeImageIndex === idx ? 'pdp-dot--active' : ''
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* RIGHT: 3. PRODUCT INFORMATION & PURCHASE CONTROLS */}
+          <div className="flex flex-col">
+            {/* Category Eyebrow */}
+            <p className="flex items-center gap-2.5 text-[10.5px] font-bold uppercase tracking-[.28em] text-soft">
+              <span aria-hidden="true" className="h-[3px] w-6 rounded-full bg-fox" />
+              {product.category}
+            </p>
+
+            {/* Product Title */}
+            <h1 className="mt-3 font-display text-2xl font-black uppercase leading-[1.05] tracking-[-0.03em] text-ink sm:text-3xl lg:text-[2.25rem]">
+              {product.name}
+            </h1>
+
+            {/* Price */}
+            <div className="mt-3.5 flex items-baseline gap-3 flex-wrap">
+              <span className="font-display text-xl font-extrabold text-ink sm:text-2xl">
+                {formatPrice(product.price)}
+              </span>
+              {product.originalPrice && product.originalPrice > product.price && (
+                <>
+                  <span className="text-sm font-normal text-soft line-through sm:text-base">
+                    {formatPrice(product.originalPrice)}
+                  </span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-fox">
+                    {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% off
+                  </span>
+                </>
+              )}
+              <span className="text-xs text-soft">Inclusive of all taxes</span>
+            </div>
+
+            {/* Short Product Description */}
+            <p className="mt-4 text-sm leading-relaxed text-soft">
+              {product.description ||
+                'An everyday essential with a relaxed fit and an easy-to-style silhouette.'}
+            </p>
+
+            {/* Free shipping banner */}
+            <div className="mt-5 flex items-center gap-2.5 rounded border border-line bg-sand/40 px-3.5 py-2.5 text-xs font-medium text-ink">
+              <Truck size={16} className="text-fox shrink-0" />
+              <span>
+                {`Free shipping on orders above ₹${PROVISIONAL_SHIPPING_POLICY.freeShippingThreshold.toLocaleString('en-IN')}. Easy 15-day returns.`}
+              </span>
+            </div>
+
+            {/* 5. COLOR SELECTION */}
+            {product.colors && product.colors.length > 0 && (
+              <div className="mt-7 border-t border-line pt-6">
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-bold uppercase tracking-wider text-ink">
+                    Colour:{' '}
+                    <span className="font-semibold normal-case text-soft">
+                      {selectedColor}
+                    </span>
+                  </p>
+                </div>
+                <div
+                  className="mt-3 flex items-center gap-2.5"
+                  role="radiogroup"
+                  aria-label="Product colors"
+                >
+                  {product.colors.map((c) => {
+                    const isSelected = selectedColor === c.name
+                    return (
+                      <button
+                        key={c.name}
+                        type="button"
+                        role="radio"
+                        aria-checked={isSelected}
+                        aria-label={`Color: ${c.name}`}
+                        title={c.name}
+                        onClick={() => setSelectedColor(c.name)}
+                        className={`flex h-8 w-8 items-center justify-center rounded-full border-2 transition-all ${
+                          isSelected
+                            ? 'border-fox ring-2 ring-fox/30 scale-105 shadow-sm'
+                            : 'border-transparent hover:border-line'
+                        }`}
+                      >
+                        <span
+                          className="h-5 w-5 rounded-full border border-black/10"
+                          style={{ backgroundColor: c.value }}
+                        />
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* 4. SIZE SELECTION */}
+            <div id="size-selector-area" className="mt-6 border-t border-line pt-6">
+              <div className="flex items-center justify-between">
+                <p className="text-xs font-bold uppercase tracking-wider text-ink">
+                  Select Size
+                  {selectedSize && (
+                    <span className="ml-2 font-normal text-soft normal-case">
+                      ({selectedSize})
+                    </span>
+                  )}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setIsSizeGuideOpen(true)}
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-soft hover:text-fox transition-colors underline underline-offset-2"
+                >
+                  <Ruler size={13} />
+                  Size Guide
+                </button>
+              </div>
+
+              {/* Size JellyRadio Selection */}
+              <div className="mt-3 overflow-x-auto pb-1 scrollbar-none">
+                <JellyRadio
+                  items={ALL_SIZES.map((size) => ({
+                    value: size,
+                    label: size,
+                    disabled: !product.sizes.includes(
+                      size as (typeof product.sizes)[number]
+                    ),
+                  }))}
+                  value={selectedSize}
+                  onChange={(size) => handleSelectSize(size)}
+                  size="md"
+                  gap={8}
+                  radius={12}
+                  swell={0.18}
+                  barge={4}
+                  shrink={0.04}
+                  chipColor="#FAF9F6"
+                  activeColor="#E87535"
+                  activeTextColor="#ffffff"
+                  textColor="#191919"
+                  ariaLabel="Product sizes"
+                />
+              </div>
+
+              {/* Concise Size Validation Error */}
+              {sizeError && (
+                <p
+                  role="alert"
+                  className="mt-2.5 flex items-center gap-1.5 text-xs font-semibold text-fox"
+                >
+                  <AlertCircle size={14} className="shrink-0" />
+                  {sizeError}
+                </p>
+              )}
+            </div>
+
+            {/* 6. QUANTITY & ADD TO BAG */}
+            <div ref={mainBuyRef} className="mt-7">
+              {/* Quantity Selector Group */}
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-ink mb-2">
+                  Quantity
+                </p>
+                <div
+                  className="pdp-quantity-selector"
+                  role="group"
+                  aria-label="Select quantity"
+                >
+                  <button
+                    type="button"
+                    aria-label="Decrease quantity"
+                    disabled={quantity <= 1 || !product.inStock}
+                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                    className="pdp-qty-btn"
+                  >
+                    <Minus size={15} strokeWidth={2.2} />
+                  </button>
+                  <span
+                    className="pdp-qty-display"
+                    aria-label={`Quantity: ${quantity}`}
+                  >
+                    {quantity}
+                  </span>
+                  <button
+                    type="button"
+                    aria-label="Increase quantity"
+                    disabled={quantity >= 10 || !product.inStock}
+                    onClick={() => setQuantity((q) => Math.min(10, q + 1))}
+                    className="pdp-qty-btn"
+                  >
+                    <Plus size={15} strokeWidth={2.2} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Primary Add to Bag Button (16px vertical gap) */}
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={handleAddToCart}
+                  disabled={!product.inStock}
+                  className="pdp-add-to-bag-btn"
+                >
+                  <span className="pdp-btn-left">
+                    <ShoppingBag size={18} strokeWidth={2} className="pdp-btn-icon" />
+                    <span className="pdp-btn-label">
+                      {product.inStock ? 'ADD TO BAG' : 'OUT OF STOCK'}
+                    </span>
+                  </span>
+                  {product.inStock && (
+                    <span className="pdp-btn-price">
+                      {formatPrice(product.price * quantity)}
+                    </span>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* 7. COMPACT EXPANDABLE SECTIONS (Accordions) */}
+            <div className="mt-8 border-t border-line">
+              {/* 1. Product Details */}
+              <div className="pdp-accordion-item">
+                <button
+                  type="button"
+                  onClick={() => toggleAccordion('details')}
+                  className="pdp-accordion-trigger"
+                  aria-expanded={openAccordions.details}
+                >
+                  <span>Product Details</span>
+                  <ChevronDown
+                    size={16}
+                    className={`transition-transform duration-200 text-soft ${
+                      openAccordions.details ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+                {openAccordions.details && (
+                  <div className="pdp-accordion-content">
+                    <ul className="list-disc pl-5 space-y-1.5">
+                      {product.details?.map((detail, idx) => (
+                        <li key={idx}>{detail}</li>
+                      )) || (
+                        <>
+                          <li>Pure combed cotton construction for daily comfort</li>
+                          <li>Pre-shrunk finish to maintain consistent garment dimensions</li>
+                          <li>Double-needle topstitching along seams and hems</li>
+                          <li>Designed in India for effortless everyday styling</li>
+                        </>
+                      )}
+                    </ul>
+                  </div>
+                )}
+              </div>
+
+              {/* 2. Fit & Fabric */}
+              <div className="pdp-accordion-item">
+                <button
+                  type="button"
+                  onClick={() => toggleAccordion('fitFabric')}
+                  className="pdp-accordion-trigger"
+                  aria-expanded={openAccordions.fitFabric}
+                >
+                  <span>Fit &amp; Fabric</span>
+                  <ChevronDown
+                    size={16}
+                    className={`transition-transform duration-200 text-soft ${
+                      openAccordions.fitFabric ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+                {openAccordions.fitFabric && (
+                  <div className="pdp-accordion-content space-y-2">
+                    <p>
+                      <strong className="text-ink">Fit: </strong>
+                      {product.fitFabric?.fit || 'Relaxed casual cut with an easy drape.'}
+                    </p>
+                    <p>
+                      <strong className="text-ink">Fabric: </strong>
+                      {product.fitFabric?.fabric || '100% Breathable cotton weave.'}
+                    </p>
+                    <p>
+                      <strong className="text-ink">Care Instructions: </strong>
+                      {product.fitFabric?.care || 'Machine wash cold inside-out. Line dry.'}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* 3. Shipping Information */}
+              <div className="pdp-accordion-item">
+                <button
+                  type="button"
+                  onClick={() => toggleAccordion('shipping')}
+                  className="pdp-accordion-trigger"
+                  aria-expanded={openAccordions.shipping}
+                >
+                  <span>Shipping Information</span>
+                  <ChevronDown
+                    size={16}
+                    className={`transition-transform duration-200 text-soft ${
+                      openAccordions.shipping ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+                {openAccordions.shipping && (
+                  <div className="pdp-accordion-content space-y-2">
+                    <p>
+                      • Free standard shipping across India on orders over ₹1,499.
+                    </p>
+                    <p>
+                      • Orders are dispatched from our fulfillment center within 24–48 hours.
+                    </p>
+                    <p>
+                      • Standard metro delivery arrives in 3–5 business days with full SMS tracking.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* 4. Returns & Exchanges */}
+              <div className="pdp-accordion-item">
+                <button
+                  type="button"
+                  onClick={() => toggleAccordion('returns')}
+                  className="pdp-accordion-trigger"
+                  aria-expanded={openAccordions.returns}
+                >
+                  <span>Returns &amp; Exchanges</span>
+                  <ChevronDown
+                    size={16}
+                    className={`transition-transform duration-200 text-soft ${
+                      openAccordions.returns ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+                {openAccordions.returns && (
+                  <div className="pdp-accordion-content space-y-2">
+                    <p>
+                      • 15-day return and exchange window from the date of package delivery.
+                    </p>
+                    <p>
+                      • Unworn garments with intact original brand tags qualify for free reverse pickup.
+                    </p>
+                    <p>
+                      • Fast size exchange or refund to the original payment method upon warehouse scan.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 8. RELATED PRODUCTS SECTION */}
+        {relatedProducts.length > 0 && (
+          <section aria-labelledby="related-heading" className="border-t border-line py-12 sm:py-16">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <p className="flex items-center gap-2.5 text-[10px] font-bold uppercase tracking-[.3em] text-soft">
+                  <span aria-hidden="true" className="h-[3px] w-6 rounded-full bg-fox" />
+                  Complementary Fits
+                </p>
+                <h2 id="related-heading" className="mt-2 font-display text-2xl font-black uppercase text-ink sm:text-3xl">
+                  You Might Also Like
+                </h2>
+              </div>
+              <Link
+                to="/products"
+                className="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-ink hover:text-fox transition-colors"
+              >
+                View all <ArrowRight size={14} />
+              </Link>
+            </div>
+
+            <ul className="grid grid-cols-2 gap-x-3 gap-y-9 sm:gap-x-5 sm:gap-y-11 md:grid-cols-4 lg:gap-x-6">
+              {relatedProducts.map((rel) => {
+                const currentColor =
+                  relatedProductColors[rel.id] || rel.colors[0]?.name
+                return (
+                  <li className="group min-w-0" key={rel.id}>
+                    <div className="relative overflow-hidden bg-[#eeeae3]">
+                      <Link
+                        to={`/products/${rel.id}`}
+                        aria-label={`View ${rel.name}`}
+                        className="block focus-visible:outline-2 focus-visible:outline-ink"
+                      >
+                        <img
+                          src={rel.image}
+                          alt={rel.alt}
+                          width="1024"
+                          height="1536"
+                          loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null
+                            e.currentTarget.src = getCategoryFallbackImage(rel.category)
+                          }}
+                          className="aspect-[3/4] w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.035]"
+                        />
+                      </Link>
+
+                      <button
+                        type="button"
+                        onClick={() => addToCart(rel, currentColor)}
+                        disabled={!rel.inStock}
+                        aria-label={`Quick add ${rel.name} to bag`}
+                        className={`absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center text-ink shadow-sm transition-colors focus-visible:outline-2 focus-visible:outline-fox sm:bottom-4 sm:right-4 sm:h-10 sm:w-10 ${
+                          rel.inStock
+                            ? 'bg-white hover:bg-fox hover:text-white'
+                            : 'cursor-not-allowed bg-white/70 text-soft'
+                        }`}
+                      >
+                        <Plus size={18} strokeWidth={1.8} />
+                      </button>
+                    </div>
+
+                    <div className="mt-3.5 flex flex-col gap-1 sm:mt-4">
+                      <Link
+                        to={`/products/${rel.id}`}
+                        className="w-fit text-[12px] font-semibold leading-snug text-ink transition-colors hover:text-fox-deep sm:text-[14px]"
+                      >
+                        {rel.name}
+                      </Link>
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-[12px] font-semibold text-ink sm:text-[14px]">
+                          {formatPrice(rel.price)}
+                        </span>
+                        {rel.originalPrice && rel.originalPrice > rel.price && (
+                          <span className="text-[11px] font-normal text-soft line-through sm:text-[12px]">
+                            {formatPrice(rel.originalPrice)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {rel.colors && rel.colors.length > 0 && (
+                      <div
+                        className="mt-3 flex items-center gap-1.5"
+                        aria-label={`Colours for ${rel.name}`}
+                      >
+                        {rel.colors.map((c) => (
+                          <button
+                            key={c.name}
+                            type="button"
+                            aria-label={`${rel.name} in ${c.name}`}
+                            aria-pressed={currentColor === c.name}
+                            onClick={() =>
+                              setRelatedProductColors((prev) => ({
+                                ...prev,
+                                [rel.id]: c.name,
+                              }))
+                            }
+                            className={`flex h-[18px] w-[18px] items-center justify-center rounded-full border transition-colors hover:border-ink ${
+                              currentColor === c.name ? 'border-fox ring-1 ring-fox/40' : 'border-transparent'
+                            }`}
+                          >
+                            <span
+                              className="h-3 w-3 rounded-full border border-black/10"
+                              style={{ backgroundColor: c.value }}
+                            />
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </li>
+                )
+              })}
+            </ul>
+          </section>
+        )}
+      </div>
+
+      {/* RESPONSIVE STICKY ADD TO BAG BAR (Desktop & Mobile) */}
+      <div
+        className={`pdp-sticky-bar ${showStickyBar ? 'pdp-sticky-bar--visible' : ''}`}
+        aria-hidden={!showStickyBar}
+      >
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+          {/* Left / Product Info */}
+          <div className="flex items-center gap-3 min-w-0">
+            <img
+              src={images[0]}
+              alt={product.name}
+              className="h-11 w-9 rounded-sm border border-line bg-sand object-cover object-top shrink-0"
+            />
+            <div className="min-w-0">
+              <p className="truncate text-xs sm:text-sm font-bold uppercase tracking-wider text-ink leading-tight">
+                {product.name}
+              </p>
+              <div className="flex items-center gap-2 mt-0.5 text-xs">
+                <span className="font-extrabold text-fox">
+                  {formatPrice(product.price * quantity)}
+                </span>
+                <span className="text-soft/60 hidden sm:inline" aria-hidden="true">•</span>
+                <span className="truncate text-soft text-[11px] sm:text-xs">
+                  {selectedColor && <span>{selectedColor}</span>}
+                  {selectedSize ? (
+                    <span className="font-medium text-ink"> · Size {selectedSize}</span>
+                  ) : (
+                    <span className="text-fox font-medium"> · Select Size</span>
+                  )}
+                  {quantity > 1 && <span> · Qty {quantity}</span>}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right / CTA Button */}
+          <div className="flex items-center gap-2.5 shrink-0">
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              disabled={!product.inStock}
+              className={`flex h-10 sm:h-11 items-center justify-center gap-2 rounded-md px-5 sm:px-7 text-xs font-bold uppercase tracking-wider transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fox/60 ${
+                product.inStock
+                  ? 'bg-fox text-white hover:bg-fox-deep active:scale-[0.99]'
+                  : 'bg-sand text-soft/60 cursor-not-allowed'
+              }`}
+            >
+              <ShoppingBag size={15} strokeWidth={2.2} />
+              <span>
+                {!selectedSize
+                  ? 'Select Size'
+                  : product.inStock
+                  ? 'Add to Bag'
+                  : 'Out of Stock'}
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* SIZE GUIDE MODAL */}
+      {isSizeGuideOpen && (
+        <div
+          className="pdp-modal-overlay"
+          onClick={() => setIsSizeGuideOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Size Guide"
+        >
+          <div
+            className="pdp-modal-dialog rounded-md"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-line pb-4">
+              <div>
+                <h2 className="font-display text-lg font-black uppercase text-ink">
+                  Men's Size Guide
+                </h2>
+                <p className="text-xs text-soft mt-0.5">
+                  Standard measurements in inches &amp; centimeters
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsSizeGuideOpen(false)}
+                className="p-1 text-ink hover:text-fox transition-colors"
+                aria-label="Close size guide"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="mt-5 overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-line font-bold text-ink">
+                    <th className="py-2.5 pr-4">Size</th>
+                    <th className="py-2.5 px-4">Chest (in)</th>
+                    <th className="py-2.5 px-4">Waist (in)</th>
+                    <th className="py-2.5 pl-4">Length (in)</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-line text-soft">
+                  <tr>
+                    <td className="py-2.5 pr-4 font-bold text-ink">S</td>
+                    <td className="py-2.5 px-4">38" (96 cm)</td>
+                    <td className="py-2.5 px-4">30" (76 cm)</td>
+                    <td className="py-2.5 pl-4">27.5" (70 cm)</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 pr-4 font-bold text-ink">M</td>
+                    <td className="py-2.5 px-4">40" (101 cm)</td>
+                    <td className="py-2.5 px-4">32" (81 cm)</td>
+                    <td className="py-2.5 pl-4">28.5" (72 cm)</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 pr-4 font-bold text-ink">L</td>
+                    <td className="py-2.5 px-4">42" (106 cm)</td>
+                    <td className="py-2.5 px-4">34" (86 cm)</td>
+                    <td className="py-2.5 pl-4">29.5" (75 cm)</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 pr-4 font-bold text-ink">XL</td>
+                    <td className="py-2.5 px-4">44" (112 cm)</td>
+                    <td className="py-2.5 px-4">36" (91 cm)</td>
+                    <td className="py-2.5 pl-4">30.5" (77 cm)</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2.5 pr-4 font-bold text-ink">XXL</td>
+                    <td className="py-2.5 px-4">46" (117 cm)</td>
+                    <td className="py-2.5 px-4">38" (96 cm)</td>
+                    <td className="py-2.5 pl-4">31.5" (80 cm)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="mt-5 rounded border border-line bg-sand/40 p-3 text-xs text-soft space-y-1">
+              <p>
+                <strong className="text-ink">Fit Advice:</strong> All FUNKY FOX garments are cut with a comfortable everyday drape. For a fitted look, select one size smaller.
+              </p>
+            </div>
+
+            <div className="mt-6 flex justify-end">
+              <button
+                type="button"
+                onClick={() => setIsSizeGuideOpen(false)}
+                className="rounded-full bg-ink px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-paper hover:bg-fox transition-colors"
+              >
+                Close Guide
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Footer */}
+      <Footer />
+    </div>
+  )
+}
+

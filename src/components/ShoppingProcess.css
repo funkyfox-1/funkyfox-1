@@ -1,0 +1,123 @@
+/* How It Works Editorial Process - Matching Stitch Fix Reference */
+.fox-process-section {
+  position: relative;
+  background-color: #FAF7F2; /* Soft warm linen paper tone matching reference */
+  border-top: 1px solid #E8E4DB;
+}
+
+.fox-process-container {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .fox-process-container {
+    padding: 0 2rem;
+  }
+}
+
+/* Simple, Elegant Section Heading */
+.fox-process-header {
+  text-align: center;
+  max-width: 38rem;
+  margin: 0 auto 3rem auto;
+}
+
+@media (min-width: 640px) {
+  .fox-process-header {
+    margin-bottom: 3.75rem;
+  }
+}
+
+.fox-process-title {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 1.75rem; /* ~28px */
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  color: #191919;
+  margin: 0;
+}
+
+@media (min-width: 640px) {
+  .fox-process-title {
+    font-size: 2.15rem; /* ~34px */
+  }
+}
+
+/* 3-Column Grid with No Boxy Borders */
+.fox-process-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+
+@media (min-width: 768px) {
+  .fox-process-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .fox-process-grid {
+    gap: 3.5rem;
+  }
+}
+
+.fox-process-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0 0.5rem;
+}
+
+/* Illustration Box */
+.fox-process-illus-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 7.5rem;
+  height: 7.5rem;
+  margin-bottom: 1.5rem;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fox-process-col:hover .fox-process-illus-box {
+  transform: translateY(-4px) scale(1.02);
+}
+
+.fox-process-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Step Title - Sentence Case, Bold Sans */
+.fox-process-col-title {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  color: #191919;
+  margin: 0 0 0.65rem 0;
+}
+
+@media (min-width: 640px) {
+  .fox-process-col-title {
+    font-size: 1.25rem;
+  }
+}
+
+/* Step Description */
+.fox-process-col-desc {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.65;
+  color: #555555;
+  margin: 0;
+  max-width: 32ch;
+}

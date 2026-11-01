@@ -1,0 +1,371 @@
+/* Product Detail Page Styles */
+.pdp-page {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+.pdp-container {
+  max-width: var(--container-7xl);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  flex: 1 0 auto;
+}
+
+@media (min-width: 640px) {
+  .pdp-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .pdp-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Two-column layout */
+.pdp-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  padding-top: 1.5rem;
+  padding-bottom: 4rem;
+}
+
+@media (min-width: 1024px) {
+  .pdp-layout {
+    grid-template-columns: minmax(0, 58%) minmax(0, 42%);
+    column-gap: 4rem;
+    align-items: start;
+  }
+}
+
+/* Image Gallery */
+.pdp-gallery {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pdp-main-image-wrap {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-sand);
+  aspect-ratio: 3 / 4;
+  width: 100%;
+}
+
+.pdp-main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.5s cubic-bezier(0.2, 0.65, 0.3, 1);
+}
+
+.pdp-main-image-wrap:hover .pdp-main-image {
+  transform: scale(1.03);
+}
+
+/* Thumbnail Navigation */
+.pdp-thumbnails {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  scrollbar-width: none;
+}
+
+.pdp-thumbnails::-webkit-scrollbar {
+  display: none;
+}
+
+.pdp-thumb-btn {
+  position: relative;
+  flex-shrink: 0;
+  width: 4.5rem;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background-color: var(--color-sand);
+  border: 1px solid var(--color-line);
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.pdp-thumb-btn:hover {
+  border-color: var(--color-ink);
+}
+
+.pdp-thumb-btn--active {
+  border-color: var(--color-ink);
+  box-shadow: 0 0 0 1px var(--color-ink);
+}
+
+.pdp-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+/* Mobile image carousel indicators */
+.pdp-indicators {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.pdp-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: var(--color-line);
+  transition: all 0.2s ease;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.pdp-dot--active {
+  width: 18px;
+  background-color: var(--color-ink);
+}
+
+/* Accordions */
+.pdp-accordion-item {
+  border-bottom: 1px solid var(--color-line);
+}
+
+.pdp-accordion-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.125rem 0;
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-ink);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.pdp-accordion-trigger:hover {
+  color: var(--color-fox);
+}
+
+.pdp-accordion-content {
+  padding-bottom: 1.25rem;
+  font-size: 0.84375rem;
+  line-height: 1.65;
+  color: var(--color-soft);
+}
+
+/* Purchase Controls: Quantity Selector */
+.pdp-quantity-selector {
+  display: inline-flex;
+  align-items: center;
+  height: 50px;
+  width: fit-content;
+  background-color: var(--color-paper);
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.pdp-qty-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 100%;
+  color: var(--color-ink);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.pdp-qty-btn:hover:not(:disabled) {
+  background-color: var(--color-sand);
+}
+
+.pdp-qty-btn:focus-visible {
+  outline: 2px solid var(--color-fox);
+  outline-offset: -2px;
+}
+
+.pdp-qty-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.pdp-qty-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 48px;
+  height: 100%;
+  border-left: 1px solid var(--color-line);
+  border-right: 1px solid var(--color-line);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-ink);
+  user-select: none;
+  box-sizing: border-box;
+}
+
+/* Primary Purchase Button: Add to Bag */
+.pdp-add-to-bag-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 54px;
+  min-height: 52px;
+  box-sizing: border-box;
+  padding: 0 22px;
+  background-color: #E87535;
+  color: #FFFFFF;
+  border-radius: 8px;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  box-shadow: none;
+  transition: background-color 0.18s ease, transform 0.1s ease;
+}
+
+.pdp-add-to-bag-btn:hover:not(:disabled) {
+  background-color: #C95D25;
+}
+
+.pdp-add-to-bag-btn:active:not(:disabled) {
+  transform: scale(0.995);
+}
+
+.pdp-add-to-bag-btn:focus-visible {
+  outline: 2px solid #E87535;
+  outline-offset: 3px;
+}
+
+.pdp-add-to-bag-btn:disabled {
+  background-color: var(--color-sand);
+  color: var(--color-soft);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.pdp-btn-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pdp-btn-icon {
+  flex-shrink: 0;
+}
+
+.pdp-btn-label {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #FFFFFF;
+}
+
+.pdp-btn-price {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: normal;
+  border-left: 1px solid rgba(255, 255, 255, 0.25);
+  padding-left: 12px;
+  line-height: 1;
+}
+
+/* Responsive Sticky Purchase Bar */
+.pdp-sticky-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background-color: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--color-line);
+  box-shadow: 0 -2px 14px rgba(0, 0, 0, 0.05);
+  padding-top: 0.75rem;
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0.75rem));
+  transform: translateY(105%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+}
+
+.pdp-sticky-bar--visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Size Guide Modal */
+.pdp-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background-color: rgba(20, 20, 18, 0.45);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.pdp-modal-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 32rem;
+  background-color: var(--color-paper);
+  border: 1px solid var(--color-line);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  padding: 1.75rem;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pdp-main-image,
+  .pdp-thumb-btn,
+  .pdp-dot,
+  .pdp-sticky-bar {
+    transition: none !important;
+    transform: none;
+  }
+}
+

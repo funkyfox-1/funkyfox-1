@@ -1,0 +1,147 @@
+@import "./styles/original.css";
+
+/* FUNKY FOX Centralized Design Tokens */
+:root,
+:host {
+  /* Brand palette tokens */
+  --color-orange-primary: #E87535;
+  --color-orange-hover: #C95D25;
+  --color-white: #FFFFFF;
+  --color-warm-white: #F7F7F5;
+  --color-text-primary: #191919;
+  --color-text-secondary: #737373;
+  --color-border: #E7E7E5;
+
+  /* Theme variable mappings */
+  --color-fox: var(--color-orange-primary);
+  --color-fox-deep: var(--color-orange-hover);
+  --color-paper: var(--color-warm-white);
+  --color-ink: var(--color-text-primary);
+  --color-soft: var(--color-text-secondary);
+  --color-line: var(--color-border);
+
+  /* shadcn / Tailwind theme tokens */
+  --background: 40 20% 98%;
+  --foreground: 0 0% 10%;
+  --muted: 40 10% 94%;
+  --muted-foreground: 0 0% 45%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 10%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 10%;
+  --border: 40 10% 90%;
+  --input: 40 10% 90%;
+  --primary: 24 80% 56%;
+  --primary-foreground: 0 0% 100%;
+  --ring: 24 80% 56%;
+
+  --color-background: #FAF9F6;
+  --color-foreground: #191919;
+  --color-muted-foreground: #737373;
+  --color-card: #FFFFFF;
+  --color-card-foreground: #191919;
+  --color-ring: #E87535;
+}
+
+/* Global Smooth Scroll & Scroll-Lock Containment */
+html {
+  scroll-behavior: smooth !important;
+  min-height: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Guaranteed Sticky Footer Layout:
+   Body and root stretch to 100vh so short pages never leave footer floating mid-screen */
+body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+/* Section scroll margins to prevent sticky navbar overlap during smooth scroll */
+#home,
+#categories,
+#trending-categories,
+#how-it-works,
+#new-arrivals,
+#faq,
+#funky-fox-edit {
+  scroll-margin-top: 6rem;
+}
+
+/* Soft rounded styling across site for modern, approachable aesthetic */
+.rounded-soft {
+  border-radius: 1.5rem !important;
+}
+
+.rounded-pill {
+  border-radius: 9999px !important;
+}
+
+/* Liquid Glassmorphic Navigation Bar */
+.fox-liquid-glass {
+  background: rgba(247, 247, 245, 0.78) !important;
+  backdrop-filter: blur(24px) saturate(190%) contrast(92%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(190%) contrast(92%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.65) !important;
+  box-shadow: 0 4px 24px -2px rgba(20, 20, 18, 0.04),
+              inset 0 1px 0 0 rgba(255, 255, 255, 0.85),
+              inset 0 -1px 0 0 rgba(0, 0, 0, 0.02) !important;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.fox-liquid-glass--scrolled {
+  background: rgba(247, 247, 245, 0.90) !important;
+  backdrop-filter: blur(28px) saturate(200%) contrast(95%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(200%) contrast(95%) !important;
+  border-bottom: 1px solid rgba(231, 231, 229, 0.85) !important;
+  box-shadow: 0 10px 32px -4px rgba(20, 20, 18, 0.09),
+              inset 0 1px 0 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Accessible focus visible on interactive controls */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-orange-primary);
+  outline-offset: 2px;
+}
+
+/* Reusable skeleton neutral pulse */
+@keyframes fox-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.fox-skeleton-pulse {
+  animation: fox-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fox-skeleton-pulse {
+    animation: none !important;
+  }
+}

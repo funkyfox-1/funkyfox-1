@@ -1,0 +1,95 @@
+/* Continuous Announcement Ticker Strip matching designer reference */
+.fox-ticker-tape {
+  position: relative;
+  width: 100%;
+  background-color: #000000;
+  color: #ffffff;
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  user-select: none;
+  z-index: 20;
+}
+
+.fox-ticker-tape__container {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+.fox-ticker-tape__track {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  width: max-content;
+  animation: tickerTapeScroll 36s linear infinite;
+  will-change: transform;
+}
+
+.fox-ticker-tape__track--paused {
+  animation-play-state: paused;
+}
+
+@keyframes tickerTapeScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.fox-ticker-tape__item {
+  display: inline-flex;
+  align-items: center;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  gap: 1.5rem;
+  flex-shrink: 0;
+}
+
+.fox-ticker-tape__diamond {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #e87535; /* Funky Fox Signature Orange */
+  flex-shrink: 0;
+}
+
+.fox-ticker-tape__text {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.75rem; /* 12px */
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: rgba(255, 255, 255, 0.94);
+  line-height: 1;
+}
+
+@media (min-width: 640px) {
+  .fox-ticker-tape__container {
+    padding-top: 0.875rem;
+    padding-bottom: 0.875rem;
+  }
+
+  .fox-ticker-tape__item {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    gap: 2rem;
+  }
+
+  .fox-ticker-tape__text {
+    font-size: 0.8125rem; /* 13px */
+    letter-spacing: 0.24em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fox-ticker-tape__track {
+    animation: none;
+    overflow-x: auto;
+    width: 100%;
+  }
+}

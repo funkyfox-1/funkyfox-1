@@ -1,0 +1,206 @@
+/* FUNKY FOX Toast Notification */
+.fox-toast {
+  position: fixed;
+  z-index: 95;
+  box-sizing: border-box;
+  background-color: #FFFFFF;
+  border: 1px solid #E7E7E5;
+  border-radius: 12px;
+  padding: 16px;
+  color: #191919;
+  box-shadow: 0 4px 24px -2px rgba(20, 20, 18, 0.1), 0 2px 8px -1px rgba(20, 20, 18, 0.04);
+  display: flex;
+  flex-direction: column;
+  animation: foxToastSlideIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: bottom 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Desktop positioning: bottom-right corner, 24px spacing */
+@media (min-width: 640px) {
+  .fox-toast {
+    right: 24px;
+    bottom: 24px;
+    width: 380px;
+    max-width: calc(100vw - 48px);
+    min-height: 72px;
+  }
+
+  /* When sticky bar is visible on desktop, lift the toast above the bar */
+  body:has(.pdp-sticky-bar--visible) .fox-toast {
+    bottom: 84px;
+  }
+}
+
+/* Mobile positioning: centered within viewport with safe-area spacing */
+@media (max-width: 639px) {
+  .fox-toast {
+    left: 16px;
+    right: 16px;
+    width: calc(100vw - 32px);
+    max-width: 420px;
+    margin: 0 auto;
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* When sticky bar is visible on mobile, lift above the bar */
+  body:has(.pdp-sticky-bar--visible) .fox-toast {
+    bottom: calc(78px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@keyframes foxToastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Main row: Icon + Message + Dismiss */
+.fox-toast-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+
+.fox-toast-icon-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.fox-toast-icon-badge--success {
+  background-color: #F7F7F5;
+  border: 1px solid #E7E7E5;
+  color: #E87535;
+}
+
+.fox-toast-icon-badge--warning {
+  background-color: #FEF3C7;
+  border: 1px solid #FDE68A;
+  color: #D97706;
+}
+
+.fox-toast-icon-badge--error {
+  background-color: #FEE2E2;
+  border: 1px solid #FECACA;
+  color: #DC2626;
+}
+
+.fox-toast-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.fox-toast-title {
+  font-family: var(--font-display, "Archivo", sans-serif);
+  font-size: 0.875rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #191919;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.fox-toast-desc {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #737373;
+  margin-top: 3px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.fox-toast-dismiss {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  color: #737373;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  margin: -4px -4px 0 0;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.fox-toast-dismiss:hover {
+  color: #191919;
+  background-color: #F7F7F5;
+}
+
+.fox-toast-dismiss:focus-visible {
+  outline: 2px solid #E87535;
+  outline-offset: 1px;
+}
+
+/* Secondary row: Action control */
+.fox-toast-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid #F0F0EE;
+  width: 100%;
+}
+
+.fox-toast-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 6px;
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background-color: #191919;
+  color: #FFFFFF;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.fox-toast-action:hover {
+  background-color: #E87535;
+  color: #FFFFFF;
+}
+
+.fox-toast-action:active {
+  transform: scale(0.98);
+}
+
+.fox-toast-action:focus-visible {
+  outline: 2px solid #E87535;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fox-toast {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+

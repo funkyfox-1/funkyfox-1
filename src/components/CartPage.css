@@ -1,0 +1,127 @@
+/* Cart Page Styles */
+.cart-page {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+.cart-container {
+  max-width: var(--container-7xl);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  flex: 1 0 auto;
+}
+
+@media (min-width: 640px) {
+  .cart-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cart-container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* Two-column layout */
+.cart-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  padding-top: 2rem;
+  padding-bottom: 5rem;
+}
+
+@media (min-width: 1024px) {
+  .cart-layout {
+    grid-template-columns: minmax(0, 62%) minmax(0, 38%);
+    column-gap: 3.5rem;
+    align-items: start;
+  }
+}
+
+/* Cart Item */
+.cart-item {
+  display: flex;
+  gap: 1.25rem;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--color-line);
+}
+
+@media (min-width: 640px) {
+  .cart-item {
+    gap: 1.75rem;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+  }
+}
+
+.cart-item-image-wrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 5.5rem;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background-color: var(--color-sand);
+  border-radius: 2px;
+}
+
+@media (min-width: 640px) {
+  .cart-item-image-wrap {
+    width: 7.25rem;
+  }
+}
+
+.cart-item-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.4s ease;
+}
+
+.cart-item-image-wrap:hover .cart-item-image {
+  transform: scale(1.03);
+}
+
+/* Order Summary Box */
+.cart-summary-box {
+  background-color: var(--color-paper);
+  border: 1px solid var(--color-line);
+  padding: 1.5rem;
+  border-radius: 4px;
+}
+
+@media (min-width: 640px) {
+  .cart-summary-box {
+    padding: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .cart-summary-box {
+    position: sticky;
+    top: 6.5rem;
+  }
+}
+
+/* Empty State */
+.cart-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-top: 5rem;
+  padding-bottom: 7rem;
+}
+

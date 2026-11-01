@@ -1,0 +1,57 @@
+/* Trending Categories Simple Row */
+.trending-categories-scroll {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.trending-categories-grid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  min-width: max-content;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (min-width: 640px) {
+  .trending-categories-grid {
+    gap: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .trending-categories-grid {
+    gap: 3.5rem;
+  }
+}
+
+.trending-circle-wrapper {
+  width: 96px;
+  height: 96px;
+  border-radius: 9999px;
+  overflow: hidden;
+  background-color: #f7f7f5;
+  transition: transform 0.25s ease;
+}
+
+@media (min-width: 640px) {
+  .trending-circle-wrapper {
+    width: 112px;
+    height: 112px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .trending-circle-wrapper {
+    width: 126px;
+    height: 126px;
+  }
+}
+
+.trending-circle-wrapper:hover {
+  transform: scale(1.04);
+}
+

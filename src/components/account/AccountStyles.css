@@ -1,0 +1,494 @@
+/* Funky Fox Customer Account Experience Styles */
+.fox-account-page {
+  min-height: 100vh;
+  background-color: #FAF9F6;
+  color: #191919;
+  font-family: var(--font-sans, "Inter", sans-serif);
+}
+
+.fox-account-container {
+  max-width: 82rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 5rem 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .fox-account-container {
+    padding: 3.5rem 2rem 6rem 2rem;
+  }
+}
+
+/* Account Layout Grid */
+.fox-account-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+  .fox-account-grid {
+    grid-template-columns: 280px 1fr;
+    gap: 3.5rem;
+    align-items: start;
+  }
+}
+
+/* Sidebar Card */
+.fox-account-sidebar {
+  background-color: #ffffff;
+  border: 1px solid #E8E5DF;
+  border-radius: 1.25rem;
+  padding: 1.75rem 1.5rem;
+  box-shadow: 0 4px 20px -6px rgba(0, 0, 0, 0.04);
+}
+
+.fox-account-user-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #F0ECE1;
+}
+
+.fox-account-avatar {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 9999px;
+  object-fit: cover;
+  border: 2px solid #E87535;
+}
+
+.fox-account-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 1.25rem;
+}
+
+.fox-account-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #555555;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.fox-account-nav-item:hover {
+  background-color: #F8F6F0;
+  color: #191919;
+}
+
+.fox-account-nav-item--active {
+  background-color: #191919 !important;
+  color: #ffffff !important;
+}
+
+.fox-account-nav-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  background-color: rgba(232, 117, 53, 0.15);
+  color: #E87535;
+}
+
+.fox-account-nav-item--active .fox-account-nav-badge {
+  background-color: #E87535;
+  color: #ffffff;
+}
+
+/* Main Content Panel */
+.fox-account-main {
+  background-color: #ffffff;
+  border: 1px solid #E8E5DF;
+  border-radius: 1.25rem;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 4px 20px -6px rgba(0, 0, 0, 0.04);
+}
+
+@media (min-width: 640px) {
+  .fox-account-main {
+    padding: 2.5rem 2.5rem;
+  }
+}
+
+/* Status Badges */
+.fox-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  line-height: 1;
+}
+
+.fox-status-badge--processing {
+  background-color: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FDE68A;
+}
+
+.fox-status-badge--shipped {
+  background-color: #E0E7FF;
+  color: #3730A3;
+  border: 1px solid #C7D2FE;
+}
+
+.fox-status-badge--delivered {
+  background-color: #DCFCE7;
+  color: #166534;
+  border: 1px solid #BBF7D0;
+}
+
+.fox-status-badge--cancelled {
+  background-color: #FEE2E2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+}
+
+.fox-status-badge--returned {
+  background-color: #F3E8FF;
+  color: #6B21A8;
+  border: 1px solid #E9D5FF;
+}
+
+/* Horizontal Timeline Steps (Image 1 Style) */
+.fox-order-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  width: 100%;
+  margin: 1.5rem 0 2rem 0;
+}
+
+.fox-order-stepper-line {
+  position: absolute;
+  top: 1.35rem;
+  left: 2rem;
+  right: 2rem;
+  height: 2px;
+  background-color: #E5E1D8;
+  z-index: 1;
+}
+
+.fox-order-stepper-progress {
+  position: absolute;
+  top: 1.35rem;
+  left: 2rem;
+  height: 2px;
+  background-color: #191919;
+  z-index: 2;
+  transition: width 0.4s ease;
+}
+
+.fox-order-step-node {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 90px;
+}
+
+.fox-order-step-circle {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  border: 2px solid #E5E1D8;
+  color: #999999;
+  transition: all 0.25s ease;
+}
+
+.fox-order-step-circle--active {
+  border-color: #E87535;
+  background-color: #E87535;
+  color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(232, 117, 53, 0.2);
+}
+
+.fox-order-step-circle--completed {
+  border-color: #191919;
+  background-color: #191919;
+  color: #ffffff;
+}
+
+/* Clean Vertical Milestone List (Image 2 Style) */
+.fox-vertical-timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.fox-vertical-timeline::before {
+  content: '';
+  position: absolute;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  left: 0.65rem;
+  width: 2px;
+  background-color: #E5E1D8;
+}
+
+.fox-milestone-item {
+  position: relative;
+  padding-bottom: 1.75rem;
+}
+
+.fox-milestone-item:last-child {
+  padding-bottom: 0;
+}
+
+.fox-milestone-dot {
+  position: absolute;
+  left: -2rem;
+  top: 0.25rem;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 9999px;
+  background-color: #ffffff;
+  border: 2px solid #D1D5DB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fox-milestone-dot--completed {
+  border-color: #191919;
+  background-color: #191919;
+  color: #ffffff;
+}
+
+.fox-milestone-dot--current {
+  border-color: #E87535;
+  background-color: #E87535;
+  color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(232, 117, 53, 0.25);
+}
+
+/* Order Item Card in Receipt */
+.fox-order-receipt-card {
+  border: 1px solid #E8E5DF;
+  border-radius: 1rem;
+  background-color: #FAF9F6;
+  padding: 1.5rem;
+}
+
+/* Auth Cards */
+.fox-auth-card {
+  max-width: 28rem;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border: 1px solid #E8E5DF;
+  border-radius: 1.5rem;
+  padding: 2.5rem 2rem;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.08);
+}
+
+/* Redesigned Premium Profile Styles */
+.fox-profile-hero {
+  position: relative;
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, #141414 0%, #1f1f1f 100%);
+  color: #ffffff;
+  padding: 2rem 1.75rem;
+  overflow: hidden;
+  box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (min-width: 640px) {
+  .fox-profile-hero {
+    padding: 2.5rem 2.5rem;
+  }
+}
+
+.fox-profile-hero-pattern {
+  position: absolute;
+  right: -5%;
+  top: -20%;
+  width: 45%;
+  height: 140%;
+  opacity: 0.04;
+  pointer-events: none;
+}
+
+.fox-profile-avatar-wrap {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.fox-profile-avatar-img {
+  width: 5.25rem;
+  height: 5.25rem;
+  border-radius: 9999px;
+  object-fit: cover;
+  border: 3px solid #E87535;
+  box-shadow: 0 8px 24px rgba(232, 117, 53, 0.35);
+}
+
+.fox-profile-avatar-edit-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 1.85rem;
+  height: 1.85rem;
+  border-radius: 9999px;
+  background-color: #ffffff;
+  color: #191919;
+  border: 2px solid #141414;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.fox-profile-avatar-edit-btn:hover {
+  background-color: #E87535;
+  color: #ffffff;
+  transform: scale(1.1);
+}
+
+.fox-profile-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding-top: 1.5rem;
+  margin-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.fox-profile-stat-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.fox-profile-stat-val {
+  font-family: var(--font-display, "Archivo", sans-serif);
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.fox-profile-stat-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 0.35rem;
+}
+
+/* Profile Section Card */
+.fox-profile-card {
+  background-color: #ffffff;
+  border: 1px solid #E8E5DF;
+  border-radius: 1.25rem;
+  padding: 1.75rem 1.5rem;
+  box-shadow: 0 2px 12px -4px rgba(0, 0, 0, 0.03);
+  transition: border-color 0.2s ease;
+}
+
+@media (min-width: 640px) {
+  .fox-profile-card {
+    padding: 2.25rem 2rem;
+  }
+}
+
+.fox-profile-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1.25rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #F0ECE1;
+}
+
+.fox-profile-input-wrap {
+  position: relative;
+}
+
+.fox-profile-input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid #D1D5DB;
+  background-color: #FAF9F6;
+  font-size: 0.875rem;
+  color: #191919;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.fox-profile-input:focus {
+  outline: none;
+  border-color: #E87535;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 3px rgba(232, 117, 53, 0.15);
+}
+
+.fox-profile-input::placeholder {
+  color: #9CA3AF;
+}
+
+/* Custom Fit Pills */
+.fox-fit-pill {
+  display: flex;
+  flex-direction: column;
+  padding: 0.85rem 1.15rem;
+  border-radius: 0.85rem;
+  border: 1.5px solid #E5E1D8;
+  background-color: #FAF9F6;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.fox-fit-pill:hover {
+  border-color: #191919;
+  background-color: #ffffff;
+}
+
+.fox-fit-pill--active {
+  border-color: #E87535 !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 4px 14px -2px rgba(232, 117, 53, 0.2);
+}
+
+/* Sticky Mobile Navigation */
+.fox-mobile-account-tabs {
+  display: flex;
+  overflow-x: auto;
+  gap: 0.5rem;
+  padding: 0.5rem 0 1rem 0;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.fox-mobile-account-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .fox-mobile-account-tabs {
+    display: none;
+  }
+}
+
+

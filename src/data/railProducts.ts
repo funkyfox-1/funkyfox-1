@@ -1,0 +1,107 @@
+import type { RailGarment } from '@/components/ui/product-rail-gallery'
+import { products } from './products'
+
+export const CURATED_RAIL_GARMENTS: RailGarment[] = [
+  {
+    id: 'essential-cotton-t-shirt',
+    name: 'Essential Cotton T-Shirt · Ivory',
+    kind: 'tee',
+    color: '#E8E3D7',
+    trim: '#393B39',
+    tag: '₹599',
+    price: 599,
+    image: '/images/product-tshirt.webp',
+    description:
+      '190 GSM single-jersey combed cotton with clean ribbed neckline, pre-shrunk to retain shape.',
+    details: ['190 GSM Combed Cotton', 'Pre-washed against shrinkage', 'Relaxed everyday drape'],
+    href: '/products/essential-cotton-t-shirt',
+    inStock: true,
+  },
+  {
+    id: 'relaxed-fit-shirt',
+    name: 'Relaxed Fit Shirt · Sage Olive',
+    kind: 'shirt',
+    color: '#6B725C',
+    trim: '#4A523E',
+    tag: '₹899',
+    price: 899,
+    image: '/images/product-shirt.webp',
+    description:
+      'Breathable cotton-linen blend button-up with camp collar and clean casual drape for easy layering.',
+    details: ['Cotton-linen blend', 'Camp collar', 'Pre-washed soft hand'],
+    href: '/products/relaxed-fit-shirt',
+    inStock: true,
+  },
+  {
+    id: 'lightweight-utility-jacket',
+    name: 'Lightweight Utility Jacket · Khaki',
+    kind: 'jacket',
+    color: '#9E927C',
+    trim: '#795034',
+    tag: '₹1,799',
+    price: 1799,
+    image: '/images/product-jacket.webp',
+    description:
+      'Washed cotton canvas outer layer with dual chest flap pockets, brass snaps, and structured cut.',
+    details: ['100% Cotton canvas', 'Antique brass snap closures', 'Double chest flap pockets'],
+    href: '/products/lightweight-utility-jacket',
+    inStock: true,
+  },
+  {
+    id: 'heavyweight-boxy-tee',
+    name: 'Heavyweight Boxy Tee · Washed Black',
+    kind: 'tee',
+    color: '#2E3032',
+    trim: '#1A1A1A',
+    tag: '₹699',
+    price: 699,
+    description:
+      '240 GSM carded heavy jersey with dropped shoulders, structured boxy drape, and thick 2.5cm ribbed neckband.',
+    details: ['240 GSM Carded Cotton', 'Drop shoulder silhouette', 'Thick ribbed collar'],
+    href: '/products/heavyweight-boxy-tee',
+    inStock: true,
+  },
+  {
+    id: 'waffle-knit-crew-tee',
+    name: 'Waffle-Knit Crew Tee · Ecru',
+    kind: 'knit',
+    color: '#F1EEE6',
+    trim: '#7D8A7C',
+    tag: '₹749',
+    price: 749,
+    description:
+      'Micro-thermal waffle texture adds dimensional depth and warmth to a transitional everyday short-sleeve tee.',
+    details: ['Cotton waffle knit', 'Honeycomb texture', 'Ribbed collar and cuffs'],
+    href: '/products/waffle-knit-crew-tee',
+    inStock: true,
+  },
+  {
+    id: 'vintage-wash-pocket-tee',
+    name: 'Vintage Wash Pocket Tee · Olive',
+    kind: 'tee',
+    color: '#7A826B',
+    trim: '#5C644F',
+    tag: '₹649',
+    price: 649,
+    description:
+      'Pigment garment-dyed crewneck tee with functional patch chest pocket and soft vintage fade.',
+    details: ['Single spade patch pocket', 'Pigment dye lived-in fade', 'Clean taped neck seam'],
+    href: '/products/vintage-wash-pocket-tee',
+    inStock: true,
+  },
+  {
+    id: 'tshirt-classic-pique-polo',
+    name: 'Classic Pique Polo · Navy',
+    kind: 'shirt',
+    color: '#1B2A4A',
+    trim: '#FFFFFF',
+    tag: '₹799',
+    price: 799,
+    description:
+      'Breathable combed cotton pique polo with two-button placket, structured ribbed collar, and side vents.',
+    details: ['100% Combed Cotton Pique', 'Two-button placket', 'Side split hem'],
+    href: '/products/tshirt-classic-pique-polo',
+    inStock: true,
+  },
+]
+

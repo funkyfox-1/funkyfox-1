@@ -1,0 +1,182 @@
+/* FAQ Section 2-Column Text-Reveal Layout (matching Ruixen UI & Reference) */
+.fox-faq-section {
+  position: relative;
+  background-color: #FFFFFF;
+  border-top: 1px solid #EAE7E1;
+}
+
+.fox-faq-container {
+  max-width: 72rem; /* ~1152px */
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .fox-faq-container {
+    padding: 0 2.5rem;
+  }
+}
+
+.fox-faq-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+}
+
+@media (min-width: 1024px) {
+  .fox-faq-grid {
+    grid-template-columns: 5fr 7fr;
+    gap: 4.5rem;
+    align-items: start;
+  }
+}
+
+/* Left Column */
+.fox-faq-left {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 1024px) {
+  .fox-faq-left {
+    position: sticky;
+    top: 7rem;
+  }
+}
+
+.fox-faq-heading {
+  font-family: var(--font-display, "Archivo", sans-serif);
+  font-size: 2.25rem; /* 36px */
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: #191919;
+  margin: 0;
+}
+
+@media (min-width: 640px) {
+  .fox-faq-heading {
+    font-size: 2.75rem; /* 44px */
+  }
+}
+
+@media (min-width: 1024px) {
+  .fox-faq-heading {
+    font-size: 3.25rem; /* 52px */
+  }
+}
+
+.fox-faq-desc {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  margin-top: 1rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #555555;
+  max-width: 24rem;
+}
+
+.fox-faq-contact {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  margin-top: 2rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #737373;
+  max-width: 22rem;
+}
+
+.fox-faq-contact-link {
+  font-weight: 700;
+  color: #191919;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: #E87535;
+  transition: color 0.15s ease;
+}
+
+.fox-faq-contact-link:hover {
+  color: #E87535;
+}
+
+/* Right Column: Accordion */
+.fox-faq-right {
+  width: 100%;
+}
+
+.fox-faq-item {
+  border-bottom: 1px solid #EAE7E1;
+  transition: border-color 0.15s ease;
+}
+
+.fox-faq-item:first-child {
+  border-top: 1px solid #EAE7E1;
+}
+
+.fox-faq-trigger {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.35rem 0;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.fox-faq-q-text {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 1.0625rem; /* 17px */
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #191919;
+  line-height: 1.4;
+  transition: color 0.15s ease;
+}
+
+@media (min-width: 640px) {
+  .fox-faq-q-text {
+    font-size: 1.125rem; /* 18px */
+  }
+}
+
+.fox-faq-trigger:hover .fox-faq-q-text {
+  color: #E87535;
+}
+
+.fox-faq-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 9999px;
+  color: #191919;
+  flex-shrink: 0;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.15s ease;
+}
+
+.fox-faq-trigger:hover .fox-faq-icon-wrap {
+  color: #E87535;
+}
+
+.fox-faq-chevron {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[data-state="open"] .fox-faq-chevron {
+  transform: rotate(180deg);
+  color: #191919;
+}
+
+.fox-faq-content {
+  padding: 0 0 1.5rem 0;
+}
+
+.fox-faq-a-text {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.9375rem; /* 15px */
+  line-height: 1.65;
+  color: #555555;
+  max-width: 60ch;
+}

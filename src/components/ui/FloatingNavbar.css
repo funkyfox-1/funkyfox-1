@@ -1,0 +1,258 @@
+/* Redesigned Minimal Editorial Navbar matching Image 3 */
+.fox-nav-wrapper {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 50;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.fox-nav-bar {
+  width: 100%;
+  background: rgba(250, 249, 246, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+}
+
+.fox-nav-bar--scrolled {
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
+  border-bottom-color: rgba(0, 0, 0, 0.09);
+}
+
+.fox-nav-container {
+  max-width: 86rem;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+  height: 4.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (min-width: 640px) {
+  .fox-nav-container {
+    padding: 0 2.25rem;
+    height: 4.5rem;
+  }
+}
+
+/* Left Group: Links + Icons (Image 3 Style) */
+.fox-nav-left-group {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+}
+
+@media (min-width: 1024px) {
+  .fox-nav-left-group {
+    gap: 2.25rem;
+  }
+}
+
+.fox-nav-links {
+  display: none;
+  align-items: center;
+  gap: 1.75rem;
+}
+
+@media (min-width: 768px) {
+  .fox-nav-links {
+    display: flex;
+  }
+}
+
+.fox-nav-link {
+  font-family: var(--font-sans, "Inter", sans-serif);
+  font-size: 0.875rem; /* 14px */
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #262626;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  position: relative;
+  padding: 0.25rem 0;
+}
+
+.fox-nav-link:hover {
+  color: #E87535;
+}
+
+.fox-nav-link--active {
+  color: #111111;
+  font-weight: 700;
+}
+
+.fox-nav-link--active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #E87535;
+  border-radius: 9999px;
+}
+
+/* Inline Action Icons right next to nav links (Image 3 layout) */
+.fox-nav-icons-row {
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
+}
+
+@media (min-width: 640px) {
+  .fox-nav-icons-row {
+    gap: 1.35rem;
+  }
+}
+
+.fox-nav-icon-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  color: #262626;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.fox-nav-icon-btn:hover {
+  color: #E87535;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.fox-nav-cart-badge {
+  position: absolute;
+  top: 2px;
+  right: 1px;
+  min-width: 1rem;
+  height: 1rem;
+  padding: 0 0.25rem;
+  border-radius: 9999px;
+  background-color: #E87535;
+  color: #ffffff;
+  font-size: 0.625rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  border: 1.5px solid #ffffff;
+}
+
+/* User Active Dot */
+.fox-nav-user-active-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: #22C55E;
+}
+
+/* Right Side: Editorial Brand Logo (Image 3 "Embark" style) */
+.fox-nav-brand-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+.fox-nav-wordmark {
+  font-family: var(--font-display, "Playfair Display", "Didot", "Georgia", serif);
+  font-size: 1.65rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: #111111;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+@media (min-width: 640px) {
+  .fox-nav-wordmark {
+    font-size: 1.9rem;
+  }
+}
+
+.fox-nav-wordmark:hover {
+  color: #E87535;
+}
+
+.fox-nav-wordmark-fox {
+  color: #E87535;
+  font-style: italic;
+  font-weight: 900;
+  margin-left: 0.15rem;
+}
+
+/* Mobile Toggle */
+.fox-nav-mobile-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.5rem;
+  color: #262626;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .fox-nav-mobile-toggle {
+    display: none;
+  }
+}
+
+/* Mobile Drawer Backdrop */
+.fox-nav-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  top: 4.25rem;
+  background-color: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 49;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.fox-nav-drawer-card {
+  width: 100%;
+  max-width: 22rem;
+  background-color: #ffffff;
+  height: 100%;
+  padding: 1.75rem 1.5rem;
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.fox-nav-drawer-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #191919;
+  text-decoration: none;
+  border-bottom: 1px solid #F0ECE1;
+}
+
+.fox-nav-drawer-link:hover {
+  color: #E87535;
+}
