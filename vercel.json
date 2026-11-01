@@ -1,3 +1,4 @@
 {
+  "name": "funkyfox-demo1",
   "rewrites": [{ "source": "/((?!assets/|images/|favicon.svg).*)", "destination": "/index.html" }]
 }
