@@ -461,52 +461,33 @@ const CSS =
   ".tpf-pin[data-pin=lift] .tpf-body{transform:translateY(-22%) rotate(-10deg);transition-duration:.3s}" +
   ".tpf-pin[data-pin=lift] .tpf-shadow{transform:rotate(16deg) translateX(-26%) scale(1.25);opacity:.55}" +
   ".tpf-pin[data-pin=stab] .tpf-body{animation:tpf-stab .42s cubic-bezier(.55,0,.8,.2) both}" +
-  ".tpf-map-card{position:absolute;z-index:2;left:50%;top:57%;width:min(480px,88cqw);transform:translateX(-50%);background:rgba(255,255,255,.96);border:1px solid rgba(0,0,0,.12);border-radius:14px;box-shadow:0 10px 28px rgba(0,0,0,.09),0 2px 6px rgba(0,0,0,.04);overflow:hidden;transition:transform .35s var(--ease),box-shadow .35s var(--ease)}" +
-  ".tpf-map-card:hover{transform:translateX(-50%) translateY(-2px);box-shadow:0 14px 34px rgba(0,0,0,.12)}" +
-  ".tpf-map-head{display:flex;align-items:center;justify-content:space-between;padding:7px 12px;background:#fcfbf8;border-bottom:1px solid rgba(0,0,0,.07)}" +
-  ".tpf-map-info{display:flex;align-items:center;gap:7px;min-width:0}" +
-  ".tpf-map-dot{width:7px;height:7px;border-radius:50%;background:#E87535;box-shadow:0 0 0 2px rgba(232,117,53,.25);flex:none}" +
-  ".tpf-map-text{display:flex;flex-direction:column;min-width:0;text-align:left}" +
-  ".tpf-map-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#141414;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
-  ".tpf-map-sub{font-size:8.5px;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
-  ".tpf-map-btn{display:inline-flex;align-items:center;gap:3px;padding:3.5px 8px;border-radius:99px;background:#141414;color:#fff;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;text-decoration:none;flex:none;transition:background-color .2s}" +
-  ".tpf-map-btn:hover{background:#E87535;color:#fff}" +
-  ".tpf-map-frame{width:100%;height:100px;position:relative;background:#e5e3df}" +
-  ".tpf-map-iframe{width:100%;height:100%;border:0;display:block}" +
-  ".tpf-brand{left:50%;top:77%;width:max-content;transform:translateX(-50%);display:grid;justify-items:stretch}" +
-  ".tpf-brand-top{display:flex;align-items:center;justify-content:space-between;gap:1em;padding:0 .2em 0 .5em}" +
-  ".tpf-eye{font-size:max(14px,2.2cqmin);letter-spacing:-.02em;background:linear-gradient(90deg,var(--tpf-on-paper),color-mix(in srgb,var(--tpf-on-paper) 35%,var(--tpf-paper)));-webkit-background-clip:text;background-clip:text;color:transparent}" +
-  ".tpf-bub{display:inline-flex;align-items:center;gap:.5em;height:1.7em;padding:0 .55em;border-radius:99px;background:color-mix(in srgb,var(--tpf-on-paper) 11%,var(--tpf-paper));font-size:max(11px,1.6cqmin);overflow:hidden;transition:padding .45s var(--ease)}" +
-  ".tpf-dots{display:flex;gap:.22em}" +
-  ".tpf-dots i{width:.38em;height:.38em;border-radius:50%;background:color-mix(in srgb,var(--tpf-on-paper) 45%,var(--tpf-paper));animation:tpf-dot 1.2s ease-in-out infinite}" +
-  ".tpf-dots i:nth-child(2){animation-delay:.15s}.tpf-dots i:nth-child(3){animation-delay:.3s}" +
-  ".tpf-bub b{font-weight:500;max-width:0;opacity:0;white-space:nowrap;transition:max-width .5s var(--ease),opacity .3s}" +
-  ".tpf-bub:hover,.tpf-bub:focus-visible{padding:0 .8em}" +
-  ".tpf-bub:hover b,.tpf-bub:focus-visible b{max-width:8em;opacity:1}" +
-  ".tpf-word{display:block;overflow:hidden;padding:0 .04em .1em;font-size:max(30px,min(8cqmin,10cqw));font-weight:500;letter-spacing:-.055em;line-height:.96;white-space:nowrap}" +
-  ".tpf-word span{display:block;position:relative;transition:transform 1s var(--ease) .5s}" +
-  ".tpf-word span::after{content:'';position:absolute;left:.02em;right:.04em;bottom:-.02em;height:max(2px,.045em);background:currentColor;transform-origin:0 50%;transition:transform .9s var(--ease) 1.05s,height .3s var(--ease)}" +
-  ".tpf:not(.s3) .tpf-word span{transform:translateY(125%);transition-delay:0s}" +
-  ".tpf:not(.s3) .tpf-word span::after{transform:scaleX(0);transition-delay:0s}" +
-  ".tpf-word:hover span::after{height:max(4px,.075em)}" +
-  ".tpf-side{top:78%;display:grid;justify-items:center;gap:max(10px,1.9cqmin);font-size:max(13px,2.1cqmin);transform:translateX(-50%)}" +
-  ".tpf-side .tpf-ico{width:1.35em;height:1.35em;transition:transform .35s var(--ease)}" +
-  ".tpf-side:hover .tpf-ico{transform:translateY(-2px) rotate(-8deg)}" +
-  ".tpf-side span{background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;transition:background-size .4s var(--ease)}" +
-  ".tpf-side:hover span{background-size:100% 1px}" +
-  ".tpf-foot{left:0;right:0;bottom:4%;display:flex;align-items:center;justify-content:space-between;gap:1.5em;padding:0 15%;font-size:max(12px,1.85cqmin)}" +
-  ".tpf-credit{position:absolute;left:50%;transform:translateX(-50%);font-size:max(10px,1.4cqmin);letter-spacing:.08em;text-transform:uppercase;opacity:.62;white-space:nowrap}" +
+  ".tpf-full-map-layer{position:absolute;left:0;right:0;bottom:0;height:54%;z-index:0;pointer-events:auto;overflow:hidden}" +
+  ".tpf-full-map-img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}" +
+  ".tpf-map-pill{position:absolute;left:50%;top:63%;transform:translateX(-50%);z-index:4;display:flex;align-items:center;gap:14px;background:rgba(255,255,255,0.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:8px 12px 8px 16px;border-radius:9999px;box-shadow:0 12px 32px rgba(0,0,0,0.1),0 2px 6px rgba(0,0,0,0.05);border:1px solid rgba(0,0,0,0.08);white-space:nowrap;max-width:calc(100% - 28px);transition:transform .3s var(--ease),box-shadow .3s var(--ease)}" +
+  ".tpf-map-pill:hover{transform:translateX(-50%) translateY(-2px);box-shadow:0 16px 38px rgba(0,0,0,0.14)}" +
+  ".tpf-map-pill-loc{display:flex;align-items:center;gap:10px;min-width:0}" +
+  ".tpf-map-pill-dot{width:14px;height:18px;flex:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E87535'%3E%3Cpath d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z'/%3E%3C/svg%3E\");background-size:contain;background-repeat:no-repeat}" +
+  ".tpf-map-pill-text{display:flex;flex-direction:column;text-align:left;min-width:0}" +
+  ".tpf-map-pill-title{font-size:11px;font-weight:800;color:#141414;letter-spacing:.04em;text-transform:uppercase;line-height:1.2}" +
+  ".tpf-map-pill-address{font-size:9.5px;font-weight:500;color:#555;letter-spacing:.01em;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
+  ".tpf-map-pill-cta{display:inline-flex;align-items:center;gap:5px;background:#141414;color:#fff;padding:6px 14px;border-radius:9999px;font-size:10px;font-weight:700;letter-spacing:.03em;text-decoration:none;transition:background-color .2s,transform .15s;flex:none}" +
+  ".tpf-map-pill-cta:hover{background:#E87535;transform:translateY(-1px)}" +
+  ".tpf-brand{display:none}" +
+  ".tpf-side{display:none}" +
+  ".tpf-foot{left:0;right:0;bottom:3%;display:flex;align-items:center;justify-content:space-between;gap:1.5em;padding:0 10%;font-size:max(11px,1.6cqmin);color:#191919;font-weight:600;z-index:4;letter-spacing:.04em}" +
+  ".tpf-credit{position:absolute;left:50%;transform:translateX(-50%);font-size:max(9.5px,1.35cqmin);letter-spacing:.08em;text-transform:uppercase;opacity:.85;white-space:nowrap;color:#191919;font-weight:700}" +
+  ".tpf-handle{color:#191919;font-weight:600}" +
   ".tpf-handle:hover{text-decoration:underline;text-underline-offset:.2em}" +
   "@container (max-width: 620px){" +
   ".tpf-top{padding:0 7%}.tpf-flank,.tpf-mail span{display:none}" +
   ".tpf-news{top:16%}.tpf-pill{width:min(80cqw,320px)}" +
   ".tpf-status{top:29%}.tpf-badge{top:33%}" +
   ".tpf-col{top:36.5%}.tpf-col.l{left:7%}.tpf-col.r{right:7%}.tpf-col li:nth-child(n+3){display:none}" +
-  ".tpf-map-card{top:56%;width:calc(100% - 24px)}" +
-  ".tpf-map-frame{height:88px}" +
-  ".tpf-brand{top:79%}" +
-  ".tpf-side{top:89%}.tpf-side.l{left:14%!important}.tpf-side.r{left:86%!important}" +
-  ".tpf-foot{padding:0 7%;bottom:2.5%}.tpf-credit{display:none}" +
+  ".tpf-map-pill{top:66%;gap:8px;padding:6px 10px 6px 12px;max-width:calc(100% - 20px)}" +
+  ".tpf-map-pill-title{font-size:10px}" +
+  ".tpf-map-pill-address{font-size:8px;max-width:130px}" +
+  ".tpf-map-pill-cta{font-size:9px;padding:5px 10px}" +
+  ".tpf-foot{padding:0 6%;bottom:2.5%}.tpf-credit{display:none}" +
   "}" +
   "@keyframes tpf-hit{0%{transform:translateY(0)}30%{transform:translateY(2px)}60%{transform:translateY(-.5px)}100%{transform:translateY(0)}}" +
   "@keyframes tpf-drop{0%{transform:translateY(-62cqh) rotate(-28deg) scale(1.5);opacity:0}25%{opacity:1}80%{transform:translateY(0) rotate(3deg) scale(1)}90%{transform:scale(1.04,.95)}100%{transform:none;opacity:1}}" +
@@ -907,6 +888,16 @@ export default function PushpinTearFooter({
     <footer ref={rootRef} className={cls} style={vars} onPointerMove={onPointerMove} onPointerLeave={onPointerLeave}>
       <style>{CSS}</style>
 
+      {/* ---- full-bleed map background layer revealed beneath torn sheet ---- */}
+      <div className="tpf-full-map-layer" aria-hidden="true">
+        <img
+          src="/images/footer-map-layer.jpg"
+          alt="Funky Fox Vijayawada Flagship Region Map"
+          className="tpf-full-map-img"
+          loading="lazy"
+        />
+      </div>
+
       <svg ref={svgRef} className="tpf-stage" aria-hidden="true">
         <defs>
           <radialGradient id={uid + "v"} cx=".5" cy=".78" r=".75">
@@ -938,7 +929,7 @@ export default function PushpinTearFooter({
           ))}
           <path id={uid + "s"} ref={sheetRef} />
         </defs>
-        <rect className="tpf-paper" width="100%" height="100%" />
+        <rect className="tpf-paper" width="100%" height="100%" fill="transparent" opacity="0" />
         <rect width="100%" height="100%" fill={"url(#" + uid + "v)"} style={{ mixBlendMode: "multiply" }} />
         {grain && <rect width="100%" height="100%" fill={"url(#" + uid + "g)"} opacity=".32" />}
         <g className="tpf-sheet-g" filter={"url(#" + uid + "d)"}>
@@ -1057,62 +1048,28 @@ export default function PushpinTearFooter({
         </span>
       </button>
 
-      {/* ---- Google Maps visual pinned on the paper ---- */}
-      <div className="tpf-z tpf-map-card tpf-p" style={H(0)}>
-        <div className="tpf-map-head">
-          <div className="tpf-map-info">
-            <span className="tpf-map-dot" aria-hidden="true" />
-            <div className="tpf-map-text">
-              <span className="tpf-map-title">Flagship Depot & Distribution</span>
-              <span className="tpf-map-sub">MG Road, Benz Circle, Vijayawada · PIN 520010</span>
-            </div>
+      {/* ---- Interactive Flagship Depot Floating Pill on Map ---- */}
+      <div className="tpf-map-pill" style={H(0)}>
+        <div className="tpf-map-pill-loc">
+          <span className="tpf-map-pill-dot" aria-hidden="true" />
+          <div className="tpf-map-pill-text">
+            <span className="tpf-map-pill-title">FUNKY FOX</span>
+            <span className="tpf-map-pill-address">MG Road, Benz Circle, Vijayawada · PIN 520010</span>
           </div>
-          <a
-            href="https://maps.google.com/maps?q=16.5168591%2C80.628406&z=17&hl=en"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="tpf-map-btn"
-            title="Open in Google Maps"
-          >
-            <span>Open Maps</span>
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M7 17l9.2-9.2M17 17V8H8" />
-            </svg>
-          </a>
         </div>
-        <div className="tpf-map-frame">
-          <iframe
-            title="Funky Fox Flagship Location Map"
-            src="https://maps.google.com/maps?q=16.5168591,80.628406&z=16&output=embed"
-            className="tpf-map-iframe"
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
-        </div>
+        <a
+          href="https://maps.google.com/maps?q=16.5168591%2C80.628406&z=17&hl=en"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="tpf-map-pill-cta"
+          title="Open Flagship Depot in Google Maps"
+        >
+          <span>Open in Maps</span>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M7 17l9.2-9.2M17 17V8H8" />
+          </svg>
+        </a>
       </div>
-
-      {/* ---- printed on the paper ---- */}
-      <div className="tpf-z tpf-brand tpf-ink">
-        <div className="tpf-brand-top tpf-p" style={H(0)}>
-          <span className="tpf-eye">{name}</span>
-          {chat && (
-            <A href={chat.href ?? mailto} className="tpf-bub" label={chat.label}>
-              <span className="tpf-dots" aria-hidden="true"><i /><i /><i /></span>
-              <b>{chat.label}</b>
-            </A>
-          )}
-        </div>
-        <A href={logoHref} className="tpf-word" label={name}>
-          <span>{brand}</span>
-        </A>
-      </div>
-
-      {sideLinks.slice(0, 2).map((l, i) => (
-        <A key={i} href={l.href} className={"tpf-z tpf-side tpf-ink tpf-p " + (i ? "r" : "l")} label={l.label} style={{ ...H(1 + i), left: i ? "71.5%" : "29.5%" }}>
-          <span>{l.label}</span>
-          <Icon name={l.icon} />
-        </A>
-      ))}
 
       <div className="tpf-z tpf-foot tpf-ink">
         <span className="tpf-p" style={H(3)}>{copyright}</span>

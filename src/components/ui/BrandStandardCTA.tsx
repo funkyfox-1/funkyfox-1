@@ -56,14 +56,14 @@ export default function BrandStandardCTA() {
 
           {/* Right Column: Bento Visual Cards (100% as in reference) */}
           <div className="fox-standard-bento">
-            {/* Left Tall Card: Smiling Model in Bomber Jacket */}
+            {/* Left Tall Card: Model in Denim Shirt & Trousers */}
             <div className="fox-standard-tall-card group">
               <img
-                src="/images/standard/model-tall-clean.jpg"
-                alt="Funky Fox model wearing black casual jacket"
+                src="/images/standard/cta-model-denim.png"
+                alt="Funky Fox model wearing denim shirt and jeans"
                 className="fox-standard-img transition-transform duration-700 group-hover:scale-105"
                 onError={(e) => {
-                  e.currentTarget.src = '/images/hero-model.jpg'
+                  e.currentTarget.src = '/images/standard/model-tall-clean.jpg'
                 }}
               />
               <div className="fox-standard-vignette" />
@@ -76,14 +76,14 @@ export default function BrandStandardCTA() {
 
             {/* Right Stacked Column (Top Photo + Bottom Orange Card) */}
             <div className="fox-standard-stacked-col">
-              {/* Top Photo: Model with Watch adjusting collar */}
+              {/* Top Photo: Model in Navy Zip Polo */}
               <div className="fox-standard-watch-card group">
                 <img
-                  src="/images/standard/model-watch-clean.jpg"
-                  alt="Funky Fox model adjusting watch and jacket"
+                  src="/images/standard/cta-model-polo.png"
+                  alt="Funky Fox model in navy zip-neck polo shirt"
                   className="fox-standard-img transition-transform duration-700 group-hover:scale-105"
                   onError={(e) => {
-                    e.currentTarget.src = '/images/category-jackets.jpg'
+                    e.currentTarget.src = '/images/standard/model-watch-clean.jpg'
                   }}
                 />
               </div>
@@ -103,19 +103,28 @@ export default function BrandStandardCTA() {
                 <div className="fox-standard-avatars-row">
                   <div className="fox-standard-avatars">
                     <img
-                      src="/images/standard/model-tall.jpg"
+                      src="/images/standard/avatar-beige.png"
                       alt="Community Member 1"
                       className="fox-standard-avatar"
+                      onError={(e) => {
+                        e.currentTarget.src = '/images/standard/cta-model-beige.png'
+                      }}
                     />
                     <img
-                      src="/images/standard/model-watch.jpg"
+                      src="/images/standard/avatar-polo.png"
                       alt="Community Member 2"
                       className="fox-standard-avatar"
+                      onError={(e) => {
+                        e.currentTarget.src = '/images/standard/cta-model-polo.png'
+                      }}
                     />
                     <img
-                      src="/images/hero-model.jpg"
+                      src="/images/standard/avatar-denim.png"
                       alt="Community Member 3"
                       className="fox-standard-avatar"
+                      onError={(e) => {
+                        e.currentTarget.src = '/images/standard/cta-model-denim.png'
+                      }}
                     />
                   </div>
                   <span className="fox-standard-avatar-pill">

@@ -214,9 +214,9 @@ export const products: Product[] = [
     "name": "Waffle-Knit Crew Tee",
     "price": 749,
     "originalPrice": 949,
-    "image": "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=80",
+    "image": "/images/products/demo-waffle-knit-crew-tee.png",
     "images": [
-      "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=80",
+      "/images/products/demo-waffle-knit-crew-tee.png",
       "/images/category-tshirts.jpg"
     ],
     "alt": "Textured thermal waffle-knit crew tee in ecru",
@@ -849,10 +849,9 @@ export const products: Product[] = [
       }
     ],
     "featuredOrder": 31,
-    "image": "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=800&auto=format&fit=crop&q=80",
+    "image": "/images/products/demo-zip-neck-textured-polo.png",
     "images": [
-      "https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=800&auto=format&fit=crop&q=80",
-      "https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=800&auto=format&fit=crop&q=80",
+      "/images/products/demo-zip-neck-textured-polo.png",
       "/images/category-tshirts.jpg"
     ],
     "alt": "Zip-Neck Textured Polo for everyday men\\'s style",
@@ -3911,9 +3910,9 @@ export const products: Product[] = [
     "id": "relaxed-tapered-chinos",
     "name": "Relaxed Tapered Chinos",
     "price": 1199,
-    "image": "https://images.unsplash.com/photo-1542272604-780c96856592?w=800&auto=format&fit=crop&q=80",
+    "image": "/images/products/demo-relaxed-tapered-chinos.jpg",
     "images": [
-      "https://images.unsplash.com/photo-1542272604-780c96856592?w=800&auto=format&fit=crop&q=80",
+      "/images/products/demo-relaxed-tapered-chinos.jpg",
       "/images/category-trousers.jpg"
     ],
     "alt": "Relaxed tapered casual chinos in warm khaki",
@@ -3959,9 +3958,9 @@ export const products: Product[] = [
     "name": "Pleated Wide-Leg Trousers",
     "price": 1399,
     "originalPrice": 1699,
-    "image": "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=800&auto=format&fit=crop&q=80",
+    "image": "/images/products/demo-pleated-wide-leg-trousers.jpg",
     "images": [
-      "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=800&auto=format&fit=crop&q=80",
+      "/images/products/demo-pleated-wide-leg-trousers.jpg",
       "/images/product-jeans.webp"
     ],
     "alt": "Pleated wide-leg everyday trousers in slate grey",
@@ -5432,9 +5431,9 @@ export const products: Product[] = [
     "id": "canvas-workwear-jacket",
     "name": "Canvas Workwear Jacket",
     "price": 1999,
-    "image": "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&auto=format&fit=crop&q=80",
+    "image": "/images/products/demo-canvas-workwear-jacket.jpg",
     "images": [
-      "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&auto=format&fit=crop&q=80",
+      "/images/products/demo-canvas-workwear-jacket.jpg",
       "/images/product-jacket.webp"
     ],
     "alt": "Heavy duck canvas workwear chore coat in tobacco brown",
@@ -5479,9 +5478,9 @@ export const products: Product[] = [
     "id": "minimalist-bomber-jacket",
     "name": "Minimalist Bomber Jacket",
     "price": 1899,
-    "image": "https://images.unsplash.com/photo-1548883354-7622d03aca27?w=800&auto=format&fit=crop&q=80",
+    "image": "/images/products/demo-minimalist-bomber-jacket.jpg",
     "images": [
-      "https://images.unsplash.com/photo-1548883354-7622d03aca27?w=800&auto=format&fit=crop&q=80",
+      "/images/products/demo-minimalist-bomber-jacket.jpg",
       "/images/category-jackets.jpg"
     ],
     "alt": "Minimalist satin-finish bomber jacket in black",
@@ -5527,9 +5526,9 @@ export const products: Product[] = [
     "name": "Denim Overshirt Jacket",
     "price": 1699,
     "originalPrice": 1999,
-    "image": "/images/category-jackets.jpg",
+    "image": "/images/products/demo-denim-overshirt-jacket.png",
     "images": [
-      "/images/category-jackets.jpg",
+      "/images/products/demo-denim-overshirt-jacket.png",
       "/images/product-jacket.webp",
       "/images/editorial-campaign.webp"
     ],

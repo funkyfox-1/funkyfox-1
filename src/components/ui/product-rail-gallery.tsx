@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import { ArrowRight, ShoppingBag } from "lucide-react";
 
-export type GarmentKind = "tee" | "knit" | "hoodie" | "shirt" | "jacket" | "coat";
+export type GarmentKind = "tee" | "polo" | "knit" | "hoodie" | "shirt" | "jacket" | "coat";
 
 export interface RailGarment {
   id: string;
@@ -60,6 +60,8 @@ export interface ClothingRailHeroProps extends React.ComponentProps<"section"> {
   labels?: ClothingRailHeroLabels;
   onOpenChange?: (index: number | null) => void;
   onAddToCart?: (item: RailGarment) => void;
+  /** When true, hides product details, buttons, and popups for pure visual showcase. */
+  showcaseOnly?: boolean;
 }
 
 const VB_W = 200;
@@ -224,12 +226,50 @@ const ART = {
       folds: ["M62,96 C58,170 66,230 56,292", "M138,96 C142,170 134,230 144,292", "M28,96 C26,150 28,200 24,236", "M172,96 C174,150 172,200 176,236"],
     },
   },
+  polo: {
+    front: {
+      body: "M80,34 C88,40 112,40 120,34 L158,45 C162,50 164,56 164,62 L154,238 C128,242 72,242 46,238 L36,62 C36,56 38,50 42,45 Z",
+      sleeves: [
+        "M42,45 C36,48 31,52 29,58 C22,68 15,80 11,96 C16,104 22,110 28,114 C33,110 40,106 46,106 C45,86 43,64 42,45 Z",
+        "M158,45 C164,48 169,52 171,58 C178,68 185,80 189,96 C184,104 178,110 172,114 C167,110 160,106 154,106 C155,86 157,64 158,45 Z",
+      ],
+      under: "M80,34 C90,29 110,29 120,34 L120,40 C110,35 90,35 80,40 Z",
+      ribs: ["M12,96 L28,114 L27,118 L10,100 Z", "M188,96 L172,114 L173,118 L190,100 Z"],
+      panels: [
+        { d: "M96,48 L104,48 L104,116 L96,116 Z", t: -0.05 },
+        { d: "M100,48 L80,34 C77,42 73,52 68,62 L90,65 Z", t: 0.05 },
+        { d: "M100,48 L120,34 C123,42 127,52 132,62 L110,65 Z", t: 0.05 },
+      ],
+      seams: ["M96,64 L96,116", "M104,64 L104,116", "M46,106 C45,86 43,64 42,45", "M154,106 C155,86 157,64 158,45"],
+      stitches: ["M48,232 C74,236 126,236 152,232"],
+      folds: [
+        "M40,56 C58,76 76,94 90,120",
+        "M160,56 C142,76 124,94 110,120",
+        "M70,126 C66,164 72,204 66,234",
+        "M131,128 C135,164 129,204 134,234",
+      ],
+      buttons: [[100, 72], [100, 94]],
+    },
+    back: {
+      body: "M80,34 C90,30 110,30 120,34 L158,45 C162,50 164,56 164,62 L154,238 C128,242 72,242 46,238 L36,62 C36,56 38,50 42,45 Z",
+      sleeves: [
+        "M42,45 C36,48 31,52 29,58 C22,68 15,80 11,96 C16,104 22,110 28,114 C33,110 40,106 46,106 C45,86 43,64 42,45 Z",
+        "M158,45 C164,48 169,52 171,58 C178,68 185,80 189,96 C184,104 178,110 172,114 C167,110 160,106 154,106 C155,86 157,64 158,45 Z",
+      ],
+      ribs: ["M12,96 L28,114 L27,118 L10,100 Z", "M188,96 L172,114 L173,118 L190,100 Z"],
+      panels: [{ d: "M80,34 C90,30 110,30 120,34 L122,41 C110,36 90,36 78,41 Z", t: 0.04 }],
+      seams: ["M46,106 C45,86 43,64 42,45", "M154,106 C155,86 157,64 158,45"],
+      stitches: ["M48,232 C74,236 126,236 152,232"],
+      folds: ["M70,90 C66,150 72,200 66,234", "M130,90 C134,150 128,200 134,234"],
+    },
+  },
 } as const;
 
-const KINDS = ["tee", "knit", "hoodie", "shirt", "jacket", "coat"] as const;
+const KINDS = ["tee", "polo", "knit", "hoodie", "shirt", "jacket", "coat"] as const;
 
 const SIDE = {
   tee: { hem: 240, long: false, hood: false, width: 0.23 },
+  polo: { hem: 242, long: false, hood: false, width: 0.24 },
   knit: { hem: 232, long: true, hood: false, width: 0.25 },
   hoodie: { hem: 234, long: true, hood: true, width: 0.33 },
   shirt: { hem: 244, long: true, hood: false, width: 0.25 },
@@ -238,7 +278,7 @@ const SIDE = {
 } as const;
 
 function sideShapes(kind: GarmentKind) {
-  const side = SIDE[kind];
+  const side = SIDE[kind] || SIDE.tee;
   const hem = side.hem;
   const cuff = side.long ? hem - 24 : 104;
   const body = `M86,60 C85,96 88,132 85,168 C83,196 84,${hem - 18} 85,${hem} C92,${hem + 5} 109,${hem + 5} 116,${hem} C117,${hem - 18} 118,196 116,168 C113,132 116,96 114,60 Z`;
@@ -248,7 +288,7 @@ function sideShapes(kind: GarmentKind) {
 }
 
 function artFor(kind: GarmentKind, side: "front" | "back"): Art {
-  const entry = ART[kind] as unknown as { front: Art; back: Art };
+  const entry = ((ART as Record<string, unknown>)[kind] || ART.tee) as unknown as { front: Art; back: Art };
   return side === "front" ? entry.front : entry.back;
 }
 
@@ -458,7 +498,7 @@ function SideArt({ uid, kind, color, trim }: { uid: string; kind: GarmentKind; c
   const { body, sleeve, hood, cuff } = sideShapes(kind);
   const knitted = kind === "knit";
   const soft = `url(#${uid}-soft)`;
-  const hem = SIDE[kind].hem;
+  const hem = (SIDE[kind] || SIDE.tee).hem;
   return (
     <svg aria-hidden="true" viewBox={`0 0 ${VB_W} ${VB_H}`} preserveAspectRatio="xMidYMin meet" className="absolute inset-0 size-full overflow-visible">
       <g filter={`url(#${uid}-cloth)`}>
@@ -543,6 +583,7 @@ export function ClothingRailHero({
   labels = DEFAULT_LABELS,
   onOpenChange,
   onAddToCart,
+  showcaseOnly = false,
   className,
   ...rest
 }: ClothingRailHeroProps) {
@@ -568,7 +609,7 @@ export function ClothingRailHero({
   const returnFocus = React.useRef(null as number | null);
   const pendingOpen = React.useRef(-1);
   const pointer = React.useRef({ id: -1, index: -1, x: 0, y: 0, t: 0, moved: false, kind: "", swipe: 0, lastX: 0, lastT: 0, v: 0 });
-  const sideWidths = React.useMemo(() => items.map((item) => (item.image ? (item.sideImage ? 0.3 : 0.4) : SIDE[item.kind ?? "tee"].width)), [items]);
+  const sideWidths = React.useMemo(() => items.map((item) => (item.image ? (item.sideImage ? 0.3 : 0.4) : (SIDE[(item.kind as keyof typeof SIDE) ?? "tee"] || SIDE.tee).width)), [items]);
   const live = React.useRef({ active: null as number | null, size, reduced, count, openIndex: null as number | null, carouselIndex: 0, sideWidths });
   live.current = { ...live.current, active, size, reduced, count, openIndex, sideWidths };
 
@@ -926,7 +967,7 @@ export function ClothingRailHero({
   const boxW = h * ASPECT;
   const railY = Math.round(h * 0.07) + 10;
   const railR = Math.max(3, Math.round((RAIL_R / VB_H) * h * 10) / 10);
-  const bottom = count ? Math.max(...items.map((item) => (item.image ? VB_H : SIDE[item.kind ?? "tee"].hem + 8))) / VB_H : 1;
+  const bottom = count ? Math.max(...items.map((item) => (item.image ? VB_H : (SIDE[(item.kind as keyof typeof SIDE) ?? "tee"] || SIDE.tee).hem + 8))) / VB_H : 1;
 
   return (
     <section
@@ -953,9 +994,10 @@ export function ClothingRailHero({
             </h2>
           )}
           {caption && (
-            <p className="max-w-[48ch] text-[13px] leading-relaxed text-[#555555] sm:text-sm">
-              {caption}
-            </p>
+            <div className="mt-1 flex items-center gap-2 rounded-full border border-neutral-200/90 bg-white/90 px-3.5 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-neutral-600 shadow-sm backdrop-blur-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#E87535] animate-pulse" aria-hidden="true" />
+              <span>{caption}</span>
+            </div>
           )}
         </header>
       )}
@@ -1007,7 +1049,12 @@ export function ClothingRailHero({
               className="absolute left-0 cursor-pointer rounded-xl outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fox"
               style={{ top: railY - (HOOK_TOP / VB_H) * h, width: boxW, height: h, zIndex: turned ? 30 : 10 + i, visibility: lifted === i ? "hidden" : undefined, transform: `translate3d(${((sim.current.x[i] ?? 0) - boxW / 2).toFixed(2)}px,0,0)` }}
               onFocus={() => { setFocusIndex(i); if (pointer.current.id < 0) { stop(); choose(i); } }}
-              onClick={(event) => { const pending = pendingOpen.current; pendingOpen.current = -1; if (event.detail === 0 || pending === i) open(i); }}
+              onClick={(event) => {
+                if (showcaseOnly) return;
+                const pending = pendingOpen.current;
+                pendingOpen.current = -1;
+                if (event.detail === 0 || pending === i) open(i);
+              }}
             >
               <span ref={(node) => { swings.current[i] = node; }} className="absolute inset-0" style={{ transformOrigin: `50% ${(HOOK_TOP / VB_H) * 100}%` }}>
                 <span aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ filter: `blur(${Math.max(3, h * 0.022).toFixed(1)}px)` }}>
@@ -1032,7 +1079,7 @@ export function ClothingRailHero({
                     </span>
                   ))}
                 </span>
-                {item.tag && (
+                {!showcaseOnly && item.tag && (
                   <span ref={(node) => { tags.current[i] = node; }} aria-hidden="true" className="pointer-events-none absolute left-1/2 origin-top" style={{ top: (32 / VB_H) * h, transform: "rotate(-12deg)" }}>
                     <span className="block h-[14px] w-px translate-x-[3px] bg-foreground/35" />
                     <span className="block -translate-x-1/2 translate-x-[3px] whitespace-nowrap rounded-[3px] border border-black/10 bg-white px-1.5 pb-1 pt-2 font-mono text-[9px] font-bold leading-none tracking-wide text-ink shadow-[0_2px_6px_rgba(0,0,0,0.12)]">
@@ -1055,44 +1102,48 @@ export function ClothingRailHero({
         </div>
       )}
 
-      {/* Under-rail Active Garment Action Bar */}
-      <div className="relative z-10 flex flex-col items-center gap-3 px-6 pb-12 pt-3 text-center">
-        <div id={`${uid}-caption`} aria-live="polite" className="min-h-[3rem]">
-          <p key={current?.id ?? "caption"} className="font-display text-base font-bold text-ink sm:text-lg">
-            {current ? current.name : "Select a piece to inspect"}
-          </p>
-          {current?.description && (
-            <p key={`${current.id}-d`} className="mx-auto mt-1 max-w-[46ch] text-[13px] leading-relaxed text-[#555555]">
-              {current.description}
+      {/* Under-rail Active Garment Action Bar - omitted in showcaseOnly mode */}
+      {!showcaseOnly ? (
+        <div className="relative z-10 flex flex-col items-center gap-3 px-6 pb-12 pt-3 text-center">
+          <div id={`${uid}-caption`} aria-live="polite" className="min-h-[3rem]">
+            <p key={current?.id ?? "caption"} className="font-display text-base font-bold text-ink sm:text-lg">
+              {current ? current.name : "Select a piece to inspect"}
             </p>
+            {current?.description && (
+              <p key={`${current.id}-d`} className="mx-auto mt-1 max-w-[46ch] text-[13px] leading-relaxed text-[#555555]">
+                {current.description}
+              </p>
+            )}
+          </div>
+
+          {current ? (
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+              <Link
+                to={current.href || `/products/${current.id}`}
+                className="group inline-flex items-center gap-2 rounded-full bg-[#191919] px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-all hover:bg-[#E87535] hover:shadow-md"
+              >
+                <span>View Product {current.tag ? `· ${current.tag}` : ""}</span>
+                <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  if (active !== null) open(active);
+                }}
+                className="inline-flex items-center gap-1.5 rounded-full border border-neutral-300 bg-white px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-[#191919] transition-colors hover:border-[#191919]"
+              >
+                3D Spin &amp; Inspect
+              </button>
+            </div>
+          ) : (
+            action
           )}
         </div>
+      ) : (
+        <div className="pb-10 sm:pb-14" />
+      )}
 
-        {current ? (
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
-            <Link
-              to={current.href || `/products/${current.id}`}
-              className="group inline-flex items-center gap-2 rounded-full bg-[#191919] px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm transition-all hover:bg-[#E87535] hover:shadow-md"
-            >
-              <span>View Product {current.tag ? `· ${current.tag}` : ""}</span>
-              <ArrowRight size={13} className="transition-transform group-hover:translate-x-1" />
-            </Link>
-            <button
-              type="button"
-              onClick={() => {
-                if (active !== null) open(active);
-              }}
-              className="inline-flex items-center gap-1.5 rounded-full border border-neutral-300 bg-white px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-[#191919] transition-colors hover:border-[#191919]"
-            >
-              3D Spin &amp; Inspect
-            </button>
-          </div>
-        ) : (
-          action
-        )}
-      </div>
-
-      {openIndex !== null && items[openIndex] && (
+      {!showcaseOnly && openIndex !== null && items[openIndex] && (
         <Detail
           uid={uid}
           item={items[openIndex]}

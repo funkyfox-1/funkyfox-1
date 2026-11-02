@@ -145,10 +145,3 @@ textarea:focus-visible {
     animation: none !important;
   }
 }
-
-/* Mobile Safe Area and Bottom Navigation Spacing */
-@media (max-width: 767px) {
-  body {
-    padding-bottom: 58px;
-  }
-}

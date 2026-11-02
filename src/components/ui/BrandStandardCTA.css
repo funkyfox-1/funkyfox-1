@@ -350,6 +350,8 @@
   border-radius: 9999px;
   border: 2px solid #FF4405;
   object-fit: cover;
+  object-position: top center;
+  background-color: #171717;
   margin-right: -0.5rem;
 }
 

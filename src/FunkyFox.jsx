@@ -20,7 +20,6 @@ import FloatingNavbar from "./components/ui/FloatingNavbar";
 import ClothingRailHero from "./components/ui/product-rail-gallery";
 import JellyRadio from "./components/ui/JellyRadio";
 import WordsPreloader from "./components/ui/WordsPreloader";
-import MobileBottomNav from "./components/navigation/MobileBottomNav";
 import "./components/ui/TactileOrderButton.css";
 import { LoginPage, RegisterPage, ForgotPasswordPage } from "./components/account/AuthPages";
 import AccountLayout from "./components/account/AccountLayout";
@@ -290,15 +289,11 @@ function HomePage({ addToCart: i }) {
         className="scroll-mt-24 border-t border-line"
         items={CURATED_RAIL_GARMENTS}
         hanger="wood"
-        eyebrow="The Everyday Edit"
-        heading="THE EVERYDAY EDIT."
-        caption="Touch, slide, or lift each piece to inspect fabric drape and craftsmanship."
+        heading="OUR TRENDS"
+        caption="New season · Ten pieces on the rail"
+        showcaseOnly={true}
         autoplay={true}
         interval={2800}
-        onAddToCart={(garment) => {
-          const prod = products.find((p) => p.id === garment.id);
-          if (prod) i(prod);
-        }}
       />
       <ShoppingProcess />
       <FAQSection />
@@ -580,7 +575,6 @@ function Storefront() {
         </Routes>
       </main>
       <SearchOverlay isOpen={C} onClose={() => M(!1)} />
-      <MobileBottomNav cartCount={$} onOpenSearch={() => M(!0)} />
       {r && (
         <div
           className="fixed inset-0 z-[80]"
