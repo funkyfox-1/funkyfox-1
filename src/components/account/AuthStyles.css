@@ -1,184 +1,123 @@
-/* 21st.dev & reactbits.dev inspired Split-Screen Auth Styles */
+/* Bricolage Grotesque & Inter Web Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&display=swap');
 
-/* Mesh Gradient Animations (reactbits.dev style) */
-@keyframes meshMove1 {
-  0% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
-  33% { transform: translate(60px, -45px) scale(1.18) rotate(15deg); }
-  66% { transform: translate(-40px, 35px) scale(0.92) rotate(-10deg); }
-  100% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
+.font-bricolage {
+  font-family: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: -0.03em;
 }
 
-@keyframes meshMove2 {
-  0% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
-  33% { transform: translate(-55px, 50px) scale(1.12) rotate(-20deg); }
-  66% { transform: translate(45px, -30px) scale(0.95) rotate(12deg); }
-  100% { transform: translate(0px, 0px) scale(1) rotate(0deg); }
+.font-inter {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
-@keyframes meshMove3 {
-  0% { transform: translate(0px, 0px) scale(1); }
-  50% { transform: translate(70px, 40px) scale(1.22); }
-  100% { transform: translate(0px, 0px) scale(1); }
-}
-
-@keyframes meshPulse {
-  0%, 100% { opacity: 0.8; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.08); }
-}
-
-.fox-auth-mesh-wrap {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  background: radial-gradient(circle at 20% 20%, #1f1d1a 0%, #0d0c0b 100%);
-  pointer-events: none;
-}
-
-.fox-mesh-orb-1 {
-  position: absolute;
-  top: 5%;
-  left: 10%;
-  width: 480px;
-  height: 480px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(232, 117, 53, 0.72) 0%, rgba(232, 117, 53, 0) 70%);
-  filter: blur(85px);
-  animation: meshMove1 16s ease-in-out infinite;
-}
-
-.fox-mesh-orb-2 {
-  position: absolute;
-  bottom: 8%;
-  right: 5%;
-  width: 520px;
-  height: 520px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 140, 66, 0.65) 0%, rgba(255, 140, 66, 0) 70%);
-  filter: blur(95px);
-  animation: meshMove2 20s ease-in-out infinite;
-}
-
-.fox-mesh-orb-3 {
-  position: absolute;
-  top: 40%;
-  right: 25%;
-  width: 420px;
-  height: 420px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(217, 91, 24, 0.55) 0%, rgba(217, 91, 24, 0) 65%);
-  filter: blur(75px);
-  animation: meshMove3 18s ease-in-out infinite;
-}
-
-.fox-mesh-orb-4 {
-  position: absolute;
-  bottom: 30%;
-  left: 20%;
-  width: 340px;
-  height: 340px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(254, 215, 170, 0.28) 0%, rgba(254, 215, 170, 0) 70%);
-  filter: blur(65px);
-  animation: meshPulse 12s ease-in-out infinite;
-}
-
-.fox-mesh-grid-overlay {
-  position: absolute;
-  inset: 0;
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: 32px 32px;
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-/* 21st.dev Style Segmented Tabs */
-.fox-auth-tab-pill {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 1;
-  padding: 0.65rem 1rem;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  border-radius: 9999px;
-  cursor: pointer;
-}
-
-.fox-auth-tab-pill--active {
-  background-color: #191919;
+/* LEFT PANEL: Solid Brand Orange + Low-Contrast Dot-Grid */
+.ff-auth-left-panel {
+  background-color: #E05A1B;
+  background-image: radial-gradient(#B8430E 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
   color: #ffffff;
-  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.15);
 }
 
-.fox-auth-tab-pill--inactive {
-  color: #737373;
+/* Apricot Underline Accent */
+.ff-apricot-underline {
+  border-bottom: 4px solid #ffc95c;
+  padding-bottom: 2px;
 }
 
-.fox-auth-tab-pill--inactive:hover {
-  color: #191919;
+/* Minimal Testimonial Card */
+.ff-testimonial-box {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 1.25rem 1.35rem;
 }
 
-/* 21st.dev Modern Input Styling */
-.fox-auth-input-group {
+/* Form Fields & Controls */
+.ff-auth-input-wrap {
   position: relative;
-  transition: all 0.2s ease;
-}
-
-.fox-auth-input-group:focus-within {
-  transform: translateY(-1px);
-}
-
-.fox-auth-input {
   width: 100%;
-  background-color: #FAF9F6;
-  border: 1.5px solid #E5E1D8;
-  border-radius: 0.85rem;
-  padding: 0.85rem 1rem 0.85rem 2.75rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #191919;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.fox-auth-input:focus {
-  outline: none;
+.ff-auth-input {
+  width: 100%;
+  height: 44px;
   background-color: #ffffff;
-  border-color: #E87535;
-  box-shadow: 0 0 0 3px rgba(232, 117, 53, 0.15);
+  border: 1px solid #dfe2ea;
+  border-radius: 10px;
+  padding: 0 1rem 0 2.5rem;
+  font-size: 0.875rem;
+  color: #0d1220;
+  font-weight: 500;
+  transition: all 0.15s ease-in-out;
 }
 
-.fox-auth-input::placeholder {
-  color: #9CA3AF;
+.ff-auth-input::placeholder {
+  color: #94a3b8;
   font-weight: 400;
 }
 
-/* 1-Click Demo Sign In Glow Card */
-.fox-demo-badge-card {
-  background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
-  border: 1.5px dashed #F59E0B;
-  border-radius: 1rem;
-  padding: 1rem 1.15rem;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.2s ease;
+.ff-auth-input:focus {
+  outline: none;
+  border-color: #E05A1B;
+  box-shadow: 0 0 0 3px rgba(224, 90, 27, 0.16);
 }
 
-.fox-demo-badge-card:hover {
-  border-color: #D97706;
-  box-shadow: 0 6px 18px -4px rgba(245, 158, 11, 0.2);
+/* SSO Buttons */
+.ff-sso-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  height: 44px;
+  background-color: #ffffff;
+  border: 1px solid #dfe2ea;
+  border-radius: 10px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #0d1220;
+  transition: all 0.15s ease-in-out;
+  cursor: pointer;
 }
 
-/* Glassmorphic editorial card */
-.fox-editorial-glass {
-  background: rgba(20, 20, 20, 0.65);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
+.ff-sso-btn:hover {
+  background-color: #f8fafc;
+  border-color: #cbd5e1;
 }
 
+/* Primary Sign In Button */
+.ff-primary-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  height: 46px;
+  background-color: #E05A1B;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+
+.ff-primary-btn:hover {
+  background-color: #c94c12;
+}
+
+.ff-primary-btn:active {
+  transform: scale(0.99);
+}
+
+.ff-primary-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* 1-Click Demo Sign In Pill */
+.ff-demo-banner {
+  background-color: #fffbeb;
+  border: 1px dashed #f59e0b;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+}
