@@ -881,7 +881,7 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
         </div>
 
         {/* 8. TRIPLE RECOMMENDATION TIERS: SIMILAR PRODUCTS, TRENDING, COMPLETE THE LOOK */}
-        <div className="border-t border-line mt-12 sm:mt-16 pt-8 space-y-14 sm:space-y-18">
+        <div className="border-t border-line mt-12 sm:mt-16 pt-8 space-y-14 sm:space-y-18 pb-24 sm:pb-32 lg:pb-40">
           
           {/* TIER 1: Similar Products (Matching silhouette / category, 4 per row, 3 cols on tablet) */}
           {similarProducts.length > 0 && (
@@ -1429,55 +1429,104 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
         </div>
       </div>
 
-      {/* RESPONSIVE STICKY ADD TO BAG BAR (Desktop & Mobile) */}
+      {/* RESPONSIVE STICKY ADD TO BAG BAR (Desktop & Mobile) - REDESIGNED */}
       <div
         className={`pdp-sticky-bar ${showStickyBar ? 'pdp-sticky-bar--visible' : ''}`}
         aria-hidden={!showStickyBar}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
-          {/* Left / Product Info */}
-          <div className="flex items-center gap-3 min-w-0">
+          {/* Left: Product Thumbnail & Title/Price/Variant Info */}
+          <div className="flex items-center gap-3 sm:gap-4 min-w-0">
             <img
               src={images[0]}
               alt={product.name}
-              className="h-11 w-9 rounded-sm border border-line bg-sand object-cover object-top shrink-0"
+              className="h-12 w-10 sm:h-14 sm:w-11 rounded-lg border border-line bg-sand object-cover object-top shrink-0 shadow-xs"
             />
             <div className="min-w-0">
-              <p className="truncate text-xs sm:text-sm font-bold uppercase tracking-wider text-ink leading-tight">
+              <p className="truncate text-xs sm:text-sm font-black uppercase tracking-tight text-ink font-display leading-tight">
                 {product.name}
               </p>
-              <div className="flex items-center gap-2 mt-0.5 text-xs">
-                <span className="font-extrabold text-fox">
+              <div className="flex items-center gap-2 mt-1 flex-wrap">
+                <span className="font-extrabold text-xs sm:text-sm text-fox font-sans">
                   {formatPrice(product.price * quantity)}
                 </span>
-                <span className="text-soft/60 hidden sm:inline" aria-hidden="true">•</span>
-                <span className="truncate text-soft text-[11px] sm:text-xs">
-                  {selectedColor && <span>{selectedColor}</span>}
-                  {selectedSize ? (
-                    <span className="font-medium text-ink"> · Size {selectedSize}</span>
-                  ) : (
-                    <span className="text-fox font-medium"> · Select Size</span>
-                  )}
-                  {quantity > 1 && <span> · Qty {quantity}</span>}
+                <span className="text-soft/40 hidden sm:inline" aria-hidden="true">•</span>
+                <span className="text-xs text-soft font-medium hidden sm:inline">
+                  {selectedColor}
                 </span>
+                {selectedSize ? (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-sand text-ink text-[10.5px] font-bold border border-line">
+                    Size {selectedSize}
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 text-[10.5px] font-bold border border-amber-200">
+                    Select Size
+                  </span>
+                )}
+                {quantity > 1 && (
+                  <span className="text-[11px] text-soft">
+                    Qty: {quantity}
+                  </span>
+                )}
               </div>
             </div>
           </div>
 
-          {/* Right / CTA Button */}
-          <div className="flex items-center gap-2.5 shrink-0">
+          {/* Right: Quick Size Pills + Wishlist + Primary Add to Bag Button */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* Quick Size Pills (shown on desktop if size not selected) */}
+            {!selectedSize && product.sizes && product.sizes.length > 0 && (
+              <div className="hidden md:flex items-center gap-1.5 mr-1" aria-label="Quick select size">
+                {product.sizes.map((sz) => (
+                  <button
+                    key={sz}
+                    type="button"
+                    onClick={() => handleSelectSize(sz)}
+                    className="h-8 min-w-[2rem] px-2 rounded-lg border border-line bg-white hover:border-fox hover:text-fox text-xs font-bold text-ink transition-colors cursor-pointer"
+                  >
+                    {sz}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Quick Wishlist Heart Button */}
+            <button
+              type="button"
+              onClick={handleToggleWishlist}
+              aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+              title={isWishlisted ? "Saved in your Wishlist" : "Save to Wishlist"}
+              className={`h-10 w-10 sm:h-11 sm:w-11 rounded-xl border flex items-center justify-center transition-all cursor-pointer shadow-xs ${
+                isWishlisted
+                  ? 'bg-rose-50 border-rose-300 text-rose-500'
+                  : 'bg-white border-line text-neutral-600 hover:border-ink hover:text-ink'
+              }`}
+            >
+              <Heart
+                size={17}
+                className={isWishlisted ? 'fill-rose-500 text-rose-500' : 'text-neutral-700'}
+              />
+            </button>
+
+            {/* Redesigned Primary Action Button */}
             <button
               type="button"
               onClick={handleAddToCart}
               disabled={!product.inStock}
-              className="tactile-order-btn text-xs py-2 px-5 sm:px-6"
+              className={`h-10 sm:h-11 px-5 sm:px-7 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center gap-2 transition-all shadow-sm active:scale-[0.98] ${
+                !product.inStock
+                  ? 'bg-neutral-200 text-neutral-500 cursor-not-allowed'
+                  : !selectedSize
+                  ? 'bg-ink text-white hover:bg-neutral-800 cursor-pointer'
+                  : 'bg-fox hover:bg-fox-deep text-white cursor-pointer shadow-orange-500/20'
+              }`}
             >
-              <ShoppingBag size={14} strokeWidth={2.2} />
+              <ShoppingBag size={15} strokeWidth={2.2} />
               <span>
                 {!selectedSize
                   ? 'Select Size'
                   : product.inStock
-                  ? 'Add to Bag'
+                  ? `Add to Bag • ${formatPrice(product.price * quantity)}`
                   : 'Out of Stock'}
               </span>
             </button>
