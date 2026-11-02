@@ -69,6 +69,13 @@ export default function OrderConfirmationPage() {
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
                 <Link
+                  to="/account/orders"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-12 px-8 rounded-md bg-ink text-white text-xs font-bold uppercase tracking-wider transition-colors hover:bg-neutral-800"
+                >
+                  <Truck size={16} />
+                  <span>Track in My Orders</span>
+                </Link>
+                <Link
                   to="/products"
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-12 px-8 rounded-md bg-fox text-white text-xs font-bold uppercase tracking-wider transition-colors hover:bg-fox-deep"
                 >

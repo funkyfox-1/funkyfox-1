@@ -30,6 +30,7 @@ import AccountWishlist from "./components/account/AccountWishlist";
 import AccountReviews from "./components/account/AccountReviews";
 import AccountAddresses from "./components/account/AccountAddresses";
 import AccountProfile from "./components/account/AccountProfile";
+import { isDemoLoggedIn } from "./data/accountMockData";
 import { CURATED_RAIL_GARMENTS } from "./data/railProducts";
 import {
   products,
@@ -391,6 +392,20 @@ function Storefront() {
     }, []));
   function U(w, ct, G, qtyToAdd = 1) {
     if (!w) return;
+
+    // Strict Auth Guard: User must create an account or sign in before adding items to bag
+    if (!isDemoLoggedIn()) {
+      X("Please create an account or sign in to add items to your bag.");
+      Y("/login", {
+        state: {
+          from: Q.pathname,
+          pendingAdd: { product: w, color: ct, size: G, qty: qtyToAdd },
+          reason: "Please sign in or create an account to add items to your bag."
+        }
+      });
+      return;
+    }
+
     const selectedColor = ct || w.colors?.[0]?.name || "Default";
 
     // 1. Explicit check: if product has no sizes at all

@@ -15,6 +15,7 @@ import {
   Tag,
 } from 'lucide-react'
 import { products, formatPrice, getCategoryFallbackImage } from '../data/products'
+import { isDemoLoggedIn, getDemoUser, getDemoAddresses, createDemoOrder } from '../data/accountMockData'
 import { calculateShipping, PROVISIONAL_SHIPPING_POLICY } from '../config/shipping'
 import { CouponService, CouponValidationResult } from '../services/api'
 import { showToast } from '../utils/toast'
@@ -130,11 +131,25 @@ const PAYMENT_METHODS: PaymentMethodOption[] = [
 export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
   const navigate = useNavigate()
 
+  // Auth Guard: User must create an account or sign in before ordering
+  React.useEffect(() => {
+    if (!isDemoLoggedIn()) {
+      showToast('Please sign in or create an account to proceed to checkout.', { type: 'info' })
+      navigate('/login', {
+        replace: true,
+        state: {
+          from: '/checkout',
+          reason: 'Please create an account or sign in to complete your order.'
+        }
+      })
+    }
+  }, [navigate])
+
   // Checkout Stages: 1. delivery -> 2. payment -> 3. review
   const [stage, setStage] = React.useState<CheckoutStage>('delivery')
   const [selectedPaymentMethod, setSelectedPaymentMethod] = React.useState<string>('upi')
 
-  // Initial form values from sessionStorage if present
+  // Initial form values from sessionStorage if present or prefilled from demo user
   const [values, setValues] = React.useState<FormValues>(() => {
     try {
       const saved = sessionStorage.getItem(STORAGE_KEY)
@@ -144,18 +159,42 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
     } catch {
       // ignore JSON errors
     }
+    const user = getDemoUser()
+    const addresses = getDemoAddresses()
+    const defAddr = addresses.find(a => a.isDefault) || addresses[0]
+
     return {
-      fullName: '',
-      email: '',
-      phone: '',
+      fullName: user?.name || defAddr?.fullName || '',
+      email: user?.email || '',
+      phone: user?.phone || defAddr?.phone || '',
       country: 'India',
-      addressLine1: '',
+      addressLine1: defAddr?.street || '',
       addressLine2: '',
-      city: '',
-      state: '',
-      pincode: '',
+      city: defAddr?.city || '',
+      state: defAddr?.state || '',
+      pincode: defAddr?.pincode || '',
     }
   })
+
+  // Also sync profile if user logs in during session
+  React.useEffect(() => {
+    const user = getDemoUser()
+    if (user) {
+      const addresses = getDemoAddresses()
+      const defAddr = addresses.find(a => a.isDefault) || addresses[0]
+      setValues(prev => ({
+        fullName: prev.fullName || user.name || defAddr?.fullName || '',
+        email: prev.email || user.email || '',
+        phone: prev.phone || user.phone || defAddr?.phone || '',
+        country: 'India',
+        addressLine1: prev.addressLine1 || defAddr?.street || '',
+        addressLine2: prev.addressLine2 || '',
+        city: prev.city || defAddr?.city || '',
+        state: prev.state || defAddr?.state || '',
+        pincode: prev.pincode || defAddr?.pincode || '',
+      }))
+    }
+  }, [])
 
   const [errors, setErrors] = React.useState<FormErrors>({})
   const [touched, setTouched] = React.useState<Record<string, boolean>>({})
@@ -396,16 +435,64 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
   const handleFinalOrderConfirm = async () => {
     // 500ms delay for smooth animation
     await new Promise((resolve) => setTimeout(resolve, 500))
+
+    const mappedItems = cartItems.map((item) => {
+      const prod = products.find((p) => p.id === item.id)
+      return {
+        id: item.id,
+        name: prod?.name || 'Funky Fox Garment',
+        price: prod?.price || 0,
+        originalPrice: prod?.originalPrice,
+        color: item.color,
+        size: item.size,
+        quantity: item.qty,
+        image: prod?.image || '/images/category-shirts.jpg',
+      }
+    })
+
+    const selectedPayTitle =
+      PAYMENT_METHODS.find((p) => p.id === selectedPaymentMethod)?.title || 'UPI'
+
+    const createdOrder = createDemoOrder({
+      items: mappedItems,
+      subtotal,
+      discount: discountAmount,
+      discountCode: appliedCoupon?.code,
+      shipping: effectiveShipping,
+      tax: Math.round(orderTotal * 0.05),
+      total: orderTotal,
+      paymentMethod: {
+        type: selectedPayTitle,
+        last4: 'Verified',
+        status: 'Paid',
+        holderName: values.fullName,
+      },
+      deliveryAddress: {
+        fullName: values.fullName,
+        phone: values.phone,
+        street: `${values.addressLine1}${values.addressLine2 ? ', ' + values.addressLine2 : ''}`,
+        city: values.city,
+        state: values.state,
+        pincode: values.pincode,
+        country: values.country || 'India',
+      },
+    })
+
+    // Clear cart in localStorage and notify session
+    localStorage.removeItem('funky-fox-cart')
+    window.dispatchEvent(new Event('storage'))
+
     navigate('/order-confirmation', {
       state: {
-        orderReference: `FF-${Math.floor(100000 + Math.random() * 900000)}`,
+        orderReference: createdOrder.orderNumber,
+        orderId: createdOrder.id,
         customerName: values.fullName,
         customerEmail: values.email,
         deliveryCity: values.city,
         deliveryState: values.state,
         deliveryPincode: values.pincode,
         orderTotal,
-        paymentMethod: PAYMENT_METHODS.find((p) => p.id === selectedPaymentMethod)?.title || 'UPI',
+        paymentMethod: selectedPayTitle,
         itemsCount: totalItems,
       },
     })

@@ -599,38 +599,124 @@ function safeSet<T>(key: string, data: T) {
 
 // User Profile & Session
 export function getDemoUser(): UserProfile | null {
-  return safeGet<UserProfile | null>(STORAGE_KEYS.USER, DEFAULT_PROFILE);
+  return safeGet<UserProfile | null>(STORAGE_KEYS.USER, null);
 }
 
 export function isDemoLoggedIn(): boolean {
-  return !!safeGet<UserProfile | null>(STORAGE_KEYS.USER, DEFAULT_PROFILE);
+  return getDemoUser() !== null;
 }
 
-export function loginDemo(email?: string, name?: string): UserProfile {
+export function loginDemo(email?: string, name?: string, phone?: string): UserProfile {
   const current = getDemoUser() || DEFAULT_PROFILE;
   const updated: UserProfile = {
     ...current,
     email: email || current.email,
-    name: name || current.name
+    name: name || (email ? email.split('@')[0] : current.name),
+    phone: phone || current.phone,
   };
   safeSet(STORAGE_KEYS.USER, updated);
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('funky-fox-auth-change', { detail: { user: updated } }));
+  }
   return updated;
 }
 
 export function logoutDemo() {
   localStorage.removeItem(STORAGE_KEYS.USER);
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('funky-fox-auth-change', { detail: { user: null } }));
+  }
 }
 
 export function updateDemoProfile(updates: Partial<UserProfile>): UserProfile {
   const current = getDemoUser() || DEFAULT_PROFILE;
   const merged = { ...current, ...updates };
   safeSet(STORAGE_KEYS.USER, merged);
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('funky-fox-auth-change', { detail: { user: merged } }));
+  }
   return merged;
 }
 
 // Orders Management
 export function getDemoOrders(): Order[] {
   return safeGet<Order[]>(STORAGE_KEYS.ORDERS, INITIAL_ORDERS);
+}
+
+export function createDemoOrder(orderData: Partial<Order>): Order {
+  const orders = getDemoOrders();
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+  const orderNum = orderData.orderNumber || `#${Math.floor(64000 + Math.random() * 9000)}`;
+
+  const newOrder: Order = {
+    id: orderNum.replace('#', 'ff-'),
+    orderNumber: orderNum,
+    date: `${dateStr}, ${timeStr}`,
+    estimatedDelivery: '4 business days',
+    status: 'processing',
+    items: orderData.items || [],
+    subtotal: orderData.subtotal || 0,
+    discount: orderData.discount || 0,
+    discountCode: orderData.discountCode,
+    shipping: orderData.shipping || 0,
+    tax: orderData.tax || 0,
+    total: orderData.total || 0,
+    paymentMethod: orderData.paymentMethod || {
+      type: 'UPI / Online Payment',
+      last4: 'Verified',
+      status: 'Paid',
+    },
+    deliveryAddress: orderData.deliveryAddress || {
+      fullName: 'Arjun Mehta',
+      phone: '+91 98765 43210',
+      street: 'Door No. 40-1-58, MG Road',
+      city: 'Vijayawada',
+      state: 'Andhra Pradesh',
+      pincode: '520010',
+      country: 'India',
+    },
+    timeline: [
+      {
+        status: 'placed',
+        label: 'Order Placed',
+        date: dateStr,
+        time: timeStr,
+        description: 'Order confirmed and verified via instant payment.',
+        completed: true,
+        current: true,
+      },
+      {
+        status: 'processing',
+        label: 'Fabric Inspection & Packing',
+        date: 'Next business day',
+        time: '10:00 AM',
+        description: 'Undergoing 12-point garment and seam quality verification.',
+        completed: false,
+      },
+      {
+        status: 'shipped',
+        label: 'Handed to BlueDart Express',
+        date: 'In 2 days',
+        time: '--',
+        description: 'Air dispatch to regional sorting hub.',
+        completed: false,
+      },
+      {
+        status: 'delivered',
+        label: 'Doorstep Delivery',
+        date: 'In 4 days',
+        time: '--',
+        description: 'Delivered in eco-friendly cotton pouch.',
+        completed: false,
+      },
+    ],
+  };
+
+  const updatedOrders = [newOrder, ...orders];
+  safeSet(STORAGE_KEYS.ORDERS, updatedOrders);
+  return newOrder;
 }
 
 export function getDemoOrderById(id: string): Order | undefined {
@@ -697,6 +783,9 @@ export function toggleDemoWishlist(productId: string): boolean {
   const exists = list.includes(productId);
   const updated = exists ? list.filter(id => id !== productId) : [...list, productId];
   safeSet(STORAGE_KEYS.WISHLIST, updated);
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('funky-fox-wishlist-change', { detail: { wishlist: updated } }));
+  }
   return !exists;
 }
 

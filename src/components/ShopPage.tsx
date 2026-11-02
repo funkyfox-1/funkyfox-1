@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams, useNavigate } from 'react-router-dom'
 import {
   SlidersHorizontal,
   ChevronDown,
@@ -7,6 +7,7 @@ import {
   RotateCcw,
   Check,
   Plus,
+  Heart,
 } from 'lucide-react'
 import {
   products as allProducts,
@@ -16,6 +17,8 @@ import {
   ALL_SIZES,
   type Product,
 } from '../data/products'
+import { isDemoLoggedIn, toggleDemoWishlist, getDemoWishlist } from '../data/accountMockData'
+import { showToast } from '../utils/toast'
 import { matchesProductSearch, findTypoSuggestions } from '../utils/search'
 import { EmptyState } from './feedback'
 import Footer from './Footer'
@@ -46,6 +49,34 @@ type SortOption = 'featured' | 'newest' | 'price-asc' | 'price-desc'
 
 export default function ShopPage({ addToCart }: ShopPageProps) {
   const [searchParams, setSearchParams] = useSearchParams()
+  const navigate = useNavigate()
+  const [wishlist, setWishlist] = React.useState<string[]>(() => getDemoWishlist())
+
+  React.useEffect(() => {
+    const syncWishlist = () => setWishlist(getDemoWishlist())
+    window.addEventListener('funky-fox-wishlist-change', syncWishlist)
+    return () => window.removeEventListener('funky-fox-wishlist-change', syncWishlist)
+  }, [])
+
+  const handleToggleCardWishlist = (e: React.MouseEvent, prod: Product) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!isDemoLoggedIn()) {
+      showToast('Please create an account or sign in to save items to your wishlist.', { type: 'info' })
+      navigate('/login', {
+        state: {
+          from: '/products',
+          reason: 'Please create an account or sign in to save items to your wishlist.'
+        }
+      })
+      return
+    }
+    const added = toggleDemoWishlist(prod.id)
+    setWishlist(getDemoWishlist())
+    showToast(added ? `Saved ${prod.name} to Wishlist` : `Removed ${prod.name} from Wishlist`, {
+      type: added ? 'success' : 'info'
+    })
+  }
 
   // Category & Search from URL searchParams
   const categoryParam = searchParams.get('category')
@@ -714,10 +745,56 @@ export default function ShopPage({ addToCart }: ShopPageProps) {
                           </div>
                         ) : null}
 
+                        {/* Card Wishlist Button */}
+                        <button
+                          type="button"
+                          onClick={(e) => handleToggleCardWishlist(e, product)}
+                          aria-label={
+                            wishlist.includes(product.id)
+                              ? `Remove ${product.name} from wishlist`
+                              : `Save ${product.name} to wishlist`
+                          }
+                          title={
+                            wishlist.includes(product.id)
+                              ? 'Saved in Wishlist'
+                              : 'Save to Wishlist'
+                          }
+                          className="absolute top-2.5 right-2.5 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-neutral-600 shadow-sm backdrop-blur-xs transition-transform hover:scale-110 hover:bg-white cursor-pointer"
+                        >
+                          <Heart
+                            size={15}
+                            className={
+                              wishlist.includes(product.id)
+                                ? 'fill-rose-500 text-rose-500'
+                                : 'text-neutral-700'
+                            }
+                          />
+                        </button>
+
                         {/* Quick Add Button */}
                         <button
                           type="button"
-                          onClick={() => addToCart(product, currentColorName)}
+                          onClick={() => {
+                            if (!isDemoLoggedIn()) {
+                              showToast('Please create an account or sign in to add items to your bag.', {
+                                type: 'info'
+                              })
+                              navigate('/login', {
+                                state: {
+                                  from: '/products',
+                                  pendingAdd: {
+                                    product,
+                                    color: currentColorName,
+                                    size: product.sizes?.[0] || 'M',
+                                    qty: 1
+                                  },
+                                  reason: 'Please create an account or sign in to add items to your bag.'
+                                }
+                              })
+                              return
+                            }
+                            addToCart(product, currentColorName)
+                          }}
                           disabled={!product.inStock}
                           aria-label={`Quick add ${product.name} to bag`}
                           title={
@@ -727,7 +804,7 @@ export default function ShopPage({ addToCart }: ShopPageProps) {
                           }
                           className={`absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center text-ink shadow-sm transition-colors focus-visible:outline-2 focus-visible:outline-fox sm:bottom-4 sm:right-4 sm:h-10 sm:w-10 ${
                             product.inStock
-                              ? 'bg-white hover:bg-fox hover:text-white'
+                              ? 'bg-white hover:bg-fox hover:text-white cursor-pointer'
                               : 'cursor-not-allowed bg-white/70 text-soft'
                           }`}
                         >

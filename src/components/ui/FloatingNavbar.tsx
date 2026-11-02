@@ -20,8 +20,16 @@ export default function FloatingNavbar({ cartCount, onOpenSearch }: FloatingNavb
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const location = useLocation();
-  const loggedIn = isDemoLoggedIn();
-  const user = getDemoUser();
+  const [user, setUser] = React.useState(getDemoUser());
+  const loggedIn = user !== null;
+
+  React.useEffect(() => {
+    const handleAuthChange = () => {
+      setUser(getDemoUser());
+    };
+    window.addEventListener('funky-fox-auth-change', handleAuthChange);
+    return () => window.removeEventListener('funky-fox-auth-change', handleAuthChange);
+  }, []);
 
   React.useEffect(() => {
     const handleScroll = () => {

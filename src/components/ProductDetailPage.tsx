@@ -17,8 +17,11 @@ import {
   CheckCircle2,
   Zap,
   Flame,
+  Heart,
 } from 'lucide-react'
 import { products, formatPrice, getCategoryFallbackImage, ALL_SIZES, type Product } from '../data/products'
+import { isDemoLoggedIn, isInDemoWishlist, toggleDemoWishlist } from '../data/accountMockData'
+import { showToast } from '../utils/toast'
 import { PROVISIONAL_SHIPPING_POLICY } from '../config/shipping'
 import { DeliveryService, PincodeDeliveryResult } from '../services/api'
 import { ErrorState } from './feedback'
@@ -145,9 +148,59 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
     }))
   }
 
-  // Handle Add to Bag with size validation
+  // Wishlist state for current product
+  const [isWishlisted, setIsWishlisted] = React.useState(() => {
+    return product ? isInDemoWishlist(product.id) : false;
+  });
+
+  React.useEffect(() => {
+    const syncWishlist = () => {
+      if (product) setIsWishlisted(isInDemoWishlist(product.id));
+    };
+    window.addEventListener('funky-fox-wishlist-change', syncWishlist);
+    return () => window.removeEventListener('funky-fox-wishlist-change', syncWishlist);
+  }, [product]);
+
+  const handleToggleWishlist = () => {
+    if (!product) return;
+    if (!isDemoLoggedIn()) {
+      showToast('Please create an account or sign in to save items to your wishlist.', { type: 'info' });
+      navigate('/login', {
+        state: {
+          from: `/products/${product.id}`,
+          reason: 'Please create an account or sign in to save items to your wishlist.'
+        }
+      });
+      return;
+    }
+    const added = toggleDemoWishlist(product.id);
+    setIsWishlisted(added);
+    showToast(added ? `Saved ${product.name} to your Wishlist` : `Removed ${product.name} from Wishlist`, {
+      type: added ? 'success' : 'info'
+    });
+  };
+
+  // Handle Add to Bag with size validation and auth guard
   const handleAddToCart = () => {
     if (!product) return
+
+    // Auth Guard: must be logged in before adding to bag
+    if (!isDemoLoggedIn()) {
+      showToast('Please create an account or sign in to add items to your bag.', { type: 'info' });
+      navigate('/login', {
+        state: {
+          from: `/products/${product.id}`,
+          pendingAdd: {
+            product,
+            color: selectedColor,
+            size: selectedSize || product.sizes[0],
+            qty: quantity
+          },
+          reason: 'Please create an account or sign in to add items to your bag.'
+        }
+      });
+      return;
+    }
 
     // Size validation
     if (!selectedSize) {
@@ -543,13 +596,13 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
                 </div>
               </div>
 
-              {/* Primary Add to Bag Button (16px vertical gap) */}
-              <div className="mt-4">
+              {/* Primary Add to Bag & Wishlist Buttons */}
+              <div className="mt-4 flex items-center gap-3">
                 <button
                   type="button"
                   onClick={handleAddToCart}
                   disabled={!product.inStock}
-                  className="pdp-add-to-bag-btn"
+                  className="pdp-add-to-bag-btn flex-1"
                 >
                   <span className="pdp-btn-left">
                     <ShoppingBag size={18} strokeWidth={2} className="pdp-btn-icon" />
@@ -562,6 +615,23 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
                       {formatPrice(product.price * quantity)}
                     </span>
                   )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleToggleWishlist}
+                  aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
+                  title={isWishlisted ? "Saved in your Wishlist" : "Save to Wishlist"}
+                  className={`h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-2xl border flex items-center justify-center transition-all cursor-pointer ${
+                    isWishlisted
+                      ? 'bg-rose-50 border-rose-300 text-rose-500 shadow-sm'
+                      : 'bg-white border-[#E5E1D8] text-neutral-600 hover:border-ink hover:text-ink shadow-sm'
+                  }`}
+                >
+                  <Heart
+                    size={22}
+                    className={isWishlisted ? 'fill-rose-500 text-rose-500' : 'text-neutral-700'}
+                  />
                 </button>
               </div>
 

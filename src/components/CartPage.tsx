@@ -18,6 +18,7 @@ import { products, formatPrice, getCategoryFallbackImage, type Product } from '.
 import { calculateShipping, PROVISIONAL_SHIPPING_POLICY } from '../config/shipping'
 import { CouponService, CouponValidationResult } from '../services/api'
 import { showToast } from '../utils/toast'
+import { isDemoLoggedIn } from '../data/accountMockData'
 import { EmptyState } from './feedback'
 import Footer from './Footer'
 import './ui/TactileOrderButton.css'
@@ -421,7 +422,19 @@ export default function CartPage({
               {/* Continue to Checkout Button */}
               <button
                 type="button"
-                onClick={() => navigate('/checkout')}
+                onClick={() => {
+                  if (!isDemoLoggedIn()) {
+                    showToast('Please create an account or sign in to complete checkout.', { type: 'info' })
+                    navigate('/login', {
+                      state: {
+                        from: '/checkout',
+                        reason: 'Please sign in or create an account to proceed to checkout.'
+                      }
+                    })
+                    return
+                  }
+                  navigate('/checkout')
+                }}
                 className="tactile-order-btn mt-6 w-full py-3.5"
               >
                 <span>CONTINUE TO CHECKOUT</span>
