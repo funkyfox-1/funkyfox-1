@@ -19,6 +19,9 @@ import BrandStandardCTA from "./components/ui/BrandStandardCTA";
 import FloatingNavbar from "./components/ui/FloatingNavbar";
 import ClothingRailHero from "./components/ui/product-rail-gallery";
 import JellyRadio from "./components/ui/JellyRadio";
+import WordsPreloader from "./components/ui/WordsPreloader";
+import MobileBottomNav from "./components/navigation/MobileBottomNav";
+import "./components/ui/TactileOrderButton.css";
 import { LoginPage, RegisterPage, ForgotPasswordPage } from "./components/account/AuthPages";
 import AccountLayout from "./components/account/AccountLayout";
 import AccountOverview from "./components/account/AccountOverview";
@@ -191,12 +194,10 @@ function HomePage({ addToCart: i }) {
               <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-4 md:mt-7">
                 <a
                   href="#categories"
-                  className="group inline-flex h-12 items-center gap-2.5 rounded-full bg-fox pl-6 pr-2 text-[11px] font-bold uppercase tracking-[.18em] text-white transition-colors hover:bg-fox-deep sm:h-[52px] sm:pl-7 shadow-sm"
+                  className="tactile-order-btn text-xs py-3 px-7"
                 >
-                  {"Explore Collection "}
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-ink transition-transform group-hover:translate-x-1 sm:h-9 sm:w-9">
-                    <ArrowRight size={16} />
-                  </span>
+                  <span>Explore Collection</span>
+                  <ArrowRight size={15} />
                 </a>
                 <a
                   href="#new-arrivals"
@@ -491,6 +492,7 @@ function Storefront() {
     );
   return (
     <div className="min-h-screen flex flex-col bg-paper">
+      <WordsPreloader />
       <OfflineBanner />
       <a
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:bg-ink focus:px-5 focus:py-3 focus:text-paper"
@@ -578,6 +580,7 @@ function Storefront() {
         </Routes>
       </main>
       <SearchOverlay isOpen={C} onClose={() => M(!1)} />
+      <MobileBottomNav cartCount={$} onOpenSearch={() => M(!0)} />
       {r && (
         <div
           className="fixed inset-0 z-[80]"

@@ -24,6 +24,7 @@ import { DeliveryService, PincodeDeliveryResult } from '../services/api'
 import { ErrorState } from './feedback'
 import Footer from './Footer'
 import JellyRadio from './ui/JellyRadio'
+import './ui/TactileOrderButton.css'
 import './ProductDetailPage.css'
 
 interface ProductDetailPageProps {
@@ -948,13 +949,9 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
               type="button"
               onClick={handleAddToCart}
               disabled={!product.inStock}
-              className={`flex h-10 sm:h-11 items-center justify-center gap-2 rounded-md px-5 sm:px-7 text-xs font-bold uppercase tracking-wider transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-fox/60 ${
-                product.inStock
-                  ? 'bg-fox text-white hover:bg-fox-deep active:scale-[0.99]'
-                  : 'bg-sand text-soft/60 cursor-not-allowed'
-              }`}
+              className="tactile-order-btn text-xs py-2 px-5 sm:px-6"
             >
-              <ShoppingBag size={15} strokeWidth={2.2} />
+              <ShoppingBag size={14} strokeWidth={2.2} />
               <span>
                 {!selectedSize
                   ? 'Select Size'

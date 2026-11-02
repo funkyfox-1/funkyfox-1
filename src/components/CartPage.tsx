@@ -20,6 +20,7 @@ import { CouponService, CouponValidationResult } from '../services/api'
 import { showToast } from '../utils/toast'
 import { EmptyState } from './feedback'
 import Footer from './Footer'
+import './ui/TactileOrderButton.css'
 import './CartPage.css'
 
 export interface CartItem {
@@ -421,7 +422,7 @@ export default function CartPage({
               <button
                 type="button"
                 onClick={() => navigate('/checkout')}
-                className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-full bg-fox px-6 text-xs font-bold uppercase tracking-[.18em] text-white transition-colors hover:bg-fox-deep shadow-sm active:scale-[0.99]"
+                className="tactile-order-btn mt-6 w-full py-3.5"
               >
                 <span>CONTINUE TO CHECKOUT</span>
                 <ArrowRight size={15} />

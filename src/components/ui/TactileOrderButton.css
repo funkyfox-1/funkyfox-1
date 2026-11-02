@@ -1,0 +1,57 @@
+/* Tactile Dashed Order Button matching user specification */
+.tactile-order-btn-wrapper {
+  display: inline-block;
+}
+
+.tactile-order-btn {
+  outline: none;
+  color: #DAA06D;
+  padding: 0.9em 2.5em;
+  border: 2px dashed #DAA06D;
+  border-radius: 15px;
+  background-color: #EADDCA;
+  box-shadow: 0 0 0 4px #EADDCA, 2px 2px 4px 2px rgba(0, 0, 0, 0.45);
+  transition: .1s ease-in-out, .4s color;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  text-decoration: none;
+}
+
+.tactile-order-btn:hover {
+  color: #ba7e49;
+}
+
+.tactile-order-btn:active {
+  transform: translateX(0.1em) translateY(0.1em);
+  box-shadow: 0 0 0 4px #EADDCA, 1.5px 1.5px 2.5px 1.5px rgba(0, 0, 0, 0.45);
+}
+
+.tactile-order-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: 0 0 0 4px #EADDCA, 1px 1px 2px 1px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Optional high-contrast ink variant with the same tactile dashed effect */
+.tactile-order-btn--ink {
+  color: #141414;
+  border: 2px dashed #141414;
+  background-color: #FAF9F6;
+  box-shadow: 0 0 0 4px #FAF9F6, 2px 2px 4px 2px rgba(0, 0, 0, 0.35);
+}
+
+.tactile-order-btn--ink:active {
+  box-shadow: 0 0 0 4px #FAF9F6, 1.5px 1.5px 2.5px 1.5px rgba(0, 0, 0, 0.35);
+}
+
