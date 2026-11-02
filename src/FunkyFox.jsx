@@ -321,6 +321,7 @@ function Storefront() {
     [C, M] = React.useState(!1),
     [R, v] = React.useState(""),
     [D, X] = React.useState(""),
+    [toastInfo, setToastInfo] = React.useState(null),
     [quickSizeModal, setQuickSizeModal] = React.useState(null),
     [isBannerDismissed, setIsBannerDismissed] = React.useState(() => {
       try {
@@ -333,6 +334,19 @@ function Storefront() {
     Y = useNavigate();
 
   const [isScrolled, setIsScrolled] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleToast = (e) => {
+      if (e.detail) {
+        setToastInfo(e.detail);
+        if (e.detail.message) {
+          X(e.detail.message);
+        }
+      }
+    };
+    window.addEventListener("funky-fox-toast", handleToast);
+    return () => window.removeEventListener("funky-fox-toast", handleToast);
+  }, []);
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -808,13 +822,18 @@ function Storefront() {
         </div>
       )}
 
-      {/* Add-to-bag Toast Notification */}
+      {/* Global Toast Notification */}
       {D && (
         <Toast
           message={D}
-          actionLabel="View Bag"
-          actionTo="/cart"
-          onDismiss={() => X("")}
+          type={toastInfo?.type || "success"}
+          actionLabel={toastInfo?.actionLabel || "View Bag"}
+          actionTo={toastInfo?.actionTo || "/cart"}
+          onAction={toastInfo?.onAction}
+          onDismiss={() => {
+            X("");
+            setToastInfo(null);
+          }}
         />
       )}
     </div>

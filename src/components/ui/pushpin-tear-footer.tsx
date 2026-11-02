@@ -376,7 +376,7 @@ function useReducedMotion() {
 }
 
 const CSS =
-  ".tpf{position:relative;overflow:hidden;container-type:size;min-height:620px;background:var(--tpf-sheet);color:var(--tpf-on-sheet);font-family:var(--tpf-sans);isolation:isolate;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;--ease:cubic-bezier(.22,1,.36,1);--fs:max(12px,1.85cqmin)}" +
+  ".tpf{position:relative;overflow:hidden;container-type:size;min-height:680px;background:var(--tpf-sheet);color:var(--tpf-on-sheet);font-family:var(--tpf-sans);isolation:isolate;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;--ease:cubic-bezier(.22,1,.36,1);--fs:max(12px,1.85cqmin)}" +
   ".tpf *,.tpf *::before,.tpf *::after{box-sizing:border-box}" +
   ":where(.tpf) a{color:inherit;text-decoration:none}" +
   ":where(.tpf) button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer}" +
@@ -443,7 +443,7 @@ const CSS =
   ".tpf-col.l li a:hover{transform:translateX(4px)}.tpf-col.r li a:hover{transform:translateX(-4px)}" +
   ".tpf-big{margin-top:max(6px,1cqmin);font-size:max(26px,4.6cqmin);letter-spacing:-.025em;line-height:1;text-decoration:underline;text-decoration-thickness:max(1.5px,.04em);text-underline-offset:.12em;transition:text-underline-offset .35s var(--ease)}" +
   ".tpf .tpf-big:hover{text-underline-offset:.22em}" +
-  ".tpf-pin{position:absolute;z-index:3;left:50%;top:64%;width:max(46px,9cqmin);height:max(92px,18cqmin);transform:translate(-50%,-100%);cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}" +
+  ".tpf-pin{position:absolute;z-index:4;left:50%;top:59%;width:max(46px,9cqmin);height:max(92px,18cqmin);transform:translate(-50%,-100%);cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}" +
   ".tpf-pin:focus-visible{outline-offset:6px}" +
   ".tpf-tilt{position:absolute;inset:0;transform-origin:50% 100%;transform:rotate(calc(5deg + var(--tilt,0deg)));transition:transform .7s var(--ease)}" +
   ".tpf-drop,.tpf-body{position:absolute;inset:0;transform-origin:50% 100%}" +
@@ -461,9 +461,21 @@ const CSS =
   ".tpf-pin[data-pin=lift] .tpf-body{transform:translateY(-22%) rotate(-10deg);transition-duration:.3s}" +
   ".tpf-pin[data-pin=lift] .tpf-shadow{transform:rotate(16deg) translateX(-26%) scale(1.25);opacity:.55}" +
   ".tpf-pin[data-pin=stab] .tpf-body{animation:tpf-stab .42s cubic-bezier(.55,0,.8,.2) both}" +
-  ".tpf-brand{left:50%;top:67%;width:max-content;transform:translateX(-50%);display:grid;justify-items:stretch}" +
+  ".tpf-map-card{position:absolute;z-index:2;left:50%;top:57%;width:min(480px,88cqw);transform:translateX(-50%);background:rgba(255,255,255,.96);border:1px solid rgba(0,0,0,.12);border-radius:14px;box-shadow:0 10px 28px rgba(0,0,0,.09),0 2px 6px rgba(0,0,0,.04);overflow:hidden;transition:transform .35s var(--ease),box-shadow .35s var(--ease)}" +
+  ".tpf-map-card:hover{transform:translateX(-50%) translateY(-2px);box-shadow:0 14px 34px rgba(0,0,0,.12)}" +
+  ".tpf-map-head{display:flex;align-items:center;justify-content:space-between;padding:7px 12px;background:#fcfbf8;border-bottom:1px solid rgba(0,0,0,.07)}" +
+  ".tpf-map-info{display:flex;align-items:center;gap:7px;min-width:0}" +
+  ".tpf-map-dot{width:7px;height:7px;border-radius:50%;background:#E87535;box-shadow:0 0 0 2px rgba(232,117,53,.25);flex:none}" +
+  ".tpf-map-text{display:flex;flex-direction:column;min-width:0;text-align:left}" +
+  ".tpf-map-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#141414;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
+  ".tpf-map-sub{font-size:8.5px;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
+  ".tpf-map-btn{display:inline-flex;align-items:center;gap:3px;padding:3.5px 8px;border-radius:99px;background:#141414;color:#fff;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;text-decoration:none;flex:none;transition:background-color .2s}" +
+  ".tpf-map-btn:hover{background:#E87535;color:#fff}" +
+  ".tpf-map-frame{width:100%;height:100px;position:relative;background:#e5e3df}" +
+  ".tpf-map-iframe{width:100%;height:100%;border:0;display:block}" +
+  ".tpf-brand{left:50%;top:77%;width:max-content;transform:translateX(-50%);display:grid;justify-items:stretch}" +
   ".tpf-brand-top{display:flex;align-items:center;justify-content:space-between;gap:1em;padding:0 .2em 0 .5em}" +
-  ".tpf-eye{font-size:max(15px,2.6cqmin);letter-spacing:-.02em;background:linear-gradient(90deg,var(--tpf-on-paper),color-mix(in srgb,var(--tpf-on-paper) 35%,var(--tpf-paper)));-webkit-background-clip:text;background-clip:text;color:transparent}" +
+  ".tpf-eye{font-size:max(14px,2.2cqmin);letter-spacing:-.02em;background:linear-gradient(90deg,var(--tpf-on-paper),color-mix(in srgb,var(--tpf-on-paper) 35%,var(--tpf-paper)));-webkit-background-clip:text;background-clip:text;color:transparent}" +
   ".tpf-bub{display:inline-flex;align-items:center;gap:.5em;height:1.7em;padding:0 .55em;border-radius:99px;background:color-mix(in srgb,var(--tpf-on-paper) 11%,var(--tpf-paper));font-size:max(11px,1.6cqmin);overflow:hidden;transition:padding .45s var(--ease)}" +
   ".tpf-dots{display:flex;gap:.22em}" +
   ".tpf-dots i{width:.38em;height:.38em;border-radius:50%;background:color-mix(in srgb,var(--tpf-on-paper) 45%,var(--tpf-paper));animation:tpf-dot 1.2s ease-in-out infinite}" +
@@ -471,18 +483,18 @@ const CSS =
   ".tpf-bub b{font-weight:500;max-width:0;opacity:0;white-space:nowrap;transition:max-width .5s var(--ease),opacity .3s}" +
   ".tpf-bub:hover,.tpf-bub:focus-visible{padding:0 .8em}" +
   ".tpf-bub:hover b,.tpf-bub:focus-visible b{max-width:8em;opacity:1}" +
-  ".tpf-word{display:block;overflow:hidden;padding:0 .04em .14em;font-size:max(44px,min(12.4cqmin,16cqw));font-weight:500;letter-spacing:-.055em;line-height:.98;white-space:nowrap}" +
+  ".tpf-word{display:block;overflow:hidden;padding:0 .04em .1em;font-size:max(30px,min(8cqmin,10cqw));font-weight:500;letter-spacing:-.055em;line-height:.96;white-space:nowrap}" +
   ".tpf-word span{display:block;position:relative;transition:transform 1s var(--ease) .5s}" +
   ".tpf-word span::after{content:'';position:absolute;left:.02em;right:.04em;bottom:-.02em;height:max(2px,.045em);background:currentColor;transform-origin:0 50%;transition:transform .9s var(--ease) 1.05s,height .3s var(--ease)}" +
   ".tpf:not(.s3) .tpf-word span{transform:translateY(125%);transition-delay:0s}" +
   ".tpf:not(.s3) .tpf-word span::after{transform:scaleX(0);transition-delay:0s}" +
   ".tpf-word:hover span::after{height:max(4px,.075em)}" +
-  ".tpf-side{top:76%;display:grid;justify-items:center;gap:max(10px,1.9cqmin);font-size:max(13px,2.1cqmin);transform:translateX(-50%)}" +
+  ".tpf-side{top:78%;display:grid;justify-items:center;gap:max(10px,1.9cqmin);font-size:max(13px,2.1cqmin);transform:translateX(-50%)}" +
   ".tpf-side .tpf-ico{width:1.35em;height:1.35em;transition:transform .35s var(--ease)}" +
   ".tpf-side:hover .tpf-ico{transform:translateY(-2px) rotate(-8deg)}" +
   ".tpf-side span{background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;transition:background-size .4s var(--ease)}" +
   ".tpf-side:hover span{background-size:100% 1px}" +
-  ".tpf-foot{left:0;right:0;bottom:5%;display:flex;align-items:center;justify-content:space-between;gap:1.5em;padding:0 15%;font-size:max(12px,1.85cqmin)}" +
+  ".tpf-foot{left:0;right:0;bottom:4%;display:flex;align-items:center;justify-content:space-between;gap:1.5em;padding:0 15%;font-size:max(12px,1.85cqmin)}" +
   ".tpf-credit{position:absolute;left:50%;transform:translateX(-50%);font-size:max(10px,1.4cqmin);letter-spacing:.08em;text-transform:uppercase;opacity:.62;white-space:nowrap}" +
   ".tpf-handle:hover{text-decoration:underline;text-underline-offset:.2em}" +
   "@container (max-width: 620px){" +
@@ -490,8 +502,11 @@ const CSS =
   ".tpf-news{top:16%}.tpf-pill{width:min(80cqw,320px)}" +
   ".tpf-status{top:29%}.tpf-badge{top:33%}" +
   ".tpf-col{top:36.5%}.tpf-col.l{left:7%}.tpf-col.r{right:7%}.tpf-col li:nth-child(n+3){display:none}" +
-  ".tpf-side{top:86%}.tpf-side.l{left:14%!important}.tpf-side.r{left:86%!important}" +
-  ".tpf-foot{padding:0 7%;bottom:3.5%}.tpf-credit{bottom:2.4em}" +
+  ".tpf-map-card{top:56%;width:calc(100% - 24px)}" +
+  ".tpf-map-frame{height:88px}" +
+  ".tpf-brand{top:79%}" +
+  ".tpf-side{top:89%}.tpf-side.l{left:14%!important}.tpf-side.r{left:86%!important}" +
+  ".tpf-foot{padding:0 7%;bottom:2.5%}.tpf-credit{display:none}" +
   "}" +
   "@keyframes tpf-hit{0%{transform:translateY(0)}30%{transform:translateY(2px)}60%{transform:translateY(-.5px)}100%{transform:translateY(0)}}" +
   "@keyframes tpf-drop{0%{transform:translateY(-62cqh) rotate(-28deg) scale(1.5);opacity:0}25%{opacity:1}80%{transform:translateY(0) rotate(3deg) scale(1)}90%{transform:scale(1.04,.95)}100%{transform:none;opacity:1}}" +
@@ -576,7 +591,7 @@ export default function PushpinTearFooter({
   paperInk = "#191919",
   pinBase = "#E87535",
   seed = 23,
-  height = "min(840px, 100svh)",
+  height = "min(880px, 100svh)",
   fontSans = 'var(--font-sans, "Inter", system-ui, sans-serif)',
   onSubscribe,
   onRepin,
@@ -1041,6 +1056,40 @@ export default function PushpinTearFooter({
           </span>
         </span>
       </button>
+
+      {/* ---- Google Maps visual pinned on the paper ---- */}
+      <div className="tpf-z tpf-map-card tpf-p" style={H(0)}>
+        <div className="tpf-map-head">
+          <div className="tpf-map-info">
+            <span className="tpf-map-dot" aria-hidden="true" />
+            <div className="tpf-map-text">
+              <span className="tpf-map-title">Flagship Depot & Distribution</span>
+              <span className="tpf-map-sub">MG Road, Benz Circle, Vijayawada · PIN 520010</span>
+            </div>
+          </div>
+          <a
+            href="https://maps.google.com/maps?q=16.5168591%2C80.628406&z=17&hl=en"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="tpf-map-btn"
+            title="Open in Google Maps"
+          >
+            <span>Open Maps</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M7 17l9.2-9.2M17 17V8H8" />
+            </svg>
+          </a>
+        </div>
+        <div className="tpf-map-frame">
+          <iframe
+            title="Funky Fox Flagship Location Map"
+            src="https://maps.google.com/maps?q=16.5168591,80.628406&z=16&output=embed"
+            className="tpf-map-iframe"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+        </div>
+      </div>
 
       {/* ---- printed on the paper ---- */}
       <div className="tpf-z tpf-brand tpf-ink">

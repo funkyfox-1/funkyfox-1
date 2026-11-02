@@ -30,9 +30,9 @@ const FIVE_ESSENTIAL_FAQS: FAQItem[] = [
       'All our tees and everyday layers are custom-knitted from 220 GSM heavyweight combed organic cotton. It features a dense, structured drape that prevents bacon-neck collars, retains its shape wash after wash, and undergoes bio-silicon pre-washing to eliminate shrinkage.',
   },
   {
-    question: 'How long does delivery take and is shipping free?',
+    question: 'How long does delivery take and where do orders ship from?',
     answer:
-      'Orders are dispatched within 24 hours from our Bengaluru fulfilment hub. Standard pan-India delivery takes 3–5 business days with real-time SMS & WhatsApp updates. All orders over ₹1,499 qualify for automatic free doorstep delivery.',
+      'Orders are dispatched within 24 hours from our Vijayawada flagship fulfilment depot (Door No. 40-1-58, MG Road, Near Benz Circle · 520010). Standard pan-India delivery takes 2–4 business days with live SMS & WhatsApp tracking. All orders over ₹1,499 receive automatic free doorstep delivery.',
   },
   {
     question: 'What is your return and doorstep exchange policy?',

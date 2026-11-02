@@ -12,9 +12,12 @@ import {
   Building2,
   Banknote,
   Edit2,
+  Tag,
 } from 'lucide-react'
 import { products, formatPrice, getCategoryFallbackImage } from '../data/products'
 import { calculateShipping, PROVISIONAL_SHIPPING_POLICY } from '../config/shipping'
+import { CouponService, CouponValidationResult } from '../services/api'
+import { showToast } from '../utils/toast'
 import { EmptyState, InlineFieldError, OrderConfirmation } from './feedback'
 import SlideCommit from './SlideCommit'
 import type { CartItem } from './CartPage'
@@ -184,7 +187,20 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
   }, [cartItems])
 
   const { shippingFee, isFree, displayFee, isProvisional } = calculateShipping(subtotal)
-  const orderTotal = subtotal + shippingFee
+
+  // Applied Coupon from session or manual input
+  const [appliedCoupon, setAppliedCoupon] = React.useState<CouponValidationResult | null>(() => {
+    try {
+      const saved = sessionStorage.getItem('funky-fox-coupon')
+      return saved ? JSON.parse(saved) : null
+    } catch {
+      return null
+    }
+  })
+
+  const discountAmount = appliedCoupon && appliedCoupon.discountType !== 'free_shipping' ? appliedCoupon.discountAmount : 0
+  const effectiveShipping = (appliedCoupon && appliedCoupon.discountType === 'free_shipping') || isFree ? 0 : shippingFee
+  const orderTotal = Math.max(0, subtotal - discountAmount + effectiveShipping)
 
   // Field change handler
   const handleChange = (
@@ -1128,6 +1144,19 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
                   <span className="font-medium text-ink">Order subtotal</span>
                   <span className="font-bold text-ink">{formatPrice(subtotal)}</span>
                 </div>
+
+                {/* Applied Coupon Discount */}
+                {appliedCoupon && discountAmount > 0 && (
+                  <div className="flex items-center justify-between text-emerald-700 bg-emerald-50 px-2 py-1.5 rounded-lg border border-emerald-200">
+                    <span className="font-semibold flex items-center gap-1">
+                      <Tag size={12} /> Coupon ({appliedCoupon.code})
+                    </span>
+                    <span className="font-bold">
+                      - {formatPrice(discountAmount)}
+                    </span>
+                  </div>
+                )}
+
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
                     <span>Shipping</span>
@@ -1137,8 +1166,8 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
                       </span>
                     )}
                   </div>
-                  <span className={`font-semibold ${isFree ? 'text-emerald-700' : 'text-ink'}`}>
-                    {displayFee}
+                  <span className={`font-semibold ${effectiveShipping === 0 ? 'text-emerald-700' : 'text-ink'}`}>
+                    {effectiveShipping === 0 ? 'FREE' : displayFee}
                   </span>
                 </div>
               </div>

@@ -13,7 +13,10 @@ import {
   MapPin,
   CreditCard,
   Package,
-  HelpCircle
+  HelpCircle,
+  ExternalLink,
+  RefreshCw,
+  Check
 } from 'lucide-react';
 import {
   getDemoOrderById,
@@ -21,6 +24,8 @@ import {
   Order
 } from '../../data/accountMockData';
 import { formatPrice } from '../../data/products';
+import { OrderService, ReturnExchangeResponse } from '../../services/api';
+import { showToast } from '../../utils/toast';
 import './AccountStyles.css';
 
 export default function OrderDetailPage() {
@@ -33,6 +38,15 @@ export default function OrderDetailPage() {
   const [cancelError, setCancelError] = React.useState('');
   const [isCancelling, setIsCancelling] = React.useState(false);
   const [cancelSuccessMsg, setCancelSuccessMsg] = React.useState('');
+
+  // Return & Exchange State
+  const [isReturnModalOpen, setIsReturnModalOpen] = React.useState(false);
+  const [returnType, setReturnType] = React.useState<'exchange' | 'refund'>('exchange');
+  const [returnReason, setReturnReason] = React.useState('Size too tight / small');
+  const [replacementSize, setReplacementSize] = React.useState('L');
+  const [returnNotes, setReturnNotes] = React.useState('');
+  const [isSubmittingReturn, setIsSubmittingReturn] = React.useState(false);
+  const [returnSuccessResult, setReturnSuccessResult] = React.useState<ReturnExchangeResponse | null>(null);
 
   const loadOrder = React.useCallback(() => {
     if (!orderId) {
@@ -86,6 +100,44 @@ export default function OrderDetailPage() {
         setCancelError(res.error || 'Failed to cancel order.');
       }
     }, 400);
+  };
+
+  const handleReturnSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!order) return;
+    setIsSubmittingReturn(true);
+
+    try {
+      const res = await OrderService.requestReturnOrExchange({
+        orderId: order.id,
+        requestType: returnType,
+        itemIds: order.items.map((it) => it.id),
+        reason: returnReason,
+        newSize: returnType === 'exchange' ? replacementSize : undefined,
+        notes: returnNotes,
+        pickupAddress: {
+          fullName: order.deliveryAddress.fullName,
+          phone: order.deliveryAddress.phone,
+          street: order.deliveryAddress.street,
+          city: order.deliveryAddress.city,
+          state: order.deliveryAddress.state,
+          pincode: order.deliveryAddress.pincode,
+          mapsUrl: order.deliveryAddress.mapsUrl || 'https://maps.google.com/maps?q=16.5168591%2C80.628406&z=17&hl=en',
+        },
+      });
+
+      setReturnSuccessResult(res);
+      showToast(
+        returnType === 'exchange'
+          ? `Exchange confirmed (${res.rmaId})! Doorstep pickup scheduled.`
+          : `Return requested (${res.rmaId})! Doorstep inspection scheduled.`,
+        { type: 'success' }
+      );
+    } catch (err: any) {
+      showToast(err.message || 'Failed to submit return request', { type: 'error' });
+    } finally {
+      setIsSubmittingReturn(false);
+    }
   };
 
   // Stepper logic matching Image 1
@@ -307,14 +359,19 @@ export default function OrderDetailPage() {
                   </button>
                 )}
 
-                {/* Return Action if Delivered */}
-                {order.status === 'delivered' && (
-                  <Link
-                    to="/help"
-                    className="py-2.5 px-4 rounded-full border border-[#E8E5DF] bg-white text-ink text-xs font-bold uppercase tracking-wider hover:border-ink transition-colors w-full sm:w-auto text-center"
+                {/* Return / Exchange Action */}
+                {order.status !== 'cancelled' && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setReturnSuccessResult(null);
+                      setIsReturnModalOpen(true);
+                    }}
+                    className="py-2.5 px-4 rounded-full border border-[#E8E5DF] bg-white text-ink text-xs font-bold uppercase tracking-wider hover:border-ink transition-colors w-full sm:w-auto text-center cursor-pointer shadow-xs flex items-center justify-center gap-1.5"
                   >
-                    15-Day Return / Exchange
-                  </Link>
+                    <RotateCcw size={13} className="text-[#E87535]" />
+                    <span>15-Day Return / Exchange</span>
+                  </button>
                 )}
               </div>
             </div>
@@ -336,6 +393,20 @@ export default function OrderDetailPage() {
                 <p className="leading-relaxed">{order.deliveryAddress.street}</p>
                 <p>{order.deliveryAddress.city}, {order.deliveryAddress.state} {order.deliveryAddress.pincode}</p>
                 <p>{order.deliveryAddress.country}</p>
+              </div>
+
+              <div className="mt-3 pt-3 border-t border-[#F0ECE1] flex items-center justify-between">
+                <span className="text-[11px] font-mono text-neutral-400">16.5168° N, 80.6284° E</span>
+                <a
+                  href={order.deliveryAddress.mapsUrl || 'https://maps.google.com/maps?q=16.5168591%2C80.628406&z=17&hl=en'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-[11px] font-bold text-[#E87535] hover:underline"
+                >
+                  <MapPin size={12} />
+                  <span>View on Google Maps</span>
+                  <ExternalLink size={10} />
+                </a>
               </div>
 
               {order.carrier && (
@@ -440,6 +511,215 @@ export default function OrderDetailPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* 15-Day Doorstep Return / Exchange Modal */}
+      {isReturnModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="bg-white rounded-3xl border border-[#E8E5DF] max-w-lg w-full p-6 sm:p-7 shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto">
+            {returnSuccessResult ? (
+              <div className="text-center py-6 space-y-4">
+                <div className="w-14 h-14 bg-green-100 text-green-700 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Check size={28} />
+                </div>
+                <h3 className="font-display text-xl font-black uppercase text-ink">
+                  {returnType === 'exchange' ? 'Exchange Scheduled' : 'Return Request Confirmed'}
+                </h3>
+                <p className="text-xs text-neutral-600 max-w-sm mx-auto leading-relaxed">
+                  {returnSuccessResult.message}
+                </p>
+
+                <div className="bg-[#FAF9F6] border border-[#E8E5DF] rounded-2xl p-4 text-left space-y-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-neutral-500">RMA Reference:</span>
+                    <span className="font-mono font-bold text-ink">{returnSuccessResult.rmaId}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-neutral-500">Pickup Date:</span>
+                    <span className="font-semibold text-ink">{returnSuccessResult.pickupDate}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-neutral-500">Doorstep Location:</span>
+                    <span className="font-semibold text-ink">Vijayawada, AP (520010)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-neutral-500">Inspection Fee:</span>
+                    <span className="font-bold text-green-700">₹0 (Free Doorstep Pickup)</span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIsReturnModalOpen(false)}
+                  className="w-full py-3 rounded-full bg-ink text-white text-xs font-bold uppercase tracking-wider hover:bg-neutral-800 transition-colors shadow-xs"
+                >
+                  Done & Close
+                </button>
+              </div>
+            ) : (
+              <div>
+                <div className="flex items-center justify-between border-b border-[#F0ECE1] pb-4 mb-4">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-2 rounded-full bg-[#FAF9F6] text-[#E87535]">
+                      <RotateCcw size={18} />
+                    </div>
+                    <div>
+                      <h3 className="font-display text-base font-black uppercase text-ink">
+                        15-Day Return / Exchange
+                      </h3>
+                      <p className="text-[11px] text-neutral-500">
+                        Order #{order.orderNumber} · Risk-Free Doorstep Service
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsReturnModalOpen(false)}
+                    className="p-1 rounded-full text-neutral-400 hover:text-ink hover:bg-neutral-100 text-sm font-bold"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                <form onSubmit={handleReturnSubmit} className="space-y-4">
+                  {/* Exchange vs Refund Switcher */}
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1.5">
+                      Select Request Type
+                    </label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setReturnType('exchange')}
+                        className={`p-3 rounded-xl border text-left text-xs transition-all ${
+                          returnType === 'exchange'
+                            ? 'border-ink bg-neutral-900 text-white shadow-xs'
+                            : 'border-[#E8E5DF] bg-white text-neutral-700 hover:border-neutral-400'
+                        }`}
+                      >
+                        <p className="font-bold">Size / Fit Exchange</p>
+                        <p className={`text-[10px] mt-0.5 ${returnType === 'exchange' ? 'text-neutral-300' : 'text-neutral-500'}`}>
+                          Fast replacement delivered free
+                        </p>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setReturnType('refund')}
+                        className={`p-3 rounded-xl border text-left text-xs transition-all ${
+                          returnType === 'refund'
+                            ? 'border-ink bg-neutral-900 text-white shadow-xs'
+                            : 'border-[#E8E5DF] bg-white text-neutral-700 hover:border-neutral-400'
+                        }`}
+                      >
+                        <p className="font-bold">Return for Refund</p>
+                        <p className={`text-[10px] mt-0.5 ${returnType === 'refund' ? 'text-neutral-300' : 'text-neutral-500'}`}>
+                          100% refund to payment source
+                        </p>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Reason selector */}
+                  <div>
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1">
+                      Reason for {returnType === 'exchange' ? 'Exchange' : 'Return'}
+                    </label>
+                    <select
+                      value={returnReason}
+                      onChange={(e) => setReturnReason(e.target.value)}
+                      className="w-full px-3 py-2.5 text-xs rounded-xl border border-neutral-300 focus:border-ink focus:outline-none bg-white font-medium"
+                    >
+                      <option value="Size too tight / small">Size too tight / small</option>
+                      <option value="Size too loose / large">Size too loose / large</option>
+                      <option value="Color or shade differs from screen">Color or shade differs from screen</option>
+                      <option value="Fabric drape or handfeel preference">Fabric drape or handfeel preference</option>
+                      <option value="Found minor stitching or defect issue">Found minor stitching or defect issue</option>
+                      <option value="Other / Changed my mind">Other / Changed my mind</option>
+                    </select>
+                  </div>
+
+                  {/* Replacement size if exchange */}
+                  {returnType === 'exchange' && (
+                    <div>
+                      <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1.5">
+                        Choose Replacement Size
+                      </label>
+                      <div className="flex gap-2">
+                        {['S', 'M', 'L', 'XL', 'XXL'].map((sz) => (
+                          <button
+                            key={sz}
+                            type="button"
+                            onClick={() => setReplacementSize(sz)}
+                            className={`flex-1 py-2 text-xs font-bold rounded-lg border transition-all ${
+                              replacementSize === sz
+                                ? 'border-[#E87535] bg-[#E87535] text-white shadow-xs'
+                                : 'border-[#E8E5DF] bg-[#FAF9F6] text-ink hover:border-neutral-400'
+                            }`}
+                          >
+                            {sz}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Doorstep Pickup Address Confirmation */}
+                  <div className="bg-[#FAF9F6] border border-[#E8E5DF] rounded-2xl p-3.5 text-xs space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-neutral-700 uppercase tracking-wider text-[10px]">
+                        Pickup Address (Pre-verified)
+                      </span>
+                      <a
+                        href={order.deliveryAddress.mapsUrl || 'https://maps.google.com/maps?q=16.5168591%2C80.628406&z=17&hl=en'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[10px] font-bold text-[#E87535] hover:underline inline-flex items-center gap-0.5"
+                      >
+                        <MapPin size={10} />
+                        Map
+                        <ExternalLink size={8} />
+                      </a>
+                    </div>
+                    <p className="font-bold text-ink">{order.deliveryAddress.fullName} · {order.deliveryAddress.phone}</p>
+                    <p className="text-neutral-500 leading-snug">
+                      {order.deliveryAddress.street}, {order.deliveryAddress.city}, {order.deliveryAddress.state} - {order.deliveryAddress.pincode}
+                    </p>
+                    <p className="text-[10px] text-green-700 font-semibold pt-1">
+                      ✓ Insured reverse courier arranged at zero extra cost.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center justify-end gap-3 pt-2 border-t border-[#F0ECE1]">
+                    <button
+                      type="button"
+                      onClick={() => setIsReturnModalOpen(false)}
+                      className="py-2.5 px-4 rounded-full border border-neutral-300 text-xs font-bold text-neutral-700 hover:bg-neutral-100"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isSubmittingReturn}
+                      className="py-2.5 px-6 rounded-full bg-ink text-white text-xs font-bold uppercase tracking-wider hover:bg-neutral-800 transition-colors shadow-xs flex items-center gap-2"
+                    >
+                      {isSubmittingReturn ? (
+                        <>
+                          <RefreshCw size={13} className="animate-spin" />
+                          <span>Scheduling...</span>
+                        </>
+                      ) : (
+                        <span>
+                          {returnType === 'exchange' ? 'Confirm Size Exchange' : 'Confirm Return & Refund'}
+                        </span>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
           </div>
         </div>
       )}

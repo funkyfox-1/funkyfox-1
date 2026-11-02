@@ -50,6 +50,7 @@ export interface Order {
     state: string;
     pincode: string;
     country: string;
+    mapsUrl?: string;
   };
   carrier?: {
     name: string;
@@ -76,6 +77,8 @@ export interface UserAddress {
   pincode: string;
   country: string;
   isDefault: boolean;
+  mapsUrl?: string;
+  coordinates?: { lat: number; lng: number };
 }
 
 export interface ProductReview {
@@ -103,8 +106,8 @@ export interface UserProfile {
 }
 
 const DEFAULT_PROFILE: UserProfile = {
-  name: 'Arjun Mehta',
-  email: 'arjun.mehta@example.com',
+  name: 'Prashanth Poloju',
+  email: 'prashanth@funkyfox.in',
   phone: '+91 98765 43210',
   avatar: '/images/standard/model-tall-clean.jpg',
   memberSince: 'October 2024',
@@ -116,27 +119,31 @@ const DEFAULT_PROFILE: UserProfile = {
 const DEFAULT_ADDRESSES: UserAddress[] = [
   {
     id: 'addr-1',
-    label: 'Home',
-    fullName: 'Arjun Mehta',
+    label: 'Home (Default)',
+    fullName: 'Prashanth Poloju',
     phone: '+91 98765 43210',
-    street: 'Flat 402, Hill View Apartments, 14th Road, Bandra West',
-    city: 'Mumbai',
-    state: 'Maharashtra',
-    pincode: '400050',
+    street: 'Door No. 40-1-58, MG Road, Near Benz Circle',
+    city: 'Vijayawada',
+    state: 'Andhra Pradesh',
+    pincode: '520010',
     country: 'India',
-    isDefault: true
+    isDefault: true,
+    mapsUrl: 'https://maps.google.com/maps?q=16.5168591%2C80.628406&z=17&hl=en',
+    coordinates: { lat: 16.5168591, lng: 80.628406 }
   },
   {
     id: 'addr-2',
     label: 'Studio / Work',
-    fullName: 'Arjun Mehta',
+    fullName: 'Prashanth Poloju',
     phone: '+91 98765 43210',
-    street: 'Unit 12, Laxmi Industrial Estate, New Link Road, Andheri West',
-    city: 'Mumbai',
-    state: 'Maharashtra',
-    pincode: '400053',
+    street: 'Plot 14, IT SEZ Tech Enclave, Gannavaram Road',
+    city: 'Vijayawada',
+    state: 'Andhra Pradesh',
+    pincode: '521101',
     country: 'India',
-    isDefault: false
+    isDefault: false,
+    mapsUrl: 'https://maps.google.com/maps?q=16.5168591%2C80.628406&z=17&hl=en',
+    coordinates: { lat: 16.5168591, lng: 80.628406 }
   }
 ];
 
@@ -179,16 +186,17 @@ const INITIAL_ORDERS: Order[] = [
       type: 'UPI / Google Pay',
       last4: 'mehta@okaxis',
       status: 'Paid',
-      holderName: 'Arjun Mehta'
+      holderName: 'Prashanth Poloju'
     },
     deliveryAddress: {
-      fullName: 'Arjun Mehta',
+      fullName: 'Prashanth Poloju',
       phone: '+91 98765 43210',
-      street: 'Flat 402, Hill View Apartments, 14th Road, Bandra West',
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      pincode: '400050',
-      country: 'India'
+      street: 'Door No. 40-1-58, MG Road, Near Benz Circle',
+      city: 'Vijayawada',
+      state: 'Andhra Pradesh',
+      pincode: '520010',
+      country: 'India',
+      mapsUrl: 'https://maps.google.com/maps?q=16.5168591%2C80.628406&z=17&hl=en'
     },
     note: 'Please leave with building concierge if door is unanswered.',
     timeline: [
@@ -267,17 +275,18 @@ const INITIAL_ORDERS: Order[] = [
       type: 'Visa Card',
       last4: '8888',
       expiry: '05/30',
-      holderName: 'Arjun Mehta',
+      holderName: 'Prashanth Poloju',
       status: 'Paid'
     },
     deliveryAddress: {
-      fullName: 'Arjun Mehta',
+      fullName: 'Prashanth Poloju',
       phone: '+91 98765 43210',
-      street: 'Flat 402, Hill View Apartments, 14th Road, Bandra West',
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      pincode: '400050',
-      country: 'India'
+      street: 'Door No. 40-1-58, MG Road, Near Benz Circle',
+      city: 'Vijayawada',
+      state: 'Andhra Pradesh',
+      pincode: '520010',
+      country: 'India',
+      mapsUrl: 'https://maps.google.com/maps?q=16.5168591%2C80.628406&z=17&hl=en'
     },
     note: 'Call before delivery.',
     timeline: [
@@ -354,16 +363,17 @@ const INITIAL_ORDERS: Order[] = [
       type: 'UPI / PhonePe',
       last4: 'arjun@ybl',
       status: 'Paid',
-      holderName: 'Arjun Mehta'
+      holderName: 'Prashanth Poloju'
     },
     deliveryAddress: {
-      fullName: 'Arjun Mehta',
+      fullName: 'Prashanth Poloju',
       phone: '+91 98765 43210',
-      street: 'Flat 402, Hill View Apartments, 14th Road, Bandra West',
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      pincode: '400050',
-      country: 'India'
+      street: 'Door No. 40-1-58, MG Road, Near Benz Circle',
+      city: 'Vijayawada',
+      state: 'Andhra Pradesh',
+      pincode: '520010',
+      country: 'India',
+      mapsUrl: 'https://maps.google.com/maps?q=16.5168591%2C80.628406&z=17&hl=en'
     },
     timeline: [
       {
@@ -420,7 +430,7 @@ const INITIAL_ORDERS: Order[] = [
       type: 'UPI / Google Pay',
       last4: 'mehta@okaxis',
       status: 'Refunded',
-      holderName: 'Arjun Mehta'
+      holderName: 'Prashanth Poloju'
     },
     cancellation: {
       cancelledAt: '02 Oct 2026, 10:45 AM',
@@ -428,13 +438,14 @@ const INITIAL_ORDERS: Order[] = [
       refundStatus: 'Full refund of ₹1,460 credited to original UPI VPA within 12 minutes.'
     },
     deliveryAddress: {
-      fullName: 'Arjun Mehta',
+      fullName: 'Prashanth Poloju',
       phone: '+91 98765 43210',
-      street: 'Flat 402, Hill View Apartments, 14th Road, Bandra West',
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      pincode: '400050',
-      country: 'India'
+      street: 'Door No. 40-1-58, MG Road, Near Benz Circle',
+      city: 'Vijayawada',
+      state: 'Andhra Pradesh',
+      pincode: '520010',
+      country: 'India',
+      mapsUrl: 'https://maps.google.com/maps?q=16.5168591%2C80.628406&z=17&hl=en'
     },
     timeline: [
       {
@@ -483,16 +494,17 @@ const INITIAL_ORDERS: Order[] = [
       type: 'Cash on Delivery',
       last4: 'COD',
       status: 'Refunded to Bank Account',
-      holderName: 'Arjun Mehta'
+      holderName: 'Prashanth Poloju'
     },
     deliveryAddress: {
-      fullName: 'Arjun Mehta',
+      fullName: 'Prashanth Poloju',
       phone: '+91 98765 43210',
-      street: 'Flat 402, Hill View Apartments, 14th Road, Bandra West',
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      pincode: '400050',
-      country: 'India'
+      street: 'Door No. 40-1-58, MG Road, Near Benz Circle',
+      city: 'Vijayawada',
+      state: 'Andhra Pradesh',
+      pincode: '520010',
+      country: 'India',
+      mapsUrl: 'https://maps.google.com/maps?q=16.5168591%2C80.628406&z=17&hl=en'
     },
     timeline: [
       {

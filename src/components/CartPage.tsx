@@ -9,9 +9,15 @@ import {
   Truck,
   RotateCcw,
   ShieldCheck,
+  Tag,
+  Check,
+  X,
+  AlertCircle,
 } from 'lucide-react'
 import { products, formatPrice, getCategoryFallbackImage, type Product } from '../data/products'
 import { calculateShipping, PROVISIONAL_SHIPPING_POLICY } from '../config/shipping'
+import { CouponService, CouponValidationResult } from '../services/api'
+import { showToast } from '../utils/toast'
 import { EmptyState } from './feedback'
 import Footer from './Footer'
 import './CartPage.css'
@@ -49,6 +55,51 @@ export default function CartPage({
   }, [cartItems])
 
   const { isFree, amountNeededForFree, shippingFee } = calculateShipping(subtotal)
+
+  // Promo code engine state
+  const [couponCode, setCouponCode] = React.useState('')
+  const [appliedCoupon, setAppliedCoupon] = React.useState<CouponValidationResult | null>(() => {
+    try {
+      const saved = sessionStorage.getItem('funky-fox-coupon')
+      return saved ? JSON.parse(saved) : null
+    } catch {
+      return null
+    }
+  })
+  const [couponLoading, setCouponLoading] = React.useState(false)
+  const [couponError, setCouponError] = React.useState('')
+
+  const handleApplyCoupon = async (codeToTry?: string) => {
+    const code = (codeToTry || couponCode).trim()
+    if (!code) return
+    setCouponLoading(true)
+    setCouponError('')
+    try {
+      const result = await CouponService.applyCoupon(code, subtotal)
+      setAppliedCoupon(result)
+      setCouponCode('')
+      sessionStorage.setItem('funky-fox-coupon', JSON.stringify(result))
+      showToast(`Coupon ${result.code} applied: You saved ₹${result.discountAmount}!`, {
+        type: 'success',
+      })
+    } catch (err: any) {
+      setCouponError(err.message || 'Invalid coupon code.')
+    } finally {
+      setCouponLoading(false)
+    }
+  }
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null)
+    setCouponError('')
+    sessionStorage.removeItem('funky-fox-coupon')
+    showToast('Coupon removed.', { type: 'info' })
+  }
+
+  // Recalculate discount and final shipping
+  const discountAmount = appliedCoupon && appliedCoupon.discountType !== 'free_shipping' ? appliedCoupon.discountAmount : 0
+  const effectiveShipping = (appliedCoupon && appliedCoupon.discountType === 'free_shipping') || isFree ? 0 : shippingFee
+  const finalTotal = Math.max(0, subtotal - discountAmount + effectiveShipping)
 
   // Scroll to top on mount
   React.useEffect(() => {
@@ -248,7 +299,7 @@ export default function CartPage({
                 Order Summary
               </h2>
 
-              <div className="mt-5 space-y-3.5 text-xs text-soft">
+              <div className="mt-5 space-y-3 text-xs text-soft">
                 {/* Subtotal */}
                 <div className="flex items-center justify-between text-sm">
                   <span className="font-medium text-ink">Subtotal</span>
@@ -257,13 +308,98 @@ export default function CartPage({
                   </span>
                 </div>
 
+                {/* Discount Row (If Coupon Applied) */}
+                {appliedCoupon && discountAmount > 0 && (
+                  <div className="flex items-center justify-between text-emerald-700 bg-emerald-50 px-2.5 py-1.5 rounded-lg border border-emerald-200">
+                    <span className="font-semibold flex items-center gap-1">
+                      <Tag size={12} /> Discount ({appliedCoupon.code})
+                    </span>
+                    <span className="font-bold">
+                      - {formatPrice(discountAmount)}
+                    </span>
+                  </div>
+                )}
+
                 {/* Shipping */}
                 <div className="flex items-center justify-between">
                   <span>Shipping</span>
-                  <span className={`text-right font-medium ${isFree ? 'text-emerald-700 font-semibold' : 'text-soft'}`}>
-                    {isFree ? 'FREE' : `${formatPrice(shippingFee)} (standard)`}
+                  <span className={`text-right font-medium ${effectiveShipping === 0 ? 'text-emerald-700 font-semibold' : 'text-soft'}`}>
+                    {effectiveShipping === 0 ? 'FREE' : `${formatPrice(effectiveShipping)} (standard)`}
                   </span>
                 </div>
+              </div>
+
+              {/* PROMO CODE INPUT & BADGES */}
+              <div className="mt-5 border-t border-line pt-4">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-ink mb-2 flex items-center gap-1.5">
+                  <Tag size={13} className="text-fox" /> Have a Promo Code?
+                </p>
+
+                {appliedCoupon ? (
+                  <div className="flex items-center justify-between bg-sand-deep/40 border border-fox/30 rounded-xl p-2.5 text-xs">
+                    <div>
+                      <span className="font-bold text-fox tracking-wider uppercase">{appliedCoupon.code}</span>
+                      <p className="text-[10.5px] text-soft">{appliedCoupon.description}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleRemoveCoupon}
+                      className="text-xs font-bold text-red-600 hover:text-red-700 underline"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault()
+                        handleApplyCoupon()
+                      }}
+                      className="flex items-center gap-2"
+                    >
+                      <input
+                        type="text"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                        placeholder="e.g. FOX10"
+                        className="flex-1 h-9 rounded-lg border border-line bg-white px-3 text-xs font-bold uppercase text-ink outline-none focus:border-fox"
+                      />
+                      <button
+                        type="submit"
+                        disabled={couponLoading || !couponCode.trim()}
+                        className="h-9 px-3.5 rounded-lg bg-ink text-white text-xs font-bold uppercase hover:bg-neutral-800 disabled:opacity-40"
+                      >
+                        {couponLoading ? '...' : 'Apply'}
+                      </button>
+                    </form>
+
+                    {couponError && (
+                      <p className="mt-1.5 text-xs font-medium text-red-600 flex items-center gap-1">
+                        <AlertCircle size={12} /> {couponError}
+                      </p>
+                    )}
+
+                    {/* Quick Coupon Chips */}
+                    <div className="mt-2.5 flex items-center gap-1.5 flex-wrap">
+                      <span className="text-[10px] text-soft font-medium">Try:</span>
+                      <button
+                        type="button"
+                        onClick={() => handleApplyCoupon('FOX10')}
+                        className="px-2 py-0.5 rounded-full border border-line bg-white hover:border-fox text-[10px] font-bold text-ink"
+                      >
+                        FOX10 (10% off)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleApplyCoupon('FIRSTDROP')}
+                        className="px-2 py-0.5 rounded-full border border-line bg-white hover:border-fox text-[10px] font-bold text-ink"
+                      >
+                        FIRSTDROP (₹200 off)
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Total Row */}
@@ -273,7 +409,7 @@ export default function CartPage({
                 </span>
                 <div className="text-right">
                   <span className="font-display text-xl font-extrabold text-ink sm:text-2xl">
-                    {formatPrice(subtotal + shippingFee)}
+                    {formatPrice(finalTotal)}
                   </span>
                   <p className="text-[10.5px] text-soft">
                     Includes all applicable taxes

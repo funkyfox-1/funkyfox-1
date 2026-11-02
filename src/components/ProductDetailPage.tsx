@@ -13,9 +13,14 @@ import {
   Ruler,
   AlertCircle,
   ArrowRight,
+  MapPin,
+  CheckCircle2,
+  Zap,
+  Flame,
 } from 'lucide-react'
 import { products, formatPrice, getCategoryFallbackImage, ALL_SIZES, type Product } from '../data/products'
 import { PROVISIONAL_SHIPPING_POLICY } from '../config/shipping'
+import { DeliveryService, PincodeDeliveryResult } from '../services/api'
 import { ErrorState } from './feedback'
 import Footer from './Footer'
 import JellyRadio from './ui/JellyRadio'
@@ -65,6 +70,32 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
 
   // Size Guide modal
   const [isSizeGuideOpen, setIsSizeGuideOpen] = React.useState<boolean>(false)
+
+  // Pincode delivery estimator state (default customer address Vijayawada hub: 520010)
+  const [pincode, setPincode] = React.useState('520010')
+  const [pincodeResult, setPincodeResult] = React.useState<PincodeDeliveryResult | null>(null)
+  const [pincodeLoading, setPincodeLoading] = React.useState(false)
+  const [pincodeError, setPincodeError] = React.useState('')
+
+  const handleCheckPincode = async (codeToCheck?: string) => {
+    const code = codeToCheck || pincode
+    setPincodeError('')
+    setPincodeLoading(true)
+    try {
+      const res = await DeliveryService.checkPincode(code)
+      setPincodeResult(res)
+    } catch (err: any) {
+      setPincodeError(err.message || 'Unable to check delivery time for this PIN code.')
+      setPincodeResult(null)
+    } finally {
+      setPincodeLoading(false)
+    }
+  }
+
+  // Initial check on mount
+  React.useEffect(() => {
+    handleCheckPincode('520010')
+  }, [])
 
   // Related products color selection states
   const [relatedProductColors, setRelatedProductColors] = React.useState<Record<string, string>>({})
@@ -456,6 +487,20 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
                   {sizeError}
                 </p>
               )}
+
+              {/* Dynamic Scarcity & High Demand Signals */}
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200/80 px-2.5 py-1 text-[11px] font-bold text-amber-900">
+                  <Zap size={13} className="text-amber-600 fill-amber-600" />
+                  {selectedSize
+                    ? `Only 2 left in Size ${selectedSize} — order soon`
+                    : 'Low stock in popular sizes'}
+                </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-sand px-2.5 py-1 text-[11px] font-medium text-soft">
+                  <Flame size={13} className="text-fox" />
+                  18 people looking right now
+                </span>
+              </div>
             </div>
 
             {/* 6. QUANTITY & ADD TO BAG */}
@@ -517,6 +562,95 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
                     </span>
                   )}
                 </button>
+              </div>
+
+              {/* PINCODE DELIVERY ESTIMATOR */}
+              <div className="mt-6 rounded-2xl border border-line bg-sand/40 p-4 sm:p-5">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <MapPin size={16} className="text-fox" />
+                    <span className="font-display text-xs font-bold uppercase tracking-wider text-ink">
+                      Delivery &amp; Service Availability
+                    </span>
+                  </div>
+                  {pincodeResult && (
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                      Deliverable
+                    </span>
+                  )}
+                </div>
+
+                {/* Form Input Row */}
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault()
+                    handleCheckPincode()
+                  }}
+                  className="mt-3 flex items-center gap-2"
+                >
+                  <div className="relative flex-1">
+                    <input
+                      type="text"
+                      maxLength={6}
+                      value={pincode}
+                      onChange={(e) => setPincode(e.target.value.replace(/\D/g, ''))}
+                      placeholder="Enter 6-digit PIN code"
+                      className="w-full h-10 rounded-xl border border-line bg-white px-3.5 text-xs font-semibold text-ink outline-none transition-colors focus:border-fox"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    disabled={pincodeLoading || pincode.length !== 6}
+                    className="h-10 rounded-xl bg-ink px-4 text-xs font-bold uppercase tracking-wider text-white transition-colors hover:bg-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {pincodeLoading ? 'Checking...' : 'Check'}
+                  </button>
+                </form>
+
+                {pincodeError && (
+                  <p className="mt-2 text-xs font-semibold text-red-600 flex items-center gap-1">
+                    <AlertCircle size={13} /> {pincodeError}
+                  </p>
+                )}
+
+                {pincodeResult && (
+                  <div className="mt-3.5 space-y-2 border-t border-line/70 pt-3 text-xs">
+                    <div className="flex items-start gap-2">
+                      <CheckCircle2 size={15} className="text-emerald-600 mt-0.5 shrink-0" />
+                      <div>
+                        <p className="font-bold text-ink">
+                          Estimated Delivery by{' '}
+                          <span className="text-fox">{pincodeResult.estimatedDate}</span>
+                        </p>
+                        <p className="text-[11px] text-soft mt-0.5">
+                          Delivering to {pincodeResult.city} ({pincodeResult.pincode}) via Express Courier.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 pt-1 text-[11px] font-medium text-neutral-600">
+                      <span className="flex items-center gap-1">
+                        <Truck size={12} className="text-fox" /> Free shipping &gt; ₹1,499
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <RotateCcw size={12} className="text-fox" /> 15-day doorstep exchange
+                      </span>
+                    </div>
+
+                    {/* Customer Flagship Hub reference */}
+                    <div className="pt-2 border-t border-line/40 text-[10.5px] text-soft flex items-center justify-between">
+                      <span>Hub: {pincodeResult.hubLocation}</span>
+                      <a
+                        href="https://maps.google.com/maps?q=16.5168591%2C80.628406&z=17&hl=en"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-bold text-fox hover:underline inline-flex items-center gap-0.5"
+                      >
+                        View Map ↗
+                      </a>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 
