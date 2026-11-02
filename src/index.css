@@ -41,6 +41,34 @@
   --color-card: #FFFFFF;
   --color-card-foreground: #191919;
   --color-ring: #E87535;
+
+  /* About Us page palette tokens */
+  --color-brand: #f2620f;
+  --color-brand-deep: #cf4e06;
+  --color-cream: #faf7f1;
+}
+
+@theme {
+  --color-brand: #f2620f;
+  --color-brand-deep: #cf4e06;
+  --color-cream: #faf7f1;
+}
+
+@keyframes gentleFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-gentle-fade {
+    animation: gentleFadeIn 0.7s ease-out both;
+  }
 }
 
 /* Global Smooth Scroll & Scroll-Lock Containment */
