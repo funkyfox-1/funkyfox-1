@@ -125,15 +125,30 @@ export default function FloatingNavbar({ cartCount, onOpenSearch }: FloatingNavb
             </div>
           </div>
 
-          {/* Right Side: Editorial Brand Wordmark (Image 3 Style) */}
+          {/* Right Side: Fox Icon + FUNKYFOX Text Underneath */}
           <div className="flex items-center gap-3">
             <Link
               to="/"
               className="fox-nav-brand-right group"
               aria-label="Funky Fox Home"
             >
-              <span className="fox-nav-wordmark">
-                Funky<span className="fox-nav-wordmark-fox">Fox</span>
+              <svg
+                className="w-6 h-6 text-fox group-hover:scale-105 transition-transform"
+                viewBox="0 0 32 32"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <path d="M16 26L7 13.5L8.5 5.5L13.5 10L16 12L18.5 10L23.5 5.5L25 13.5L16 26Z" fill="#E87535"/>
+                <path d="M16 26L11 16L13.5 10L16 12L18.5 10L21 16L16 26Z" fill="#D45B1E"/>
+                <path d="M16 26L7 13.5L11 16L16 26Z" fill="#FAF9F6"/>
+                <path d="M16 26L25 13.5L21 16L16 26Z" fill="#FAF9F6"/>
+                <path d="M16 26L14.5 23.5H17.5L16 26Z" fill="#191919"/>
+                <circle cx="12" cy="14" r="1.2" fill="#191919"/>
+                <circle cx="20" cy="14" r="1.2" fill="#191919"/>
+              </svg>
+              <span className="fox-nav-brand-subtitle">
+                FUNKYFOX
               </span>
             </Link>
 

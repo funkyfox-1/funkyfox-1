@@ -510,7 +510,7 @@ function Storefront() {
       >
         {"Skip to content"}
       </a>
-      {Q.pathname !== "/checkout" && Q.pathname !== "/order-confirmation" && Q.pathname !== "/about" && !isBannerDismissed && (
+      {Q.pathname !== "/checkout" && Q.pathname !== "/order-confirmation" && Q.pathname !== "/about" && Q.pathname !== "/login" && Q.pathname !== "/register" && Q.pathname !== "/forgot-password" && !isBannerDismissed && (
         <div className="relative flex h-8 items-center justify-center bg-ink px-8 text-center text-[10px] font-semibold uppercase tracking-[.18em] text-paper z-50">
           <div className="flex items-center justify-center">
             <Truck size={12} className="mr-2 shrink-0 text-fox" />
@@ -526,7 +526,7 @@ function Storefront() {
           </button>
         </div>
       )}
-      {Q.pathname !== "/checkout" && Q.pathname !== "/order-confirmation" && (
+      {Q.pathname !== "/checkout" && Q.pathname !== "/order-confirmation" && Q.pathname !== "/login" && Q.pathname !== "/register" && Q.pathname !== "/forgot-password" && (
         <FloatingNavbar cartCount={$} onOpenSearch={() => M(!0)} />
       )}
       <main id="main" className="flex-1 flex flex-col">

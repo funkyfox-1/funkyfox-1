@@ -134,10 +134,10 @@ function AuthSplitScreen({ initialMode }: AuthSplitScreenProps) {
 
   return (
     <div className="min-h-screen bg-white font-inter flex flex-col justify-center">
-      <div className="w-full flex-1 grid grid-cols-1 lg:grid-cols-2 min-h-screen">
+      <div className="w-full flex-1 grid grid-cols-1 md:grid-cols-2 min-h-screen md:h-screen md:overflow-hidden">
 
         {/* ================= LEFT PANEL: SOLID BRAND ORANGE #E05A1B + GEOMETRIC DOT-GRID ================= */}
-        <div className="ff-auth-left-panel flex flex-col justify-between p-8 sm:p-12 lg:p-16 xl:p-20 relative">
+        <div className="ff-auth-left-panel flex flex-col justify-between p-6 sm:p-10 md:p-10 lg:p-14 xl:p-16 relative md:h-screen md:overflow-y-auto">
           
           {/* TOP: Wordmark */}
           <div className="relative z-10 flex items-center justify-between">
@@ -209,7 +209,7 @@ function AuthSplitScreen({ initialMode }: AuthSplitScreenProps) {
         </div>
 
         {/* ================= RIGHT PANEL: CRISP WHITE AUTH FORM #FFFFFF ================= */}
-        <div className="bg-white flex flex-col justify-between p-6 sm:p-10 md:p-12 lg:p-16 xl:p-20 relative">
+        <div className="bg-white flex flex-col justify-between p-6 sm:p-10 md:p-10 lg:p-14 xl:p-16 relative md:h-screen md:overflow-y-auto">
           
           {/* Top-Right: Create Account / Sign In Switch */}
           <div className="flex items-center justify-end text-xs text-[#5b6478]">

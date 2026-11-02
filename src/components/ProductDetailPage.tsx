@@ -232,17 +232,37 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
     setActiveImageIndex((prev) => (prev - 1 + images.length) % images.length)
   }
 
-  // Related products (same category first, excluding current product, max 4)
-  const relatedProducts = React.useMemo(() => {
+  // 1. Similar Products (matching category, excluding current product, 4 items)
+  const similarProducts = React.useMemo(() => {
     if (!product) return []
     const sameCategory = products.filter(
       (p) => p.category === product.category && p.id !== product.id
     )
-    const otherCategories = products.filter(
+    const fallback = products.filter((p) => p.id !== product.id)
+    return (sameCategory.length >= 4 ? sameCategory : [...sameCategory, ...fallback]).slice(0, 4)
+  }, [product])
+
+  // 2. Trending Now (top bestsellers & new arrivals, 4 items)
+  const trendingProducts = React.useMemo(() => {
+    if (!product) return []
+    const trending = products.filter(
+      (p) => p.id !== product.id && (p.isBestseller || p.isNew)
+    )
+    const fallback = products.filter((p) => p.id !== product.id)
+    return (trending.length >= 4 ? trending : [...trending, ...fallback]).slice(0, 4)
+  }, [product])
+
+  // 3. Complete The Look (complementary cross-category layering, 4 items)
+  const completeLookProducts = React.useMemo(() => {
+    if (!product) return []
+    const crossCategory = products.filter(
       (p) => p.category !== product.category && p.id !== product.id
     )
-    return [...sameCategory, ...otherCategories].slice(0, 4)
+    const fallback = products.filter((p) => p.id !== product.id)
+    return (crossCategory.length >= 4 ? crossCategory : [...crossCategory, ...fallback]).slice(0, 4)
   }, [product])
+
+  const [recProductColors, setRecProductColors] = React.useState<Record<string, string>>({})
 
   // 404 Product Not Found State
   if (!product) {
@@ -860,122 +880,553 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
           </div>
         </div>
 
-        {/* 8. RELATED PRODUCTS SECTION */}
-        {relatedProducts.length > 0 && (
-          <section aria-labelledby="related-heading" className="border-t border-line py-12 sm:py-16">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <p className="flex items-center gap-2.5 text-[10px] font-bold uppercase tracking-[.3em] text-soft">
-                  <span aria-hidden="true" className="h-[3px] w-6 rounded-full bg-fox" />
-                  Complementary Fits
-                </p>
-                <h2 id="related-heading" className="mt-2 font-display text-2xl font-black uppercase text-ink sm:text-3xl">
-                  You Might Also Like
-                </h2>
+        {/* 8. TRIPLE RECOMMENDATION TIERS: SIMILAR PRODUCTS, TRENDING, COMPLETE THE LOOK */}
+        <div className="border-t border-line mt-12 sm:mt-16 pt-8 space-y-14 sm:space-y-18">
+          
+          {/* TIER 1: Similar Products (Matching silhouette / category, 4 per row, 3 cols on tablet) */}
+          {similarProducts.length > 0 && (
+            <section aria-labelledby="similar-heading">
+              <div className="flex items-center justify-between mb-6 sm:mb-8">
+                <div>
+                  <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.25em] text-soft">
+                    <span aria-hidden="true" className="h-[2px] w-5 rounded-full bg-fox" />
+                    Same Category &amp; Silhouette
+                  </p>
+                  <h2 id="similar-heading" className="mt-1.5 font-display text-xl sm:text-2xl font-black uppercase text-ink">
+                    Similar Products
+                  </h2>
+                </div>
+                <Link
+                  to={`/products?category=${encodeURIComponent(product.category)}`}
+                  className="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-ink hover:text-fox transition-colors"
+                >
+                  View all in {product.category} <ArrowRight size={14} />
+                </Link>
               </div>
-              <Link
-                to="/products"
-                className="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-ink hover:text-fox transition-colors"
-              >
-                View all <ArrowRight size={14} />
-              </Link>
-            </div>
 
-            <ul className="grid grid-cols-2 gap-x-3 gap-y-9 sm:gap-x-5 sm:gap-y-11 md:grid-cols-4 lg:gap-x-6">
-              {relatedProducts.map((rel) => {
-                const currentColor =
-                  relatedProductColors[rel.id] || rel.colors[0]?.name
-                return (
-                  <li className="group min-w-0" key={rel.id}>
-                    <div className="relative overflow-hidden bg-[#eeeae3]">
-                      <Link
-                        to={`/products/${rel.id}`}
-                        aria-label={`View ${rel.name}`}
-                        className="block focus-visible:outline-2 focus-visible:outline-ink"
-                      >
-                        <img
-                          src={rel.image}
-                          alt={rel.alt}
-                          width="1024"
-                          height="1536"
-                          loading="lazy"
-                          onError={(e) => {
-                            e.currentTarget.onerror = null
-                            e.currentTarget.src = getCategoryFallbackImage(rel.category)
-                          }}
-                          className="aspect-[3/4] w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.035]"
-                        />
-                      </Link>
+              <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-9 sm:gap-x-5 sm:gap-y-11 lg:gap-x-6">
+                {similarProducts.map((rel) => {
+                  const currentColor =
+                    recProductColors[rel.id] || rel.colors[0]?.name
+                  const isItemWishlisted = isInDemoWishlist(rel.id)
+                  return (
+                    <li className="group min-w-0" key={rel.id}>
+                      <div className="relative overflow-hidden bg-[#eeeae3] rounded-sm">
+                        <Link
+                          to={`/products/${rel.id}`}
+                          aria-label={`View ${rel.name}`}
+                          className="block focus-visible:outline-2 focus-visible:outline-ink"
+                        >
+                          <img
+                            src={rel.image}
+                            alt={rel.alt}
+                            width="1024"
+                            height="1536"
+                            loading="lazy"
+                            onError={(e) => {
+                              e.currentTarget.onerror = null
+                              e.currentTarget.src = getCategoryFallbackImage(rel.category)
+                            }}
+                            className="aspect-[3/4] w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.035]"
+                          />
+                        </Link>
 
-                      <button
-                        type="button"
-                        onClick={() => addToCart(rel, currentColor)}
-                        disabled={!rel.inStock}
-                        aria-label={`Quick add ${rel.name} to bag`}
-                        className={`absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center text-ink shadow-sm transition-colors focus-visible:outline-2 focus-visible:outline-fox sm:bottom-4 sm:right-4 sm:h-10 sm:w-10 ${
-                          rel.inStock
-                            ? 'bg-white hover:bg-fox hover:text-white'
-                            : 'cursor-not-allowed bg-white/70 text-soft'
-                        }`}
-                      >
-                        <Plus size={18} strokeWidth={1.8} />
-                      </button>
-                    </div>
+                        {/* Badges */}
+                        {!rel.inStock ? (
+                          <div className="absolute top-2.5 left-2.5 bg-ink text-white px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider shadow-xs">
+                            Sold Out
+                          </div>
+                        ) : rel.isBestseller ? (
+                          <div className="absolute top-2.5 left-2.5 bg-paper/95 px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-wider text-ink shadow-xs">
+                            Bestseller
+                          </div>
+                        ) : rel.isNew ? (
+                          <div className="absolute top-2.5 left-2.5 bg-paper/95 px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-wider text-ink shadow-xs">
+                            New
+                          </div>
+                        ) : null}
 
-                    <div className="mt-3.5 flex flex-col gap-1 sm:mt-4">
-                      <Link
-                        to={`/products/${rel.id}`}
-                        className="w-fit text-[12px] font-semibold leading-snug text-ink transition-colors hover:text-fox-deep sm:text-[14px]"
-                      >
-                        {rel.name}
-                      </Link>
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-[12px] font-semibold text-ink sm:text-[14px]">
-                          {formatPrice(rel.price)}
-                        </span>
-                        {rel.originalPrice && rel.originalPrice > rel.price && (
-                          <span className="text-[11px] font-normal text-soft line-through sm:text-[12px]">
-                            {formatPrice(rel.originalPrice)}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {rel.colors && rel.colors.length > 0 && (
-                      <div
-                        className="mt-3 flex items-center gap-1.5"
-                        aria-label={`Colours for ${rel.name}`}
-                      >
-                        {rel.colors.map((c) => (
-                          <button
-                            key={c.name}
-                            type="button"
-                            aria-label={`${rel.name} in ${c.name}`}
-                            aria-pressed={currentColor === c.name}
-                            onClick={() =>
-                              setRelatedProductColors((prev) => ({
-                                ...prev,
-                                [rel.id]: c.name,
-                              }))
+                        {/* Wishlist Button */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            if (!isDemoLoggedIn()) {
+                              showToast('Please create an account or sign in to save items to your wishlist.', { type: 'info' })
+                              navigate('/login', {
+                                state: {
+                                  from: `/products/${product.id}`,
+                                  reason: 'Please create an account or sign in to save items to your wishlist.'
+                                }
+                              })
+                              return
                             }
-                            className={`flex h-[18px] w-[18px] items-center justify-center rounded-full border transition-colors hover:border-ink ${
-                              currentColor === c.name ? 'border-fox ring-1 ring-fox/40' : 'border-transparent'
-                            }`}
-                          >
-                            <span
-                              className="h-3 w-3 rounded-full border border-black/10"
-                              style={{ backgroundColor: c.value }}
-                            />
-                          </button>
-                        ))}
+                            const added = toggleDemoWishlist(rel.id)
+                            showToast(added ? `Saved ${rel.name} to Wishlist` : `Removed ${rel.name} from Wishlist`, {
+                              type: added ? 'success' : 'info'
+                            })
+                          }}
+                          aria-label={isItemWishlisted ? `Remove ${rel.name} from wishlist` : `Save ${rel.name} to wishlist`}
+                          className="absolute top-2.5 right-2.5 z-10 flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-white/90 text-neutral-600 shadow-sm backdrop-blur-xs transition-transform hover:scale-110 hover:bg-white cursor-pointer"
+                        >
+                          <Heart
+                            size={14}
+                            className={isItemWishlisted ? 'fill-rose-500 text-rose-500' : 'text-neutral-700'}
+                          />
+                        </button>
+
+                        {/* Quick Add Button */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (!isDemoLoggedIn()) {
+                              showToast('Please create an account or sign in to add items to your bag.', { type: 'info' })
+                              navigate('/login', {
+                                state: {
+                                  from: `/products/${product.id}`,
+                                  pendingAdd: {
+                                    product: rel,
+                                    color: currentColor,
+                                    size: rel.sizes?.[0] || 'M',
+                                    qty: 1
+                                  },
+                                  reason: 'Please create an account or sign in to add items to your bag.'
+                                }
+                              })
+                              return
+                            }
+                            addToCart(rel, currentColor)
+                          }}
+                          disabled={!rel.inStock}
+                          aria-label={`Quick add ${rel.name} to bag`}
+                          className={`absolute bottom-3 right-3 flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center text-ink shadow-sm transition-colors focus-visible:outline-2 focus-visible:outline-fox ${
+                            rel.inStock
+                              ? 'bg-white hover:bg-fox hover:text-white cursor-pointer'
+                              : 'cursor-not-allowed bg-white/70 text-soft'
+                          }`}
+                        >
+                          <Plus size={16} strokeWidth={2} />
+                        </button>
                       </div>
-                    )}
-                  </li>
-                )
-              })}
-            </ul>
-          </section>
-        )}
+
+                      <div className="mt-3.5 flex flex-col gap-1 sm:mt-4">
+                        <Link
+                          to={`/products/${rel.id}`}
+                          className="w-fit text-[12px] font-semibold leading-snug text-ink transition-colors hover:text-fox-deep sm:text-[14px]"
+                        >
+                          {rel.name}
+                        </Link>
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-[12px] font-semibold text-ink sm:text-[14px]">
+                            {formatPrice(rel.price)}
+                          </span>
+                          {rel.originalPrice && rel.originalPrice > rel.price && (
+                            <span className="text-[11px] font-normal text-soft line-through sm:text-[12px]">
+                              {formatPrice(rel.originalPrice)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {rel.colors && rel.colors.length > 0 && (
+                        <div
+                          className="mt-3 flex items-center gap-1.5"
+                          aria-label={`Colours for ${rel.name}`}
+                        >
+                          {rel.colors.map((c) => (
+                            <button
+                              key={c.name}
+                              type="button"
+                              aria-label={`${rel.name} in ${c.name}`}
+                              aria-pressed={currentColor === c.name}
+                              onClick={() =>
+                                setRecProductColors((prev) => ({
+                                  ...prev,
+                                  [rel.id]: c.name,
+                                }))
+                              }
+                              className={`flex h-[18px] w-[18px] items-center justify-center rounded-full border transition-colors hover:border-ink ${
+                                currentColor === c.name ? 'border-fox ring-1 ring-fox/40' : 'border-transparent'
+                              }`}
+                            >
+                              <span
+                                className="h-3 w-3 rounded-full border border-black/10"
+                                style={{ backgroundColor: c.value }}
+                              />
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </li>
+                  )
+                })}
+              </ul>
+            </section>
+          )}
+
+          {/* TIER 2: Trending Now (Top bestsellers & rail favorites, 4 per row, 3 cols on tablet) */}
+          {trendingProducts.length > 0 && (
+            <section aria-labelledby="trending-heading">
+              <div className="flex items-center justify-between mb-6 sm:mb-8">
+                <div>
+                  <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.25em] text-soft">
+                    <span aria-hidden="true" className="h-[2px] w-5 rounded-full bg-fox" />
+                    Community Most Wanted
+                  </p>
+                  <h2 id="trending-heading" className="mt-1.5 font-display text-xl sm:text-2xl font-black uppercase text-ink">
+                    Trending Now
+                  </h2>
+                </div>
+                <Link
+                  to="/products"
+                  className="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-ink hover:text-fox transition-colors"
+                >
+                  View all <ArrowRight size={14} />
+                </Link>
+              </div>
+
+              <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-9 sm:gap-x-5 sm:gap-y-11 lg:gap-x-6">
+                {trendingProducts.map((rel) => {
+                  const currentColor =
+                    recProductColors[rel.id] || rel.colors[0]?.name
+                  const isItemWishlisted = isInDemoWishlist(rel.id)
+                  return (
+                    <li className="group min-w-0" key={rel.id}>
+                      <div className="relative overflow-hidden bg-[#eeeae3] rounded-sm">
+                        <Link
+                          to={`/products/${rel.id}`}
+                          aria-label={`View ${rel.name}`}
+                          className="block focus-visible:outline-2 focus-visible:outline-ink"
+                        >
+                          <img
+                            src={rel.image}
+                            alt={rel.alt}
+                            width="1024"
+                            height="1536"
+                            loading="lazy"
+                            onError={(e) => {
+                              e.currentTarget.onerror = null
+                              e.currentTarget.src = getCategoryFallbackImage(rel.category)
+                            }}
+                            className="aspect-[3/4] w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.035]"
+                          />
+                        </Link>
+
+                        {/* Badges */}
+                        {!rel.inStock ? (
+                          <div className="absolute top-2.5 left-2.5 bg-ink text-white px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider shadow-xs">
+                            Sold Out
+                          </div>
+                        ) : rel.isBestseller ? (
+                          <div className="absolute top-2.5 left-2.5 bg-paper/95 px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-wider text-ink shadow-xs">
+                            Bestseller
+                          </div>
+                        ) : rel.isNew ? (
+                          <div className="absolute top-2.5 left-2.5 bg-paper/95 px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-wider text-ink shadow-xs">
+                            New
+                          </div>
+                        ) : null}
+
+                        {/* Wishlist Button */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            if (!isDemoLoggedIn()) {
+                              showToast('Please create an account or sign in to save items to your wishlist.', { type: 'info' })
+                              navigate('/login', {
+                                state: {
+                                  from: `/products/${product.id}`,
+                                  reason: 'Please create an account or sign in to save items to your wishlist.'
+                                }
+                              })
+                              return
+                            }
+                            const added = toggleDemoWishlist(rel.id)
+                            showToast(added ? `Saved ${rel.name} to Wishlist` : `Removed ${rel.name} from Wishlist`, {
+                              type: added ? 'success' : 'info'
+                            })
+                          }}
+                          aria-label={isItemWishlisted ? `Remove ${rel.name} from wishlist` : `Save ${rel.name} to wishlist`}
+                          className="absolute top-2.5 right-2.5 z-10 flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-white/90 text-neutral-600 shadow-sm backdrop-blur-xs transition-transform hover:scale-110 hover:bg-white cursor-pointer"
+                        >
+                          <Heart
+                            size={14}
+                            className={isItemWishlisted ? 'fill-rose-500 text-rose-500' : 'text-neutral-700'}
+                          />
+                        </button>
+
+                        {/* Quick Add Button */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (!isDemoLoggedIn()) {
+                              showToast('Please create an account or sign in to add items to your bag.', { type: 'info' })
+                              navigate('/login', {
+                                state: {
+                                  from: `/products/${product.id}`,
+                                  pendingAdd: {
+                                    product: rel,
+                                    color: currentColor,
+                                    size: rel.sizes?.[0] || 'M',
+                                    qty: 1
+                                  },
+                                  reason: 'Please create an account or sign in to add items to your bag.'
+                                }
+                              })
+                              return
+                            }
+                            addToCart(rel, currentColor)
+                          }}
+                          disabled={!rel.inStock}
+                          aria-label={`Quick add ${rel.name} to bag`}
+                          className={`absolute bottom-3 right-3 flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center text-ink shadow-sm transition-colors focus-visible:outline-2 focus-visible:outline-fox ${
+                            rel.inStock
+                              ? 'bg-white hover:bg-fox hover:text-white cursor-pointer'
+                              : 'cursor-not-allowed bg-white/70 text-soft'
+                          }`}
+                        >
+                          <Plus size={16} strokeWidth={2} />
+                        </button>
+                      </div>
+
+                      <div className="mt-3.5 flex flex-col gap-1 sm:mt-4">
+                        <Link
+                          to={`/products/${rel.id}`}
+                          className="w-fit text-[12px] font-semibold leading-snug text-ink transition-colors hover:text-fox-deep sm:text-[14px]"
+                        >
+                          {rel.name}
+                        </Link>
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-[12px] font-semibold text-ink sm:text-[14px]">
+                            {formatPrice(rel.price)}
+                          </span>
+                          {rel.originalPrice && rel.originalPrice > rel.price && (
+                            <span className="text-[11px] font-normal text-soft line-through sm:text-[12px]">
+                              {formatPrice(rel.originalPrice)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {rel.colors && rel.colors.length > 0 && (
+                        <div
+                          className="mt-3 flex items-center gap-1.5"
+                          aria-label={`Colours for ${rel.name}`}
+                        >
+                          {rel.colors.map((c) => (
+                            <button
+                              key={c.name}
+                              type="button"
+                              aria-label={`${rel.name} in ${c.name}`}
+                              aria-pressed={currentColor === c.name}
+                              onClick={() =>
+                                setRecProductColors((prev) => ({
+                                  ...prev,
+                                  [rel.id]: c.name,
+                                }))
+                              }
+                              className={`flex h-[18px] w-[18px] items-center justify-center rounded-full border transition-colors hover:border-ink ${
+                                currentColor === c.name ? 'border-fox ring-1 ring-fox/40' : 'border-transparent'
+                              }`}
+                            >
+                              <span
+                                className="h-3 w-3 rounded-full border border-black/10"
+                                style={{ backgroundColor: c.value }}
+                              />
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </li>
+                  )
+                })}
+              </ul>
+            </section>
+          )}
+
+          {/* TIER 3: Complete The Look / Matching Pairs (Cross-category layering, 4 per row, 3 cols on tablet) */}
+          {completeLookProducts.length > 0 && (
+            <section aria-labelledby="complete-heading">
+              <div className="flex items-center justify-between mb-6 sm:mb-8">
+                <div>
+                  <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.25em] text-soft">
+                    <span aria-hidden="true" className="h-[2px] w-5 rounded-full bg-fox" />
+                    Layering &amp; Styling Guide
+                  </p>
+                  <h2 id="complete-heading" className="mt-1.5 font-display text-xl sm:text-2xl font-black uppercase text-ink">
+                    Complete The Look
+                  </h2>
+                </div>
+                <Link
+                  to="/products"
+                  className="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-ink hover:text-fox transition-colors"
+                >
+                  View all <ArrowRight size={14} />
+                </Link>
+              </div>
+
+              <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-9 sm:gap-x-5 sm:gap-y-11 lg:gap-x-6">
+                {completeLookProducts.map((rel) => {
+                  const currentColor =
+                    recProductColors[rel.id] || rel.colors[0]?.name
+                  const isItemWishlisted = isInDemoWishlist(rel.id)
+                  return (
+                    <li className="group min-w-0" key={rel.id}>
+                      <div className="relative overflow-hidden bg-[#eeeae3] rounded-sm">
+                        <Link
+                          to={`/products/${rel.id}`}
+                          aria-label={`View ${rel.name}`}
+                          className="block focus-visible:outline-2 focus-visible:outline-ink"
+                        >
+                          <img
+                            src={rel.image}
+                            alt={rel.alt}
+                            width="1024"
+                            height="1536"
+                            loading="lazy"
+                            onError={(e) => {
+                              e.currentTarget.onerror = null
+                              e.currentTarget.src = getCategoryFallbackImage(rel.category)
+                            }}
+                            className="aspect-[3/4] w-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.035]"
+                          />
+                        </Link>
+
+                        {/* Badges */}
+                        {!rel.inStock ? (
+                          <div className="absolute top-2.5 left-2.5 bg-ink text-white px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider shadow-xs">
+                            Sold Out
+                          </div>
+                        ) : rel.isBestseller ? (
+                          <div className="absolute top-2.5 left-2.5 bg-paper/95 px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-wider text-ink shadow-xs">
+                            Bestseller
+                          </div>
+                        ) : rel.isNew ? (
+                          <div className="absolute top-2.5 left-2.5 bg-paper/95 px-2 py-0.5 text-[9.5px] font-bold uppercase tracking-wider text-ink shadow-xs">
+                            New
+                          </div>
+                        ) : null}
+
+                        {/* Wishlist Button */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            if (!isDemoLoggedIn()) {
+                              showToast('Please create an account or sign in to save items to your wishlist.', { type: 'info' })
+                              navigate('/login', {
+                                state: {
+                                  from: `/products/${product.id}`,
+                                  reason: 'Please create an account or sign in to save items to your wishlist.'
+                                }
+                              })
+                              return
+                            }
+                            const added = toggleDemoWishlist(rel.id)
+                            showToast(added ? `Saved ${rel.name} to Wishlist` : `Removed ${rel.name} from Wishlist`, {
+                              type: added ? 'success' : 'info'
+                            })
+                          }}
+                          aria-label={isItemWishlisted ? `Remove ${rel.name} from wishlist` : `Save ${rel.name} to wishlist`}
+                          className="absolute top-2.5 right-2.5 z-10 flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-white/90 text-neutral-600 shadow-sm backdrop-blur-xs transition-transform hover:scale-110 hover:bg-white cursor-pointer"
+                        >
+                          <Heart
+                            size={14}
+                            className={isItemWishlisted ? 'fill-rose-500 text-rose-500' : 'text-neutral-700'}
+                          />
+                        </button>
+
+                        {/* Quick Add Button */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (!isDemoLoggedIn()) {
+                              showToast('Please create an account or sign in to add items to your bag.', { type: 'info' })
+                              navigate('/login', {
+                                state: {
+                                  from: `/products/${product.id}`,
+                                  pendingAdd: {
+                                    product: rel,
+                                    color: currentColor,
+                                    size: rel.sizes?.[0] || 'M',
+                                    qty: 1
+                                  },
+                                  reason: 'Please create an account or sign in to add items to your bag.'
+                                }
+                              })
+                              return
+                            }
+                            addToCart(rel, currentColor)
+                          }}
+                          disabled={!rel.inStock}
+                          aria-label={`Quick add ${rel.name} to bag`}
+                          className={`absolute bottom-3 right-3 flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center text-ink shadow-sm transition-colors focus-visible:outline-2 focus-visible:outline-fox ${
+                            rel.inStock
+                              ? 'bg-white hover:bg-fox hover:text-white cursor-pointer'
+                              : 'cursor-not-allowed bg-white/70 text-soft'
+                          }`}
+                        >
+                          <Plus size={16} strokeWidth={2} />
+                        </button>
+                      </div>
+
+                      <div className="mt-3.5 flex flex-col gap-1 sm:mt-4">
+                        <Link
+                          to={`/products/${rel.id}`}
+                          className="w-fit text-[12px] font-semibold leading-snug text-ink transition-colors hover:text-fox-deep sm:text-[14px]"
+                        >
+                          {rel.name}
+                        </Link>
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-[12px] font-semibold text-ink sm:text-[14px]">
+                            {formatPrice(rel.price)}
+                          </span>
+                          {rel.originalPrice && rel.originalPrice > rel.price && (
+                            <span className="text-[11px] font-normal text-soft line-through sm:text-[12px]">
+                              {formatPrice(rel.originalPrice)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {rel.colors && rel.colors.length > 0 && (
+                        <div
+                          className="mt-3 flex items-center gap-1.5"
+                          aria-label={`Colours for ${rel.name}`}
+                        >
+                          {rel.colors.map((c) => (
+                            <button
+                              key={c.name}
+                              type="button"
+                              aria-label={`${rel.name} in ${c.name}`}
+                              aria-pressed={currentColor === c.name}
+                              onClick={() =>
+                                setRecProductColors((prev) => ({
+                                  ...prev,
+                                  [rel.id]: c.name,
+                                }))
+                              }
+                              className={`flex h-[18px] w-[18px] items-center justify-center rounded-full border transition-colors hover:border-ink ${
+                                currentColor === c.name ? 'border-fox ring-1 ring-fox/40' : 'border-transparent'
+                              }`}
+                            >
+                              <span
+                                className="h-3 w-3 rounded-full border border-black/10"
+                                style={{ backgroundColor: c.value }}
+                              />
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </li>
+                  )
+                })}
+              </ul>
+            </section>
+          )}
+
+        </div>
       </div>
 
       {/* RESPONSIVE STICKY ADD TO BAG BAR (Desktop & Mobile) */}
