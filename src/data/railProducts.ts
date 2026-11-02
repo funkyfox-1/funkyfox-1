@@ -10,6 +10,7 @@ export const CURATED_RAIL_GARMENTS: RailGarment[] = [
     trim: '#393B39',
     tag: '₹599',
     price: 599,
+    image: '/images/product-tshirt.webp',
     description:
       '190 GSM single-jersey combed cotton with clean ribbed neckline, pre-shrunk to retain shape.',
     details: ['190 GSM Combed Cotton', 'Pre-washed against shrinkage', 'Relaxed everyday drape'],
@@ -24,6 +25,7 @@ export const CURATED_RAIL_GARMENTS: RailGarment[] = [
     trim: '#FFFFFF',
     tag: '₹799',
     price: 799,
+    image: '/images/products/demo-zip-neck-textured-polo.png',
     description:
       'Breathable combed cotton pique polo with two-button placket, structured ribbed collar, and tennis tail split hem.',
     details: ['100% Combed Cotton Pique', 'Two-button placket', 'Side split hem'],
@@ -38,6 +40,7 @@ export const CURATED_RAIL_GARMENTS: RailGarment[] = [
     trim: '#7D8A7C',
     tag: '₹749',
     price: 749,
+    image: '/images/products/demo-waffle-knit-crew-tee.png',
     description:
       'Micro-thermal waffle texture adds dimensional depth and warmth to a transitional everyday long-sleeve knit.',
     details: ['Cotton waffle knit', 'Honeycomb texture', 'Ribbed collar and cuffs'],
@@ -52,6 +55,7 @@ export const CURATED_RAIL_GARMENTS: RailGarment[] = [
     trim: '#4A523E',
     tag: '₹899',
     price: 899,
+    image: '/images/product-shirt.webp',
     description:
       'Breathable cotton-linen blend button-up with camp collar, tonal buttons, and clean casual drape for easy layering.',
     details: ['Cotton-linen blend', 'Camp collar', 'Pre-washed soft hand'],
@@ -66,6 +70,7 @@ export const CURATED_RAIL_GARMENTS: RailGarment[] = [
     trim: '#1A1A1A',
     tag: '₹1,499',
     price: 1499,
+    image: '/images/products/demo-french-terry-hoodie.jpg',
     description:
       '380 GSM looped French terry pullover with structured double-layer hood, front kangaroo pocket, and cotton drawcords.',
     details: ['380 GSM French Terry', 'Double-layer hood', 'Kangaroo pocket with bartacks'],
@@ -80,6 +85,7 @@ export const CURATED_RAIL_GARMENTS: RailGarment[] = [
     trim: '#795034',
     tag: '₹1,799',
     price: 1799,
+    image: '/images/product-jacket.webp',
     description:
       'Washed cotton canvas outer layer with dual chest flap pockets, antique brass snaps, and structured cut.',
     details: ['100% Cotton canvas', 'Antique brass snap closures', 'Double chest flap pockets'],
@@ -94,6 +100,7 @@ export const CURATED_RAIL_GARMENTS: RailGarment[] = [
     trim: '#61462D',
     tag: '₹2,999',
     price: 2999,
+    image: '/images/products/demo-tailored-wool-overcoat.jpg',
     description:
       'Tailored single-breasted overcoat cut in structured Melton wool blend with notch lapels, horn buttons, and deep welt pockets.',
     details: ['Melton wool blend', 'Structured notch lapel', 'Deep welt hand pockets'],
@@ -108,6 +115,7 @@ export const CURATED_RAIL_GARMENTS: RailGarment[] = [
     trim: '#4A301E',
     tag: '₹1,999',
     price: 1999,
+    image: '/images/products/demo-canvas-workwear-jacket.jpg',
     description:
       'Traditional chore jacket crafted from 10oz duck canvas with fine corduroy collar and reinforced bar-tacks.',
     details: ['10oz Cotton duck canvas', 'Contrast corduroy collar', 'Triple-stitched seams'],
@@ -122,6 +130,7 @@ export const CURATED_RAIL_GARMENTS: RailGarment[] = [
     trim: '#3E4233',
     tag: '₹1,899',
     price: 1899,
+    image: '/images/products/demo-minimalist-bomber-jacket.jpg',
     description:
       'Streamlined matte water-resistant shell with tonal ribbed collar and two-way metal hardware.',
     details: ['Matte nylon shell', 'Ribbed knit trims', 'Interior welt pocket'],
@@ -136,6 +145,7 @@ export const CURATED_RAIL_GARMENTS: RailGarment[] = [
     trim: '#1B2636',
     tag: '₹1,699',
     price: 1699,
+    image: '/images/products/demo-denim-overshirt-jacket.png',
     description:
       '12oz pure cotton twill overshirt with dual utility patch pockets and antique metal buttons.',
     details: ['100% Cotton denim', 'Twin patch chest pockets', 'Vintage enzyme rinse'],
@@ -143,4 +153,3 @@ export const CURATED_RAIL_GARMENTS: RailGarment[] = [
     inStock: true,
   },
 ]
-
