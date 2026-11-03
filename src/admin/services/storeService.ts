@@ -961,6 +961,60 @@ class StoreService {
     this.logAudit(adminName, 'SHIPMENT_UPDATED', 'Order', order.id, `AWB: ${shipment?.awbCode}`);
   }
 
+  async refreshOrder(orderId: string): Promise<AdminOrder | undefined> {
+    if (isSupabaseConfigured) {
+      const fresh = await SupabaseDbService.fetchOrderById(orderId);
+      if (fresh) {
+        const idx = this.orders.findIndex((o) => o.id === orderId);
+        if (idx !== -1) {
+          this.orders[idx] = fresh;
+        } else {
+          this.orders.unshift(fresh);
+        }
+        this.persist('orders', this.orders);
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('funkyfox:store_updated'));
+        }
+        return fresh;
+      }
+    }
+    return this.getOrderById(orderId);
+  }
+
+  async dispatchShiprocket(orderId: string, adminName: string = 'Admin') {
+    const result = await SupabaseDbService.dispatchShiprocketShipment(orderId);
+
+    // Refresh live order record directly from Supabase
+    await this.refreshOrder(orderId);
+
+    this.logAudit(
+      adminName,
+      'SHIPMENT_DISPATCHED',
+      'Order',
+      orderId,
+      `Shiprocket AWB: ${result.awb_code || 'N/A'}, Courier: ${result.courier_name || 'N/A'}`
+    );
+
+    return result;
+  }
+
+  async refreshTracking(orderId: string, adminName: string = 'Admin') {
+    const result = await SupabaseDbService.trackShiprocketShipment(orderId);
+
+    // Refresh live order record directly from Supabase
+    await this.refreshOrder(orderId);
+
+    this.logAudit(
+      adminName,
+      'TRACKING_REFRESHED',
+      'Order',
+      orderId,
+      `Status: ${result.current_status || 'N/A'}, AWB: ${result.awb_code || 'N/A'}`
+    );
+
+    return result;
+  }
+
   // --- CUSTOMERS ---
   getCustomers(): AdminCustomer[] {
     return [...this.customers];

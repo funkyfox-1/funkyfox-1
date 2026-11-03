@@ -22,13 +22,109 @@ import {
 import {
   getDemoOrderById,
   cancelDemoOrder,
-  Order
+  Order,
+  OrderMilestone
 } from '../../data/accountMockData';
 import { formatPrice } from '../../data/products';
 import { OrderService, ReturnExchangeResponse } from '../../services/api';
+import { storeService } from '../../admin/services/storeService';
+import { AdminOrder } from '../../admin/lib/types';
 import { showToast } from '../../utils/toast';
 import DeliveredOrderReviewCard from './DeliveredOrderReviewCard';
 import './AccountStyles.css';
+
+function mapAdminOrderToOrder(adminOrder: AdminOrder): Order {
+  const statusMap: Record<string, 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'returned'> = {
+    pending: 'processing',
+    confirmed: 'processing',
+    processing: 'processing',
+    packed: 'processing',
+    shipped: 'shipped',
+    out_for_delivery: 'shipped',
+    delivered: 'delivered',
+    cancelled: 'cancelled',
+    returned: 'returned',
+  };
+
+  const carrier = adminOrder.shipmentDetails?.awbCode
+    ? {
+        name: adminOrder.shipmentDetails.courierName || 'Shiprocket Express',
+        trackingNumber: adminOrder.shipmentDetails.awbCode,
+        trackingUrl: adminOrder.shipmentDetails.trackingUrl || `https://shiprocket.co/tracking/${adminOrder.shipmentDetails.awbCode}`,
+      }
+    : undefined;
+
+  const milestones: OrderMilestone[] = (adminOrder.timeline || []).map((tl, index, arr) => {
+    const isCurrent = index === arr.length - 1;
+    const dateObj = new Date(tl.timestamp);
+    const dateStr = !isNaN(dateObj.getTime())
+      ? dateObj.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
+      : tl.timestamp;
+    const timeStr = !isNaN(dateObj.getTime())
+      ? dateObj.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })
+      : '';
+
+    return {
+      status: tl.status || 'update',
+      label: tl.label || 'Status Update',
+      date: dateStr,
+      time: timeStr,
+      description: tl.description || (tl.performedBy ? `Updated by ${tl.performedBy}` : 'Status updated'),
+      completed: true,
+      current: isCurrent,
+    };
+  });
+
+  const finalTimeline = milestones.length > 0 ? milestones : [
+    {
+      status: 'confirmed',
+      label: 'Order Confirmed',
+      date: new Date(adminOrder.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+      time: new Date(adminOrder.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true }),
+      description: 'Your order has been received and confirmed.',
+      completed: true,
+      current: true,
+    }
+  ];
+
+  return {
+    id: adminOrder.id,
+    orderNumber: adminOrder.orderNumber,
+    date: new Date(adminOrder.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }),
+    estimatedDelivery: adminOrder.shipmentDetails?.etd || 'Within 3-5 business days',
+    status: statusMap[adminOrder.shippingStatus] || 'processing',
+    items: (adminOrder.items || []).map((it) => ({
+      id: it.id,
+      name: it.name || it.sku,
+      price: it.price,
+      color: it.color || 'Standard',
+      size: it.size || 'M',
+      quantity: it.quantity,
+      image: it.image || 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&q=80&w=600',
+    })),
+    subtotal: adminOrder.subtotal,
+    discount: adminOrder.discount || 0,
+    shipping: adminOrder.shippingCharge || 0,
+    tax: adminOrder.tax || 0,
+    total: adminOrder.total,
+    paymentMethod: {
+      type: adminOrder.paymentMethod === 'cod' ? 'Cash on Delivery' : 'Online Prepaid',
+      last4: 'PREP',
+      status: adminOrder.paymentStatus,
+    },
+    deliveryAddress: {
+      fullName: adminOrder.shippingAddress?.fullName || adminOrder.customer?.name || 'Customer',
+      phone: adminOrder.shippingAddress?.phone || adminOrder.customer?.phone || '',
+      street: [adminOrder.shippingAddress?.street, adminOrder.shippingAddress?.addressLine2].filter(Boolean).join(', ') || 'Address not specified',
+      city: adminOrder.shippingAddress?.city || '',
+      state: adminOrder.shippingAddress?.state || '',
+      pincode: adminOrder.shippingAddress?.pincode || '',
+      country: adminOrder.shippingAddress?.country || 'India',
+    },
+    carrier,
+    timeline: finalTimeline,
+  };
+}
 
 export default function OrderDetailPage() {
   const { orderId } = useParams<{ orderId: string }>();
@@ -53,6 +149,11 @@ export default function OrderDetailPage() {
   const loadOrder = React.useCallback(() => {
     if (!orderId) {
       setOrder(null);
+      return;
+    }
+    const adminFound = storeService.getOrderById(orderId);
+    if (adminFound) {
+      setOrder(mapAdminOrderToOrder(adminFound));
       return;
     }
     const found = getDemoOrderById(orderId);
@@ -419,8 +520,24 @@ export default function OrderDetailPage() {
               {order.carrier && (
                 <div className="mt-4 pt-3 border-t border-[#F0ECE1] text-xs">
                   <span className="font-bold text-neutral-400 block text-[10px] uppercase">Courier Partner</span>
-                  <p className="font-semibold text-ink">{order.carrier.name}</p>
-                  <p className="font-mono text-neutral-500 mt-0.5">Tracking: {order.carrier.trackingNumber}</p>
+                  <div className="flex items-center justify-between mt-1 gap-2">
+                    <div>
+                      <p className="font-semibold text-ink">{order.carrier.name}</p>
+                      <p className="font-mono text-neutral-500 mt-0.5">AWB: {order.carrier.trackingNumber}</p>
+                    </div>
+                    {order.carrier.trackingUrl && (
+                      <a
+                        href={order.carrier.trackingUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-ink text-white text-[11px] font-bold uppercase tracking-wider hover:bg-neutral-800 transition-colors flex-shrink-0"
+                      >
+                        <Truck size={12} />
+                        <span>Track</span>
+                        <ExternalLink size={11} />
+                      </a>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

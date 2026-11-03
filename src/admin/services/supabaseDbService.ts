@@ -508,6 +508,139 @@ export class SupabaseDbService {
     }));
   }
 
+  static async fetchOrderById(orderId: string): Promise<AdminOrder | null> {
+    if (!isSupabaseConfigured || !supabase) return null;
+
+    const { data: o, error } = await supabase
+      .from('orders')
+      .select('*, order_items(*)')
+      .eq('id', orderId)
+      .maybeSingle();
+
+    if (error || !o) return null;
+
+    return {
+      id: o.id,
+      orderNumber: o.order_number,
+      customer: o.customer_info,
+      shippingAddress: o.shipping_address,
+      items: (o.order_items || []).map((item: any) => ({
+        id: item.id,
+        productId: item.product_id,
+        name: item.name,
+        price: Number(item.price),
+        quantity: item.quantity,
+        size: item.size,
+        color: item.color,
+        image: item.image,
+        sku: item.sku,
+      })),
+      subtotal: Number(o.subtotal),
+      discount: Number(o.discount),
+      couponCode: o.coupon_code,
+      shippingCharge: Number(o.shipping_charge),
+      tax: Number(o.tax),
+      total: Number(o.total),
+      paymentMethod: o.payment_method,
+      paymentStatus: o.payment_status,
+      paymentDetails: o.payment_details,
+      fulfillmentStatus: o.fulfillment_status,
+      shippingStatus: o.shipping_status,
+      shipmentDetails: o.shipment_details,
+      timeline: o.timeline || [],
+      internalNotes: o.internal_notes || [],
+      createdAt: o.created_at,
+      updatedAt: o.updated_at,
+    };
+  }
+
+  static async dispatchShiprocketShipment(orderId: string): Promise<{
+    success: boolean;
+    message?: string;
+    already_dispatched?: boolean;
+    shipment_id?: string;
+    shiprocket_order_id?: string;
+    awb_code?: string;
+    courier_name?: string;
+    tracking_url?: string;
+    shipping_status?: string;
+    fulfillment_status?: string;
+  }> {
+    if (!isSupabaseConfigured || !supabase) {
+      throw new Error('Supabase client is not configured.');
+    }
+
+    const { data, error } = await supabase.functions.invoke('shiprocket-dispatch', {
+      body: { order_id: orderId },
+    });
+
+    if (error) {
+      let message = error.message;
+      if ((error as any).context && typeof (error as any).context.json === 'function') {
+        try {
+          const body = await (error as any).context.json();
+          message = body?.error || body?.message || message;
+        } catch {
+          // ignore parsing error
+        }
+      }
+      throw new Error(message || 'Failed to dispatch shipment with Shiprocket');
+    }
+
+    if (data?.error) {
+      throw new Error(data.error);
+    }
+
+    return data;
+  }
+
+  static async trackShiprocketShipment(orderId: string, awbCode?: string): Promise<{
+    success: boolean;
+    order_id?: string;
+    awb_code?: string;
+    courier_name?: string;
+    current_status?: string;
+    shipping_status?: string;
+    status_updated?: boolean;
+    etd?: string | null;
+    tracking_url?: string;
+    activities?: Array<{
+      date: string;
+      status: string;
+      activity: string;
+      location?: string;
+      raw_label?: string;
+    }>;
+    last_tracked_at?: string;
+  }> {
+    if (!isSupabaseConfigured || !supabase) {
+      throw new Error('Supabase client is not configured.');
+    }
+
+    const { data, error } = await supabase.functions.invoke('shiprocket-track', {
+      body: { order_id: orderId, awb_code: awbCode },
+    });
+
+    if (error) {
+      let message = error.message;
+      if ((error as any).context && typeof (error as any).context.json === 'function') {
+        try {
+          const body = await (error as any).context.json();
+          message = body?.error || body?.message || message;
+        } catch {
+          // ignore parsing error
+        }
+      }
+      throw new Error(message || 'Failed to retrieve tracking from Shiprocket');
+    }
+
+    if (data?.error) {
+      throw new Error(data.error);
+    }
+
+    return data;
+  }
+
   static async createCustomerOrder(orderPayload: {
     idempotencyKey?: string;
     id?: string;

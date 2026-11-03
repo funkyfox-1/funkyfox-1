@@ -167,6 +167,18 @@ export interface AdminOrder {
     invoiceUrl?: string;
     trackingUrl?: string;
     pickupStatus?: string;
+    dispatchedAt?: string;
+    dispatchedBy?: string;
+    etd?: string | null;
+    currentStatus?: string;
+    lastTrackedAt?: string;
+    trackingActivities?: Array<{
+      date: string;
+      status: string;
+      activity: string;
+      location?: string;
+      raw_label?: string;
+    }>;
   };
   timeline: AdminOrderTimelineEvent[];
   internalNotes?: string[];

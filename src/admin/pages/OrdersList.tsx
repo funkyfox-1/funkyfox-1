@@ -222,24 +222,33 @@ export function OrdersList() {
                       </div>
                     </td>
                     <td className="py-3.5 px-4">
-                      <Badge
-                        variant={
-                          order.shippingStatus === 'delivered'
-                            ? 'success'
-                            : order.shippingStatus === 'shipped' || order.shippingStatus === 'out_for_delivery'
-                            ? 'info'
-                            : order.shippingStatus === 'cancelled'
-                            ? 'error'
-                            : 'warning'
-                        }
-                      >
-                        {order.shippingStatus.replace(/_/g, ' ')}
-                      </Badge>
-                      {order.shipmentDetails?.courierName && (
-                        <p className="text-[10px] text-zinc-400 mt-0.5 truncate max-w-[120px]">
-                          {order.shipmentDetails.courierName}
-                        </p>
-                      )}
+                      <div className="flex flex-col items-start gap-1">
+                        <Badge
+                          variant={
+                            order.shippingStatus === 'delivered'
+                              ? 'success'
+                              : order.shippingStatus === 'shipped' || order.shippingStatus === 'out_for_delivery'
+                              ? 'info'
+                              : order.shippingStatus === 'cancelled'
+                              ? 'error'
+                              : 'warning'
+                          }
+                        >
+                          {order.shippingStatus.replace(/_/g, ' ')}
+                        </Badge>
+                        {order.shipmentDetails?.awbCode ? (
+                          <div className="flex items-center gap-1 text-[10px] text-emerald-700 font-mono font-medium">
+                            <Truck size={11} className="text-emerald-600 shrink-0" />
+                            <span className="truncate max-w-[130px]">
+                              {order.shipmentDetails.courierName || 'Shiprocket'}: {order.shipmentDetails.awbCode}
+                            </span>
+                          </div>
+                        ) : (
+                          <span className="text-[10px] text-zinc-400">
+                            {order.paymentMethod === 'cod' || order.paymentStatus === 'captured' ? 'Ready to manifest' : 'Unmanifested'}
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="py-3.5 px-4 text-right">
                       <Link
