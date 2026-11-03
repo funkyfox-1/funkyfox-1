@@ -66,6 +66,115 @@ export const getCategoryFallbackImage = (category: Category | string): string =>
 
 export const products: Product[] = [
   {
+    id: "modern-bandhgala-kurta",
+    name: "Terracotta Raw Silk Bandhgala Kurta",
+    price: 1899,
+    originalPrice: 2499,
+    image: "/images/products/ethnic-bandhgala-rust.webp",
+    images: [
+      "/images/products/ethnic-bandhgala-rust.webp",
+      "/images/products/ethnic-nehru-jacket.webp"
+    ],
+    alt: "Indian male model wearing a modern tailored short Bandhgala Kurta in rich rust orange",
+    category: "Shirts",
+    colors: [
+      { name: "Terracotta Rust", value: "#C25E34" },
+      { name: "Sand Cream", value: "#EDE3D1" }
+    ],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    inStock: true,
+    isNew: true,
+    isBestseller: true,
+    featuredOrder: 0,
+    description: "A contemporary take on traditional festive wear. Tailored with clean lines, structured mandarin collar, and breathable slub blend for all-day weddings and cultural events.",
+    details: [
+      "Raw Silk & Slub Cotton Blend (220 GSM)",
+      "Structured mandarin band collar with inner facing",
+      "Handcrafted mother-of-pearl buttons"
+    ]
+  },
+  {
+    id: "sandstone-nehru-jacket",
+    name: "Textured Nehru Waistcoat & Kurta Set",
+    price: 2299,
+    originalPrice: 2999,
+    image: "/images/products/ethnic-nehru-jacket.webp",
+    images: [
+      "/images/products/ethnic-nehru-jacket.webp",
+      "/images/products/ethnic-bandhgala-rust.webp"
+    ],
+    alt: "Indian male model wearing a textured Nehru waistcoat in champagne gold over ivory kurta",
+    category: "Shirts",
+    colors: [
+      { name: "Champagne Sand", value: "#D8C7A5" },
+      { name: "Ivory Bone", value: "#F5F2EA" }
+    ],
+    sizes: ["M", "L", "XL", "XXL"],
+    inStock: true,
+    isNew: true,
+    featuredOrder: 0,
+    description: "Artisanal woven Nehru jacket layered over an ivory base. Designed for sangeets, poojas, and celebratory evening dinners.",
+    details: [
+      "Textured Jacquard & Pure Linen weave",
+      "Chest pocket with integrated pocket square",
+      "Full satin interior lining for breathability"
+    ]
+  },
+  {
+    id: "sage-olive-linen-kurta",
+    name: "Minimalist Sage Linen Kurta Shirt",
+    price: 1499,
+    originalPrice: 1999,
+    image: "/images/products/ethnic-linen-kurta.webp",
+    images: [
+      "/images/products/ethnic-linen-kurta.webp",
+      "/images/products/ethnic-asymmetric-kurta.webp"
+    ],
+    alt: "Indian male model wearing a relaxed linen kurta shirt in muted olive sage",
+    category: "Shirts",
+    colors: [
+      { name: "Sage Olive", value: "#7A846E" },
+      { name: "Terracotta", value: "#B86542" }
+    ],
+    sizes: ["S", "M", "L", "XL"],
+    inStock: true,
+    isBestseller: true,
+    featuredOrder: 0,
+    description: "Effortless fusion of casual shirt and festive kurta. Roll the sleeves up for weekend gatherings or pair with trousers for cultural occasions.",
+    details: [
+      "100% Breathable Organic European Linen",
+      "Roll-tab sleeves with horn button fastenings",
+      "Garment washed for ultra-soft lived-in texture"
+    ]
+  },
+  {
+    id: "midnight-asymmetric-kurta",
+    name: "Midnight Asymmetric Festive Kurta",
+    price: 1999,
+    originalPrice: 2699,
+    image: "/images/products/ethnic-asymmetric-kurta.webp",
+    images: [
+      "/images/products/ethnic-asymmetric-kurta.webp",
+      "/images/products/ethnic-linen-kurta.webp"
+    ],
+    alt: "Indian male model wearing an asymmetric jacquard festive kurta in deep navy",
+    category: "Shirts",
+    colors: [
+      { name: "Midnight Navy", value: "#1E2838" },
+      { name: "Deep Wine", value: "#4A1D2B" }
+    ],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    inStock: true,
+    isNew: true,
+    featuredOrder: 0,
+    description: "Dramatic architectural drape meeting heritage Indian silhouette. Features metallic horn buttons and an angled diagonal placket.",
+    details: [
+      "Fine Viscose Silk Blend with micro jacquard weave",
+      "Angled diagonal placket with concealed snaps",
+      "Side slits for easy movement and pocket access"
+    ]
+  },
+  {
     "id": "essential-cotton-t-shirt",
     "name": "Essential Cotton T-Shirt",
     "price": 599,

@@ -279,6 +279,7 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
         <div className="pdp-container py-16 flex-1 flex flex-col items-center justify-center">
           <ErrorState
             heading="PIECE NOT FOUND"
+            headingLevel="h1"
             message="The clothing piece you are looking for does not exist or has been moved from the catalogue."
             isTemporary={false}
             action={{

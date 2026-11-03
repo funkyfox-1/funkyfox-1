@@ -6,14 +6,18 @@
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
+  max-width: 100vw;
+  overflow-x: clip;
 }
 
 .cart-container {
+  width: 100%;
   max-width: var(--container-7xl);
   margin-left: auto;
   margin-right: auto;
   padding-left: 1rem;
   padding-right: 1rem;
+  box-sizing: border-box;
   flex: 1 0 auto;
 }
 

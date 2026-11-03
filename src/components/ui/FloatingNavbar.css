@@ -215,9 +215,12 @@
   top: 4.25rem;
   background-color: rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   z-index: 49;
   display: flex;
   justify-content: flex-end;
+  height: calc(100vh - 4.25rem);
+  height: calc(100dvh - 4.25rem);
 }
 
 .fox-nav-drawer-card {
@@ -226,10 +229,13 @@
   background-color: #ffffff;
   height: 100%;
   padding: 1.75rem 1.5rem;
+  padding-bottom: max(1.75rem, env(safe-area-inset-bottom, 1.75rem));
   box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .fox-nav-drawer-link {

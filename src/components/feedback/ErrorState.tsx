@@ -4,6 +4,7 @@ import { AlertCircle, RefreshCw, ArrowLeft } from 'lucide-react'
 
 export interface ErrorStateProps {
   heading?: string
+  headingLevel?: 'h1' | 'h2'
   message: string
   isTemporary?: boolean
   action?: {
@@ -22,6 +23,7 @@ export interface ErrorStateProps {
 
 export default function ErrorState({
   heading = 'Something went wrong',
+  headingLevel = 'h2',
   message,
   isTemporary = true,
   action,
@@ -30,6 +32,7 @@ export default function ErrorState({
   technicalDetails,
 }: ErrorStateProps) {
   const [showDetails, setShowDetails] = React.useState(false)
+  const HeadingTag = headingLevel
 
   return (
     <div
@@ -41,9 +44,9 @@ export default function ErrorState({
         <AlertCircle size={28} strokeWidth={1.8} aria-hidden="true" />
       </div>
 
-      <h2 className="font-display text-2xl font-black uppercase tracking-tight text-ink sm:text-3xl max-w-lg">
+      <HeadingTag className="font-display text-2xl font-black uppercase tracking-tight text-ink sm:text-3xl max-w-lg">
         {heading}
-      </h2>
+      </HeadingTag>
 
       <p className="mt-2.5 max-w-md text-sm text-soft leading-relaxed">
         {message}

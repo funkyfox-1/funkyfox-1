@@ -6,6 +6,25 @@ export default function Footer() {
     <PushpinTearFooter
       brand="funkyfox."
       name="funky fox menswear"
+      logo={
+        <div className="flex items-center gap-2">
+          <svg viewBox="0 0 36 28" className="h-6 w-auto" aria-hidden="true" fill="none">
+            <path
+              d="M3 5 L12 24 L18 16 L24 24 L33 5 L24 9 L18 3 L12 9 Z"
+              fill="#E87535"
+              stroke="#E87535"
+              strokeWidth="1.5"
+              strokeLinejoin="round"
+            />
+            <circle cx="14" cy="11" r="1.5" fill="#141414" />
+            <circle cx="22" cy="11" r="1.5" fill="#141414" />
+            <path d="M16 16 L18 18 L20 16 Z" fill="#141414" />
+          </svg>
+          <span className="font-display text-sm font-black tracking-wider text-white uppercase">
+            FUNKY <span className="text-[#E87535]">FOX</span>
+          </span>
+        </div>
+      }
       sheet="#141414"
       paper="#FAF9F6"
       sheetInk="#ffffff"

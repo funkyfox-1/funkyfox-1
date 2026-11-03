@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import "./styles/original.css";
+@import "tailwindcss";
 
 /* FUNKY FOX Centralized Design Tokens */
 :root,
@@ -47,6 +47,12 @@
   --color-brand: #f2620f;
   --color-brand-deep: #cf4e06;
   --color-cream: #faf7f1;
+
+  /* Universal safe-area custom properties with 0px fallbacks */
+  --sat: env(safe-area-inset-top, 0px);
+  --sar: env(safe-area-inset-right, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --sal: env(safe-area-inset-left, 0px);
 }
 
 @theme {
@@ -72,10 +78,14 @@
   }
 }
 
-/* Global Smooth Scroll & Scroll-Lock Containment */
+/* Global Smooth Scroll & Cross-Engine Typography Rendering */
 html {
   scroll-behavior: smooth !important;
   min-height: 100%;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -84,10 +94,11 @@ html {
   }
 }
 
-/* Guaranteed Sticky Footer Layout:
-   Body and root stretch to 100vh so short pages never leave footer floating mid-screen */
+/* Guaranteed Sticky Footer Layout & Dynamic Viewport Support:
+   Supports both 100vh and modern 100dvh for mobile chrome collapse/expand */
 body {
   min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
   padding: 0;
   display: flex;
@@ -99,9 +110,57 @@ body {
 
 #root {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
+}
+
+/* Prevent narrow viewport text blowouts at 320px–360px */
+h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+/* Fluid media responsiveness */
+img, svg, video, canvas, audio, iframe, embed, object {
+  max-width: 100%;
+}
+
+/* Prevent unwanted mobile viewport auto-zoom on input focus in iOS Safari & Android */
+@media screen and (max-width: 768px) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea,
+  .fox-profile-input {
+    font-size: 16px !important;
+  }
+}
+
+/* Safe Area Inset Helpers */
+.pt-safe {
+  padding-top: max(1rem, env(safe-area-inset-top, 0px));
+}
+.pb-safe {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+}
+.bottom-safe {
+  bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Accessible minimum tap target without altering visual geometry */
+.tap-target-44 {
+  position: relative;
+}
+.tap-target-44::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  min-width: 44px;
+  min-height: 44px;
+  width: 100%;
+  height: 100%;
 }
 
 /* Section scroll margins to prevent sticky navbar overlap during smooth scroll */
@@ -153,6 +212,46 @@ select:focus-visible,
 textarea:focus-visible {
   outline: 2px solid var(--color-orange-primary);
   outline-offset: 2px;
+}
+
+/* Impeccable Craft Floor: Themed Browser Surfaces */
+::selection {
+  background-color: rgba(232, 117, 53, 0.22) !important;
+  color: #191919 !important;
+}
+
+input,
+textarea,
+select {
+  caret-color: var(--color-orange-primary);
+}
+
+a {
+  text-underline-offset: 3px;
+}
+
+/* Subtle, refined scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #D6CEBE transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #D6CEBE;
+  border-radius: 9999px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #B5AD9E;
 }
 
 /* Reusable skeleton neutral pulse */

@@ -430,10 +430,16 @@
   border-radius: 0.75rem;
   border: 1px solid #D1D5DB;
   background-color: #FAF9F6;
-  font-size: 0.875rem;
+  font-size: 1rem;
   color: #191919;
   font-weight: 500;
   transition: all 0.2s ease;
+}
+
+@media (min-width: 640px) {
+  .fox-profile-input {
+    font-size: 0.875rem;
+  }
 }
 
 .fox-profile-input:focus {

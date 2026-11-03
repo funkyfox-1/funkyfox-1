@@ -4,7 +4,7 @@ import * as React from "react"
 
 /**
  * Pushpin Tear Footer — a site footer made as a torn poster. An electric-blue
- * sheet carries the footer's chrome: back to top, socials, the KS monogram,
+ * sheet carries the footer's chrome: back to top, socials, the Funky Fox monogram,
  * copy-email, a newsletter field, an availability line, a live local clock
  * and two link columns. Its bottom has been ripped away from a glossy
  * pushpin, and the brand is printed on the paper underneath with legal links,
@@ -275,16 +275,26 @@ function Seal() {
   )
 }
 
-/** KS monogram: the K's upper arm ends in a pushpin head, the S is the tear. */
+/** Fox mascot mark */
 function KMark() {
   return (
-    <svg viewBox="0 0 44 28" className="tpf-mark" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M5.5 4.5v19" />
-      <path d="M5.5 15.2 15.6 6.4" />
-      <path d="M10.4 11 17 23.5" />
-      <path d="M37.5 6.6c-1.2-1.4-3-2.1-5-2.1-3 0-5 1.6-5 3.9 0 5.2 10.4 3.5 10.4 9.1 0 2.6-2.3 4.5-5.4 4.5-2.3 0-4.4-.9-5.7-2.5" />
-      <circle cx="17" cy="5" r="3" fill="currentColor" stroke="none" className="tpf-mark-dot" />
-    </svg>
+    <div className="flex items-center gap-2">
+      <svg viewBox="0 0 36 28" className="tpf-mark" aria-hidden="true" fill="none">
+        <path
+          d="M3 5 L12 24 L18 16 L24 24 L33 5 L24 9 L18 3 L12 9 Z"
+          fill="#E87535"
+          stroke="#E87535"
+          strokeWidth="1.5"
+          strokeLinejoin="round"
+        />
+        <circle cx="14" cy="11" r="1.5" fill="#141414" />
+        <circle cx="22" cy="11" r="1.5" fill="#141414" />
+        <path d="M16 16 L18 18 L20 16 Z" fill="#141414" />
+      </svg>
+      <span className="font-display text-sm font-black tracking-wider text-white uppercase">
+        FUNKY <span className="text-[#E87535]">FOX</span>
+      </span>
+    </div>
   )
 }
 
@@ -376,7 +386,7 @@ function useReducedMotion() {
 }
 
 const CSS =
-  ".tpf{position:relative;overflow:hidden;container-type:size;min-height:680px;background:var(--tpf-sheet);color:var(--tpf-on-sheet);font-family:var(--tpf-sans);isolation:isolate;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;--ease:cubic-bezier(.22,1,.36,1);--fs:max(12px,1.85cqmin)}" +
+  ".tpf{position:relative;overflow:hidden;max-width:100vw;width:100%;container-type:size;min-height:680px;background:var(--tpf-sheet);color:var(--tpf-on-sheet);font-family:var(--tpf-sans);isolation:isolate;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;--ease:cubic-bezier(.22,1,.36,1);--fs:max(12px,1.85cqmin)}" +
   ".tpf *,.tpf *::before,.tpf *::after{box-sizing:border-box}" +
   ":where(.tpf) a{color:inherit;text-decoration:none}" +
   ":where(.tpf) button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer}" +
@@ -404,7 +414,7 @@ const CSS =
   ".tpf-logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:grid;place-items:center}" +
   ".tpf-logo .tpf-mark path{stroke-dasharray:60;stroke-dashoffset:0;transition:stroke-dashoffset 1.3s var(--ease) .15s}" +
   ".tpf:not(.s1) .tpf-logo .tpf-mark path{stroke-dashoffset:60}" +
-  ".tpf-mark-dot{transform-box:fill-box;transform-origin:50% 50%;transition:transform .6s cubic-bezier(.5,1.8,.4,1) .9s}" +
+  ".tpf-mark-dot{transform-box:fill-box;transform-origin:50% 50%;transition:transform .6s cubic-bezier(.16,1,.3,1) .9s}" +
   ".tpf:not(.s1) .tpf-mark-dot{transform:scale(0)}" +
   ".tpf-logo:hover .tpf-mark-dot{animation:tpf-bob .7s var(--ease)}" +
   ".tpf-mail{display:flex;align-items:center;gap:.6em;font-size:var(--fs);letter-spacing:.01em;padding:.35em .2em;transition:transform .35s var(--ease)}" +
@@ -419,7 +429,7 @@ const CSS =
   ".tpf-pill:focus-within{box-shadow:0 0 0 3px color-mix(in srgb,var(--tpf-on-sheet) 35%,transparent)}" +
   ".tpf-pill input{flex:1;min-width:0;height:100%;font-size:max(13px,2cqmin);transition:opacity .3s}" +
   ".tpf-pill input::placeholder{color:currentColor;opacity:.55}" +
-  ".tpf-knob{display:grid;place-items:center;flex:none;height:calc(100% - .6em);aspect-ratio:1;border-radius:50%;background:var(--tpf-sheet);color:var(--tpf-on-sheet);box-shadow:inset 0 0 0 .22em color-mix(in srgb,var(--tpf-on-sheet) 30%,var(--tpf-sheet));transition:transform .45s cubic-bezier(.5,1.7,.4,1)}" +
+  ".tpf-knob{display:grid;place-items:center;flex:none;height:calc(100% - .6em);aspect-ratio:1;border-radius:50%;background:var(--tpf-sheet);color:var(--tpf-on-sheet);box-shadow:inset 0 0 0 .22em color-mix(in srgb,var(--tpf-on-sheet) 30%,var(--tpf-sheet));transition:transform .45s cubic-bezier(.16,1,.3,1)}" +
   ".tpf-knob:hover{transform:translateX(2px) scale(1.06)}" +
   ".tpf-knob .tpf-ico{width:52%;height:52%}" +
   ".tpf-pill[data-sent=true] input{opacity:0}" +
@@ -888,16 +898,6 @@ export default function PushpinTearFooter({
     <footer ref={rootRef} className={cls} style={vars} onPointerMove={onPointerMove} onPointerLeave={onPointerLeave}>
       <style>{CSS}</style>
 
-      {/* ---- full-bleed map background layer revealed beneath torn sheet ---- */}
-      <div className="tpf-full-map-layer" aria-hidden="true">
-        <img
-          src="/images/footer-map-layer.jpg"
-          alt="Funky Fox Vijayawada Flagship Region Map"
-          className="tpf-full-map-img"
-          loading="lazy"
-        />
-      </div>
-
       <svg ref={svgRef} className="tpf-stage" aria-hidden="true">
         <defs>
           <radialGradient id={uid + "v"} cx=".5" cy=".78" r=".75">
@@ -1047,29 +1047,6 @@ export default function PushpinTearFooter({
           </span>
         </span>
       </button>
-
-      {/* ---- Interactive Flagship Depot Floating Pill on Map ---- */}
-      <div className="tpf-map-pill" style={H(0)}>
-        <div className="tpf-map-pill-loc">
-          <span className="tpf-map-pill-dot" aria-hidden="true" />
-          <div className="tpf-map-pill-text">
-            <span className="tpf-map-pill-title">FUNKY FOX</span>
-            <span className="tpf-map-pill-address">MG Road, Benz Circle, Vijayawada · PIN 520010</span>
-          </div>
-        </div>
-        <a
-          href="https://maps.google.com/maps?q=16.5168591%2C80.628406&z=17&hl=en"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="tpf-map-pill-cta"
-          title="Open Flagship Depot in Google Maps"
-        >
-          <span>Open in Maps</span>
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M7 17l9.2-9.2M17 17V8H8" />
-          </svg>
-        </a>
-      </div>
 
       <div className="tpf-z tpf-foot tpf-ink">
         <span className="tpf-p" style={H(3)}>{copyright}</span>

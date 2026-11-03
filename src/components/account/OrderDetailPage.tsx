@@ -16,7 +16,8 @@ import {
   HelpCircle,
   ExternalLink,
   RefreshCw,
-  Check
+  Check,
+  ChevronDown
 } from 'lucide-react';
 import {
   getDemoOrderById,
@@ -26,6 +27,7 @@ import {
 import { formatPrice } from '../../data/products';
 import { OrderService, ReturnExchangeResponse } from '../../services/api';
 import { showToast } from '../../utils/toast';
+import DeliveredOrderReviewCard from './DeliveredOrderReviewCard';
 import './AccountStyles.css';
 
 export default function OrderDetailPage() {
@@ -70,7 +72,7 @@ export default function OrderDetailPage() {
     return (
       <div className="py-16 text-center border border-dashed border-[#E8E5DF] rounded-2xl bg-[#FAF9F6] p-8">
         <Package size={40} className="mx-auto text-neutral-400 mb-3" />
-        <h2 className="font-display text-xl font-bold uppercase text-ink">Order Not Found</h2>
+        <h1 className="font-display text-xl font-bold uppercase text-ink">Order Not Found</h1>
         <p className="text-xs text-neutral-500 mt-1 max-w-md mx-auto">
           We could not locate an order matching ID <span className="font-mono text-ink">"{orderId}"</span>.
         </p>
@@ -377,6 +379,11 @@ export default function OrderDetailPage() {
             </div>
           </div>
 
+          {/* Clean & Premium Verified Delivery Review Card */}
+          {order.status === 'delivered' && (
+            <DeliveredOrderReviewCard order={order} />
+          )}
+
           {/* Delivery Address & Detailed Vertical Milestones (Images 1 & 2 Style) */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
             {/* Delivery Address */}
@@ -478,20 +485,23 @@ export default function OrderDetailPage() {
 
             <form onSubmit={handleCancelSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1.5">
                   Reason for Cancellation
                 </label>
-                <select
-                  value={cancelReason}
-                  onChange={(e) => setCancelReason(e.target.value)}
-                  className="w-full px-3 py-2 text-xs rounded-lg border border-neutral-300 focus:border-ink focus:outline-none"
-                >
-                  <option value="Changed my mind">Changed my mind</option>
-                  <option value="Selected wrong size or color">Selected wrong size or color</option>
-                  <option value="Ordered by mistake">Ordered by mistake</option>
-                  <option value="Need to change delivery address">Need to change delivery address</option>
-                  <option value="Found a different garment">Found a different garment</option>
-                </select>
+                <div className="relative w-full">
+                  <select
+                    value={cancelReason}
+                    onChange={(e) => setCancelReason(e.target.value)}
+                    className="w-full appearance-none -webkit-appearance-none px-3.5 pr-10 py-2.5 text-xs sm:text-sm font-medium rounded-xl border border-neutral-300 bg-white hover:bg-[#FAF9F6] focus:border-[#E87535] focus:ring-2 focus:ring-[#E87535]/15 focus:outline-none transition-colors cursor-pointer"
+                  >
+                    <option value="Changed my mind">Changed my mind</option>
+                    <option value="Selected wrong size or color">Selected wrong size or color</option>
+                    <option value="Ordered by mistake">Ordered by mistake</option>
+                    <option value="Need to change delivery address">Need to change delivery address</option>
+                    <option value="Found a different garment">Found a different garment</option>
+                  </select>
+                  <ChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-400" />
+                </div>
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-2">
@@ -624,21 +634,24 @@ export default function OrderDetailPage() {
 
                   {/* Reason selector */}
                   <div>
-                    <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1">
+                    <label className="block text-[11px] font-bold uppercase tracking-wider text-neutral-500 mb-1.5">
                       Reason for {returnType === 'exchange' ? 'Exchange' : 'Return'}
                     </label>
-                    <select
-                      value={returnReason}
-                      onChange={(e) => setReturnReason(e.target.value)}
-                      className="w-full px-3 py-2.5 text-xs rounded-xl border border-neutral-300 focus:border-ink focus:outline-none bg-white font-medium"
-                    >
-                      <option value="Size too tight / small">Size too tight / small</option>
-                      <option value="Size too loose / large">Size too loose / large</option>
-                      <option value="Color or shade differs from screen">Color or shade differs from screen</option>
-                      <option value="Fabric drape or handfeel preference">Fabric drape or handfeel preference</option>
-                      <option value="Found minor stitching or defect issue">Found minor stitching or defect issue</option>
-                      <option value="Other / Changed my mind">Other / Changed my mind</option>
-                    </select>
+                    <div className="relative w-full">
+                      <select
+                        value={returnReason}
+                        onChange={(e) => setReturnReason(e.target.value)}
+                        className="w-full appearance-none -webkit-appearance-none px-3.5 pr-10 py-2.5 text-xs sm:text-sm rounded-xl border border-neutral-300 bg-white hover:bg-[#FAF9F6] focus:border-[#E87535] focus:ring-2 focus:ring-[#E87535]/15 focus:outline-none transition-colors font-medium cursor-pointer"
+                      >
+                        <option value="Size too tight / small">Size too tight / small</option>
+                        <option value="Size too loose / large">Size too loose / large</option>
+                        <option value="Color or shade differs from screen">Color or shade differs from screen</option>
+                        <option value="Fabric drape or handfeel preference">Fabric drape or handfeel preference</option>
+                        <option value="Found minor stitching or defect issue">Found minor stitching or defect issue</option>
+                        <option value="Other / Changed my mind">Other / Changed my mind</option>
+                      </select>
+                      <ChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-400" />
+                    </div>
                   </div>
 
                   {/* Replacement size if exchange */}

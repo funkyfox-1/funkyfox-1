@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Star, Plus, CheckCircle2, MessageSquare } from 'lucide-react';
+import { Star, Plus, CheckCircle2, MessageSquare, ChevronDown } from 'lucide-react';
 import { getDemoReviews, addDemoReview, ProductReview } from '../../data/accountMockData';
 import { products } from '../../data/products';
 import './AccountStyles.css';
@@ -143,20 +143,23 @@ export default function AccountReviews() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1.5">
                   Product
                 </label>
-                <select
-                  value={productId}
-                  onChange={(e) => setProductId(e.target.value)}
-                  className="w-full px-3 py-2 text-xs rounded-lg border border-neutral-300 focus:border-ink focus:outline-none"
-                >
-                  {products.map((p) => (
-                    <option key={p.id} value={p.id}>
-                      {p.name}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative w-full">
+                  <select
+                    value={productId}
+                    onChange={(e) => setProductId(e.target.value)}
+                    className="w-full appearance-none -webkit-appearance-none px-3.5 pr-10 py-2.5 text-xs sm:text-sm font-medium rounded-xl border border-neutral-300 bg-white hover:bg-[#FAF9F6] focus:border-[#E87535] focus:ring-2 focus:ring-[#E87535]/15 focus:outline-none transition-colors cursor-pointer"
+                  >
+                    {products.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-400" />
+                </div>
               </div>
 
               <div>
@@ -209,18 +212,21 @@ export default function AccountReviews() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-neutral-700 mb-1.5">
                   Fit Perception
                 </label>
-                <select
-                  value={fitFeedback}
-                  onChange={(e) => setFitFeedback(e.target.value as any)}
-                  className="w-full px-3 py-2 text-xs rounded-lg border border-neutral-300 focus:border-ink focus:outline-none"
-                >
-                  <option value="true_to_size">True to Size (Recommended)</option>
-                  <option value="runs_small">Runs Slightly Small</option>
-                  <option value="runs_large">Runs Slightly Large</option>
-                </select>
+                <div className="relative w-full">
+                  <select
+                    value={fitFeedback}
+                    onChange={(e) => setFitFeedback(e.target.value as any)}
+                    className="w-full appearance-none -webkit-appearance-none px-3.5 pr-10 py-2.5 text-xs sm:text-sm font-medium rounded-xl border border-neutral-300 bg-white hover:bg-[#FAF9F6] focus:border-[#E87535] focus:ring-2 focus:ring-[#E87535]/15 focus:outline-none transition-colors cursor-pointer"
+                  >
+                    <option value="true_to_size">True to Size (Recommended)</option>
+                    <option value="runs_small">Runs Slightly Small</option>
+                    <option value="runs_large">Runs Slightly Large</option>
+                  </select>
+                  <ChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-400" />
+                </div>
               </div>
 
               <div className="flex items-center justify-end gap-3 pt-2">

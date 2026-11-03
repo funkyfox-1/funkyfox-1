@@ -14,6 +14,8 @@ import HelpPage from "./components/HelpPage";
 import HeroHighlightsStrip from "./components/HeroHighlightsStrip";
 import EverydayLineup from "./components/EverydayLineup";
 import ShoppingProcess from "./components/ShoppingProcess";
+import EthnicWearSection from "./components/EthnicWearSection";
+import PullToRefresh from "./components/ui/PullToRefresh";
 import FAQSection from "./components/ui/FAQSection";
 import BrandStandardCTA from "./components/ui/BrandStandardCTA";
 import FloatingNavbar from "./components/ui/FloatingNavbar";
@@ -158,7 +160,7 @@ function ProductGrid({ items: i, addToCart: s }) {
 }
 function HomePage({ addToCart: i }) {
   return (
-    <>
+    <PullToRefresh>
       <section
         id="home"
         aria-labelledby="hero-heading"
@@ -300,11 +302,12 @@ function HomePage({ addToCart: i }) {
         autoplay={true}
         interval={2800}
       />
+      <EthnicWearSection onAddToCart={i} />
       <ShoppingProcess />
       <FAQSection />
       <BrandStandardCTA />
       <Footer />
-    </>
+    </PullToRefresh>
   );
 }
 
@@ -552,7 +555,7 @@ function Storefront() {
       >
         {"Skip to content"}
       </a>
-      {Q.pathname !== "/checkout" && Q.pathname !== "/order-confirmation" && Q.pathname !== "/about" && Q.pathname !== "/login" && Q.pathname !== "/register" && Q.pathname !== "/forgot-password" && !isBannerDismissed && (
+      {Q.pathname !== "/checkout" && Q.pathname !== "/order-confirmation" && !Q.pathname.startsWith("/account") && Q.pathname !== "/about" && Q.pathname !== "/login" && Q.pathname !== "/register" && Q.pathname !== "/forgot-password" && !isBannerDismissed && (
         <div className="relative flex h-8 items-center justify-center bg-ink px-8 text-center text-[10px] font-semibold uppercase tracking-[.18em] text-paper z-50">
           <div className="flex items-center justify-center">
             <Truck size={12} className="mr-2 shrink-0 text-fox" />
@@ -568,7 +571,7 @@ function Storefront() {
           </button>
         </div>
       )}
-      {Q.pathname !== "/checkout" && Q.pathname !== "/order-confirmation" && Q.pathname !== "/login" && Q.pathname !== "/register" && Q.pathname !== "/forgot-password" && (
+      {Q.pathname !== "/checkout" && Q.pathname !== "/order-confirmation" && !Q.pathname.startsWith("/account") && Q.pathname !== "/login" && Q.pathname !== "/register" && Q.pathname !== "/forgot-password" && (
         <FloatingNavbar cartCount={$} onOpenSearch={() => M(!0)} />
       )}
       <main id="main" className="flex-1 flex flex-col">
@@ -644,7 +647,7 @@ function Storefront() {
             onClick={() => f(!1)}
             className="absolute inset-0 w-full bg-ink/45"
           />
-          <aside className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-paper shadow-2xl">
+          <aside className="absolute right-0 top-0 flex h-full max-h-[100dvh] w-full max-w-md flex-col bg-paper shadow-2xl">
             <div className="flex h-16 items-center justify-between border-b border-line px-5">
               <h2 className="flex items-center gap-2 font-display text-lg font-black uppercase">
                 <ShoppingBag size={19} />
@@ -728,7 +731,7 @@ function Storefront() {
                     );
                   })}
                 </div>
-                <div className="border-t border-line p-5">
+                <div className="border-t border-line p-5 pb-[max(1.25rem,env(safe-area-inset-bottom,1.25rem))]">
                   <div className="flex justify-between font-semibold">
                     <span>{"Subtotal"}</span>
                     <span>{formatPrice(at)}</span>

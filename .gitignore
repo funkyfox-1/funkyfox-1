@@ -38,3 +38,6 @@ backups/
 *.sql.bak
 *.dpapi
 *.credential
+
+.gemini/
+.codex/

@@ -542,21 +542,24 @@ export default function HelpPage() {
                     <label htmlFor="contact-topic" className="help-form-label">
                       Topic
                     </label>
-                    <select
-                      id="contact-topic"
-                      value={formValues.topic}
-                      onChange={(e) =>
-                        setFormValues((p) => ({ ...p, topic: e.target.value }))
-                      }
-                      className="help-form-select"
-                    >
-                      <option value="Orders">Orders</option>
-                      <option value="Shipping">Shipping</option>
-                      <option value="Returns & Exchanges">Returns &amp; Exchanges</option>
-                      <option value="Products & Sizing">Products &amp; Sizing</option>
-                      <option value="Payments">Payments</option>
-                      <option value="General Inquiry">General Inquiry</option>
-                    </select>
+                    <div className="relative w-full">
+                      <select
+                        id="contact-topic"
+                        value={formValues.topic}
+                        onChange={(e) =>
+                          setFormValues((p) => ({ ...p, topic: e.target.value }))
+                        }
+                        className="help-form-select appearance-none -webkit-appearance-none pr-10 cursor-pointer"
+                      >
+                        <option value="Orders">Orders</option>
+                        <option value="Shipping">Shipping</option>
+                        <option value="Returns & Exchanges">Returns &amp; Exchanges</option>
+                        <option value="Products & Sizing">Products &amp; Sizing</option>
+                        <option value="Payments">Payments</option>
+                        <option value="General Inquiry">General Inquiry</option>
+                      </select>
+                      <ChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-400" />
+                    </div>
                   </div>
 
                   {/* Message */}

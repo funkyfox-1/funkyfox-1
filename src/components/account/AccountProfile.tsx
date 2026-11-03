@@ -16,7 +16,8 @@ import {
   Smartphone,
   Tag,
   Check,
-  AlertCircle
+  AlertCircle,
+  ChevronDown
 } from 'lucide-react';
 import { getDemoUser, updateDemoProfile, UserProfile } from '../../data/accountMockData';
 import JellyRadio from '../ui/JellyRadio';
@@ -328,11 +329,14 @@ export default function AccountProfile() {
                   <Tag size={13} className="text-neutral-400" />
                   Catalog Focus
                 </label>
-                <select className="fox-profile-input">
-                  <option value="menswear">Menswear Essentials & Easy Layers</option>
-                  <option value="oversized">Oversized & Streetwear Fits</option>
-                  <option value="unisex">All Collections & Unisex Edits</option>
-                </select>
+                <div className="relative w-full">
+                  <select className="fox-profile-input appearance-none -webkit-appearance-none pr-10 cursor-pointer font-medium">
+                    <option value="menswear">Menswear Essentials & Easy Layers</option>
+                    <option value="oversized">Oversized & Streetwear Fits</option>
+                    <option value="unisex">All Collections & Unisex Edits</option>
+                  </select>
+                  <ChevronDown size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-neutral-500" />
+                </div>
               </div>
             </div>
           </div>

@@ -1,14 +1,12 @@
 import * as React from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { ArrowLeft, CheckCircle2, ShieldCheck, ShoppingBag, Truck } from 'lucide-react'
-import { formatPrice } from '../data/products'
-import { EmptyState, OrderConfirmation } from './feedback'
-import Footer from './Footer'
+import { getDemoOrders } from '../data/accountMockData'
 
 export default function OrderConfirmationPage() {
   const location = useLocation()
   const orderData = location.state as {
     orderReference?: string
+    orderId?: string
     customerName?: string
     customerEmail?: string
     deliveryCity?: string
@@ -19,95 +17,111 @@ export default function OrderConfirmationPage() {
     itemsCount?: number
   } | null
 
+  // Check if we have an active order from checkout navigation or latest confirmed demo order
+  const existingOrders = React.useMemo(() => {
+    try {
+      return getDemoOrders()
+    } catch {
+      return []
+    }
+  }, [])
+
+  const hasValidOrder = Boolean(
+    orderData?.orderReference ||
+    orderData?.orderId ||
+    orderData?.customerName ||
+    existingOrders.length > 0
+  )
+
+  const activeReference = orderData?.orderReference || (existingOrders.length > 0 ? existingOrders[0].orderNumber : null)
+
   React.useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
 
   return (
-    <div className="flex flex-col min-h-screen bg-paper text-ink">
-      {/* Top Header */}
-      <header className="border-b border-line bg-paper/95 backdrop-blur-md sticky top-0 z-40">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:h-[72px] lg:px-8">
-          <Link
-            to="/products"
-            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-soft hover:text-fox transition-colors"
-          >
-            <ArrowLeft size={14} />
-            <span>Back to Shop</span>
-          </Link>
-          <Link
-            to="/#home"
-            className="group flex items-baseline gap-1.5"
-            aria-label="Funky Fox Home"
-          >
-            <span className="font-display text-xl font-black uppercase tracking-tight text-ink sm:text-2xl">
-              FUNKY <span className="text-fox transition-colors group-hover:text-fox-deep">FOX</span>
-            </span>
-            <span className="h-1.5 w-1.5 rounded-full bg-fox transition-transform duration-200 group-hover:scale-125" />
-          </Link>
-          <div className="w-20" aria-hidden="true" />
-        </div>
+    <div className="min-h-screen w-full bg-[#FBF8F1] flex flex-col items-center justify-between px-4 py-8 sm:py-12 selection:bg-[#f16c24]/20 selection:text-[#1c1d1a]">
+      {/* Centered Top Brand Logo */}
+      <header className="w-full pt-2 sm:pt-4 flex justify-center items-center">
+        <Link
+          to="/"
+          className="group inline-flex items-baseline gap-1 text-2xl sm:text-3xl font-extrabold tracking-tight transition-transform duration-150 hover:scale-[1.02] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f16c24] rounded-md px-2 py-1"
+          aria-label="Funky Fox Home"
+        >
+          <span className="text-[#1c1d1a] font-sans font-black">Funky</span>
+          <span className="text-[#f16c24] font-sans font-black italic">Fox</span>
+        </Link>
       </header>
 
-      {/* Main Content */}
-      <main className="flex-1 py-12 sm:py-16">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
-          {orderData && orderData.customerName ? (
-            <div className="space-y-6">
-              <OrderConfirmation
-                mode="preview"
-                customerName={orderData.customerName}
-                customerEmail={orderData.customerEmail || 'customer@example.com'}
-                deliveryCity={orderData.deliveryCity || 'Bengaluru'}
-                deliveryState={orderData.deliveryState || 'Karnataka'}
-                deliveryPincode={orderData.deliveryPincode || '560001'}
-                orderTotal={orderData.orderTotal}
-                orderReference={orderData.orderReference}
-                paymentStatus="Preview Authorized"
-                deliveryStatus="Preview Ready"
+      {/* Main Content Area */}
+      <main className="w-full max-w-2xl flex-1 flex flex-col items-center justify-center my-auto py-6 sm:py-10 text-center">
+        {hasValidOrder ? (
+          <>
+            {/* Mascot Illustration extracted directly from reference */}
+            <div className="relative w-full max-w-[340px] sm:max-w-[420px] md:max-w-[470px] mx-auto flex items-center justify-center">
+              <img
+                src="/images/order-success-mascot.png"
+                alt="Funky Fox Order Confirmed"
+                className="w-full h-auto object-contain select-none pointer-events-none drop-shadow-xs"
+                width={700}
+                height={505}
+                loading="eager"
               />
+            </div>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
-                <Link
-                  to="/account/orders"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-12 px-8 rounded-md bg-ink text-white text-xs font-bold uppercase tracking-wider transition-colors hover:bg-neutral-800"
-                >
-                  <Truck size={16} />
-                  <span>Track in My Orders</span>
-                </Link>
-                <Link
-                  to="/products"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 h-12 px-8 rounded-md bg-fox text-white text-xs font-bold uppercase tracking-wider transition-colors hover:bg-fox-deep"
-                >
-                  <ShoppingBag size={16} />
-                  <span>Continue Shopping</span>
-                </Link>
-              </div>
+            {/* Success Heading */}
+            <h1 className="mt-6 sm:mt-8 font-sans text-3xl sm:text-4xl md:text-[42px] font-extrabold text-[#1c1d1a] tracking-tight leading-tight">
+              Order Placed Successfully!
+            </h1>
+
+            {/* Supporting Message */}
+            <div className="mt-3 sm:mt-4 space-y-1 text-sm sm:text-base md:text-lg text-[#4a4b48] font-normal leading-relaxed max-w-md mx-auto">
+              <p>Thank you for shopping with Funky Fox.</p>
+              <p>Your order has been confirmed and is now being processed.</p>
             </div>
-          ) : (
-            /* Safe Fallback when route is visited directly without an active order */
-            <div className="rounded-xl border border-line bg-white p-8 sm:p-12 text-center shadow-xs">
-              <EmptyState
-                icon={<ShieldCheck size={28} className="text-soft" />}
-                heading="NO VERIFIED ORDER FOUND"
-                message="You have reached the confirmation page without an active order session. In this demonstration storefront, genuine orders and payment processing will be enabled at official store launch."
-                primaryAction={{
-                  label: 'EXPLORE SHOP',
-                  to: '/products',
-                }}
-                secondaryAction={{
-                  label: 'GO TO HOMEPAGE',
-                  to: '/',
-                }}
-              />
+
+            {/* Subtle order reference for reassurance */}
+            {activeReference && (
+              <p className="mt-2 text-xs font-medium text-[#7a7b78] tracking-wider uppercase">
+                Order #{activeReference}
+              </p>
+            )}
+
+            {/* Primary Action Button */}
+            <div className="mt-8 sm:mt-10">
+              <Link
+                to="/products"
+                className="inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-[#1c1d19] hover:bg-[#2e2f2b] text-white text-sm sm:text-base font-semibold tracking-normal transition-all duration-200 shadow-sm active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1c1d19] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FBF8F1]"
+              >
+                <span>Continue Shopping</span>
+                <span className="text-lg leading-none" aria-hidden="true">&rarr;</span>
+              </Link>
             </div>
-          )}
-        </div>
+          </>
+        ) : (
+          /* Safe Fallback when visited directly with no active order */
+          <div className="max-w-md mx-auto px-4 py-12 flex flex-col items-center">
+            <h1 className="font-sans text-2xl sm:text-3xl font-bold text-[#1c1d1a] tracking-tight">
+              No Active Order Found
+            </h1>
+            <p className="mt-3 text-sm sm:text-base text-[#4a4b48] leading-relaxed">
+              You have reached the confirmation page without an active order session. Explore our catalog to find pieces for your wardrobe.
+            </p>
+            <Link
+              to="/products"
+              className="mt-8 inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-[#1c1d19] hover:bg-[#2e2f2b] text-white text-sm font-semibold tracking-normal transition-all duration-200 shadow-sm active:scale-[0.98]"
+            >
+              <span>Explore Collection</span>
+              <span aria-hidden="true">&rarr;</span>
+            </Link>
+          </div>
+        )}
       </main>
 
-      {/* Footer */}
-      <Footer />
+      {/* Spacer to balance top header and maintain golden vertical proportion */}
+      <footer className="w-full py-2 opacity-0 pointer-events-none select-none" aria-hidden="true">
+        <span>Funky Fox</span>
+      </footer>
     </div>
   )
 }
-

@@ -8,7 +8,8 @@ import {
   XCircle,
   RotateCcw,
   ArrowRight,
-  Filter
+  Filter,
+  Sparkles
 } from 'lucide-react';
 import { getDemoOrders, Order } from '../../data/accountMockData';
 import { formatPrice } from '../../data/products';
@@ -118,8 +119,17 @@ export default function AccountOrders() {
                   <span className="text-[11px] text-neutral-500">Placed on {order.date}</span>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5">
                   {getStatusBadge(order.status)}
+                  {order.status === 'delivered' && (
+                    <Link
+                      to={`/account/orders/${order.id}`}
+                      className="inline-flex items-center gap-1.5 text-xs font-bold py-1.5 px-3 rounded-full bg-[#E87535]/10 border border-[#E87535]/30 text-[#E87535] hover:bg-[#E87535] hover:text-white transition-colors shadow-2xs"
+                    >
+                      <Sparkles size={12} />
+                      <span>Rate Fit (+50 pts)</span>
+                    </Link>
+                  )}
                   <Link
                     to={`/account/orders/${order.id}`}
                     className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider py-1.5 px-3 rounded-full bg-[#FAF9F6] border border-[#E8E5DF] text-ink hover:bg-ink hover:text-white transition-colors"
