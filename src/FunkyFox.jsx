@@ -517,7 +517,7 @@ function Storefront() {
   const $ = i.reduce((w, ct) => w + ct.qty, 0),
     at = i.reduce(
       (w, ct) =>
-        w + (products.find((G) => G.id === ct.id)?.price || 0) * ct.qty,
+        w + (products.find((G) => G.id === ct.id || G.slug === ct.id)?.price || 0) * ct.qty,
       0,
     ),
     Tt = products.filter((w) =>

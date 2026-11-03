@@ -19,20 +19,21 @@ const STORAGE_PREFIX = 'funkyfox_admin_';
 
 function seedAdminProducts(): AdminProduct[] {
   return baseProducts.map((p, index) => {
+    const pSku = 'FF-' + String(index + 1).padStart(4, '0') + '-' + p.id.toUpperCase().replace(/[^A-Z0-9]+/g, '-').slice(0, 20);
     const variants: ProductVariant[] = [];
     const sizes = p.sizes || ['S', 'M', 'L', 'XL'];
     const colors = p.colors || [{ name: 'Standard', value: '#171717' }];
 
-    colors.forEach((col) => {
+    colors.forEach((col, cIdx) => {
       sizes.forEach((sz) => {
         variants.push({
-          id: `${p.id}-${col.name.toLowerCase().replace(/\s+/g, '-')}-${sz.toLowerCase()}`,
+          id: `${p.id}-${col.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${sz.toLowerCase()}`,
           productId: p.id,
           size: sz,
           colorName: col.name,
           colorHex: col.value,
-          sku: `FF-${p.id.substring(0, 4).toUpperCase()}-${col.name.substring(0, 2).toUpperCase()}-${sz}`,
-          stock: Math.floor(Math.random() * 8) + 2,
+          sku: `${pSku}-C${cIdx + 1}-${sz}`,
+          stock: 15,
           price: p.price,
           inStock: true,
         });
@@ -45,7 +46,7 @@ function seedAdminProducts(): AdminProduct[] {
       id: p.id,
       slug: p.id,
       name: p.name,
-      sku: `FF-${p.id.substring(0, 6).toUpperCase()}-001`,
+      sku: pSku,
       shortDescription: p.description?.substring(0, 100) || `${p.name} crafted for effortless everyday style.`,
       description: p.description || `${p.name} — Premium quality materials, designed for durability and comfort.`,
       details: p.details || ['100% Breathable fabric', 'Durable tailored stitching', 'Machine wash cold'],
@@ -271,7 +272,14 @@ class StoreService {
     try {
       const cloudProds = await SupabaseDbService.fetchProducts();
       if (cloudProds.length > 0) {
-        this.products = cloudProds;
+        const cloudMap = new Map(cloudProds.map((p) => [p.id, p]));
+        const merged: AdminProduct[] = [...cloudProds];
+        this.products.forEach((lp) => {
+          if (!cloudMap.has(lp.id)) {
+            merged.push(lp);
+          }
+        });
+        this.products = merged;
         this.persist('products', this.products);
         this.syncStorefrontProducts();
       }
@@ -345,9 +353,10 @@ class StoreService {
       const activeAdminProducts = this.products.filter((p) => p.status === 'active');
 
       activeAdminProducts.forEach((ap) => {
-        const existingIdx = baseProducts.findIndex((bp) => bp.id === ap.id);
+        const existingIdx = baseProducts.findIndex((bp) => bp.id === ap.id || (bp as any).slug === ap.slug);
         const transformed = {
           id: ap.id,
+          slug: ap.slug,
           name: ap.name,
           price: ap.price,
           originalPrice: ap.originalPrice,
@@ -416,9 +425,14 @@ class StoreService {
     return this.products.find((p) => p.id === id);
   }
 
-  saveProduct(product: AdminProduct, adminName: string = 'Admin'): AdminProduct {
+  async saveProduct(product: AdminProduct, adminName: string = 'Admin'): Promise<AdminProduct> {
     const existingIndex = this.products.findIndex((p) => p.id === product.id);
     const now = new Date().toISOString();
+
+    // Authoritative Cloud Persistence via Supabase
+    if (isSupabaseConfigured) {
+      await SupabaseDbService.upsertProduct(product);
+    }
 
     if (existingIndex >= 0) {
       const prev = this.products[existingIndex];
@@ -470,29 +484,21 @@ class StoreService {
     this.persist('products', this.products);
     this.syncStorefrontProducts();
 
-    // Asynchronously upsert to Supabase if connected
-    if (isSupabaseConfigured) {
-      SupabaseDbService.upsertProduct(product).catch((err) =>
-        console.error('[StoreService] Cloud product sync failed:', err)
-      );
-    }
-
     return product;
   }
 
-  deleteProduct(id: string, adminName: string = 'Admin'): boolean {
+  async deleteProduct(id: string, adminName: string = 'Admin'): Promise<boolean> {
     const idx = this.products.findIndex((p) => p.id === id);
     if (idx === -1) return false;
+
+    if (isSupabaseConfigured) {
+      await SupabaseDbService.deleteProduct(id);
+    }
+
     const removed = this.products.splice(idx, 1)[0];
     this.persist('products', this.products);
     this.logAudit(adminName, 'DELETE_PRODUCT', 'Product', id, `Deleted product "${removed.name}"`);
     this.syncStorefrontProducts();
-
-    if (isSupabaseConfigured) {
-      SupabaseDbService.deleteProduct(id).catch((err) =>
-        console.error('[StoreService] Cloud product deletion failed:', err)
-      );
-    }
 
     return true;
   }

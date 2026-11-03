@@ -25,6 +25,7 @@ export function ProductEditor() {
 
   const [categories, setCategories] = React.useState<string[]>([]);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
+  const [isSaving, setIsSaving] = React.useState(false);
   const [activeTab, setActiveTab] = React.useState<'general' | 'variants' | 'media' | 'seo'>('general');
 
   // Form State
@@ -96,7 +97,7 @@ export function ProductEditor() {
     }));
   };
 
-  const handleSave = (publishStatus?: 'active' | 'draft') => {
+  const handleSave = async (publishStatus?: 'active' | 'draft') => {
     if (!formData.name?.trim()) {
       showToast('Product title is mandatory', 'error');
       setActiveTab('general');
@@ -109,6 +110,8 @@ export function ProductEditor() {
       return;
     }
 
+    const cleanSku = formData.sku.trim();
+
     if (!formData.price || formData.price <= 0) {
       showToast('Please specify a valid selling price', 'error');
       setActiveTab('general');
@@ -116,14 +119,45 @@ export function ProductEditor() {
     }
 
     const prodId = isNew
-      ? (formData.slug || formData.name.toLowerCase().replace(/[^a-z0-9]+/g, '-'))
+      ? (formData.slug?.trim() || formData.name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''))
       : (formData.id as string);
 
-    // Calculate total stock from variants if variants exist
-    let totalStock = formData.totalStock || 0;
-    if (formData.variants && formData.variants.length > 0) {
-      totalStock = formData.variants.reduce((sum, v) => sum + (v.stock || 0), 0);
+    const slug = formData.slug?.trim() || prodId;
+
+    // Sanitize or generate variants with deterministic product scoping
+    let variants = formData.variants || [];
+    if (variants.length > 0) {
+      variants = variants.map((v, vIdx) => {
+        const vCol = (v.colorName || 'standard').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        const vSz = (v.size || 'std').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        return {
+          ...v,
+          id: `${prodId}-${vCol}-${vSz}`,
+          productId: prodId,
+          sku: v.sku || `${cleanSku}-C${vIdx + 1}-${v.size}`,
+          price: v.price || Number(formData.price),
+          inStock: (v.stock || 0) > 0,
+        };
+      });
+    } else {
+      // Default standard variants if none configured
+      const defaultSizes = ['S', 'M', 'L', 'XL'];
+      const perSizeStock = Math.max(1, Math.floor((formData.totalStock || 20) / defaultSizes.length));
+      variants = defaultSizes.map((sz) => ({
+        id: `${prodId}-standard-${sz.toLowerCase()}`,
+        productId: prodId,
+        size: sz,
+        colorName: 'Standard',
+        colorHex: '#171717',
+        sku: `${cleanSku}-STD-${sz}`,
+        stock: perSizeStock,
+        price: Number(formData.price),
+        inStock: true,
+      }));
     }
+
+    // Calculate total stock from variants
+    const totalStock = variants.reduce((sum, v) => sum + (v.stock || 0), 0);
 
     const mainImage = formData.image || formData.images?.[0] || '/images/product-tshirt.webp';
     const imagesList = formData.images && formData.images.length > 0 ? formData.images : [mainImage];
@@ -131,9 +165,9 @@ export function ProductEditor() {
     const finalProduct: AdminProduct = {
       ...(formData as AdminProduct),
       id: prodId,
-      slug: formData.slug || prodId,
+      slug,
       name: formData.name.trim(),
-      sku: formData.sku.trim(),
+      sku: cleanSku,
       price: Number(formData.price),
       originalPrice: formData.originalPrice ? Number(formData.originalPrice) : undefined,
       costPrice: formData.costPrice ? Number(formData.costPrice) : undefined,
@@ -141,27 +175,42 @@ export function ProductEditor() {
       totalStock,
       image: mainImage,
       images: imagesList,
-      variants: formData.variants || [],
+      variants,
       alt: formData.alt || formData.name,
       createdAt: formData.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
 
-    storeService.saveProduct(finalProduct);
-    showToast(
-      isNew
-        ? `Successfully published "${finalProduct.name}" to store catalogue!`
-        : `Changes saved for "${finalProduct.name}"`,
-      'success'
-    );
-    navigate('/admin/products');
+    setIsSaving(true);
+    try {
+      await storeService.saveProduct(finalProduct);
+      showToast(
+        isNew
+          ? `Successfully published "${finalProduct.name}" to store catalogue!`
+          : `Changes saved for "${finalProduct.name}"`,
+        'success'
+      );
+      navigate('/admin/products');
+    } catch (err: any) {
+      console.error('[ProductEditor] Failed to save product:', err);
+      showToast(`Failed to save product: ${err.message || 'Database error'}`, 'error');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (formData.id) {
-      storeService.deleteProduct(formData.id);
-      showToast(`Product "${formData.name}" removed`, 'info');
-      navigate('/admin/products');
+      setIsSaving(true);
+      try {
+        await storeService.deleteProduct(formData.id);
+        showToast(`Product "${formData.name}" removed`, 'info');
+        navigate('/admin/products');
+      } catch (err: any) {
+        showToast(`Failed to delete product: ${err.message || 'Database error'}`, 'error');
+      } finally {
+        setIsSaving(false);
+      }
     }
   };
 
@@ -216,18 +265,20 @@ export function ProductEditor() {
 
           <button
             type="button"
+            disabled={isSaving}
             onClick={() => handleSave('draft')}
-            className="px-3.5 py-2 text-xs font-semibold text-zinc-700 bg-white border border-zinc-300 rounded-xl hover:bg-zinc-50 transition-colors"
+            className="px-3.5 py-2 text-xs font-semibold text-zinc-700 bg-white border border-zinc-300 rounded-xl hover:bg-zinc-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Save as Draft
+            {isSaving ? 'Saving...' : 'Save as Draft'}
           </button>
 
           <button
             type="button"
+            disabled={isSaving}
             onClick={() => handleSave('active')}
-            className="px-4 py-2 text-xs font-bold text-white bg-[#FF6B35] rounded-xl hover:bg-[#e05624] transition-colors shadow-sm flex items-center gap-1.5"
+            className="px-4 py-2 text-xs font-bold text-white bg-[#FF6B35] rounded-xl hover:bg-[#e05624] transition-colors shadow-sm flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Save size={14} /> Publish & Save
+            <Save size={14} /> {isSaving ? 'Saving...' : 'Publish & Save'}
           </button>
         </div>
       </div>
@@ -471,7 +522,7 @@ export function ProductEditor() {
       {activeTab === 'variants' && (
         <div className="bg-white p-6 rounded-2xl border border-zinc-200/80 shadow-sm">
           <VariantMatrix
-            productId={formData.id || 'new-product'}
+            productId={formData.id || (formData.name ? formData.name.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-') : 'new-product')}
             basePrice={formData.price || 999}
             productSku={formData.sku || 'FF-ITEM'}
             variants={formData.variants || []}

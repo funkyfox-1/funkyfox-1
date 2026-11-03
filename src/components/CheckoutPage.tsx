@@ -208,6 +208,13 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
     }
   }, [])
 
+  const [, setStoreTick] = React.useState<number>(0)
+  React.useEffect(() => {
+    const handleSync = () => setStoreTick((t) => t + 1)
+    window.addEventListener('funkyfox:store_updated', handleSync)
+    return () => window.removeEventListener('funkyfox:store_updated', handleSync)
+  }, [])
+
   // Subtotal & items calculation
   const totalItems = React.useMemo(() => {
     return cartItems.reduce((acc, item) => acc + item.qty, 0)
@@ -215,7 +222,7 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
 
   const subtotal = React.useMemo(() => {
     return cartItems.reduce((acc, item) => {
-      const product = products.find((p) => p.id === item.id)
+      const product = products.find((p) => p.id === item.id || (p as any).slug === item.id)
       return acc + (product?.price || 0) * item.qty
     }, 0)
   }, [cartItems])
@@ -503,9 +510,9 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
           country: values.country || 'India',
         },
         items: cartItems.map((ci) => {
-          const prod = products.find((p) => p.id === ci.id)
+          const prod = products.find((p) => p.id === ci.id || (p as any).slug === ci.id)
           return {
-            id: ci.id,
+            id: prod?.id || ci.id,
             name: prod?.name || 'Funky Fox Garment',
             price: prod?.price || 999,
             quantity: ci.qty,
@@ -1263,7 +1270,7 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
                 className="divide-y divide-line max-h-[380px] overflow-y-auto pr-1 my-2"
               >
                 {cartItems.map((item) => {
-                  const product = products.find((p) => p.id === item.id)
+                  const product = products.find((p) => p.id === item.id || (p as any).slug === item.id)
                   if (!product) return null
                   const itemKey = `${item.id}-${item.size}-${item.color}`
                   const itemLineTotal = product.price * item.qty

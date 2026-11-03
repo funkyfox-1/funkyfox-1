@@ -46,8 +46,8 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
     return () => window.removeEventListener('funkyfox:store_updated', handleSync)
   }, [])
 
-  // Find product by id
-  const product = products.find((p) => p.id === id)
+  // Find product by id or slug
+  const product = products.find((p) => p.id === id || (p as any).slug === id)
 
   // Gallery state
   const images = React.useMemo(() => {

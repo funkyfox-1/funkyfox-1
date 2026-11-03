@@ -163,17 +163,21 @@ export class SupabaseDbService {
 
     // 2. Upsert child product_variants
     if (product.variants && product.variants.length > 0) {
-      const variantRecords = product.variants.map((v) => ({
-        id: v.id,
-        product_id: product.id,
-        size: v.size,
-        color_name: v.colorName,
-        color_hex: v.colorHex,
-        sku: v.sku,
-        stock: v.stock,
-        price: v.price,
-        in_stock: v.inStock,
-      }));
+      const variantRecords = product.variants.map((v, idx) => {
+        const vCol = (v.colorName || 'standard').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        const vSz = (v.size || 'std').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        return {
+          id: `${product.id}-${vCol}-${vSz}`,
+          product_id: product.id,
+          size: v.size,
+          color_name: v.colorName,
+          color_hex: v.colorHex,
+          sku: v.sku || `${product.sku}-C${idx + 1}-${v.size}`,
+          stock: v.stock,
+          price: v.price || product.price,
+          in_stock: v.inStock !== false && v.stock > 0,
+        };
+      });
 
       const { error: varError } = await supabase
         .from('product_variants')
@@ -183,6 +187,16 @@ export class SupabaseDbService {
         console.error('[SupabaseDb] Upsert variants failed:', varError);
         throw varError;
       }
+
+      // Clean up deleted variants for this product
+      const activeIds = variantRecords.map((v) => v.id);
+      await supabase
+        .from('product_variants')
+        .delete()
+        .eq('product_id', product.id)
+        .not('id', 'in', `(${activeIds.map((id) => `"${id}"`).join(',')})`);
+    } else {
+      await supabase.from('product_variants').delete().eq('product_id', product.id);
     }
   }
 
