@@ -42,6 +42,10 @@ import {
 } from "./data/products";
 import { calculateShipping, PROVISIONAL_SHIPPING_POLICY } from "./config/shipping";
 import { OfflineBanner, Toast } from "./components/feedback";
+const AdminRouter = React.lazy(() =>
+  import("./admin/AdminRouter").then((m) => ({ default: m.AdminRouter }))
+);
+import { storeService } from "./admin/services/storeService";
 import {
   Link,
   BrowserRouter,
@@ -360,36 +364,52 @@ function Storefront() {
       sessionStorage.setItem("funky-fox-banner-dismissed", "1");
     } catch {}
   };
-  (React.useEffect(() => {
+
+  const [, setStoreSyncTick] = React.useState(0);
+  React.useEffect(() => {
+    const handleSync = () => setStoreSyncTick((t) => t + 1);
+    window.addEventListener("funkyfox:store_updated", handleSync);
+    return () => window.removeEventListener("funkyfox:store_updated", handleSync);
+  }, []);
+  React.useEffect(() => {
     localStorage.setItem("funky-fox-cart", JSON.stringify(i));
-  }, [i]),
-    React.useEffect(() => {
-      const w = setTimeout(() => {
-        (y(!1),
-          O(!1),
-          M(!1),
-          Q.hash
-            ? document.getElementById(Q.hash.slice(1))?.scrollIntoView({
-                behavior: "smooth",
-              })
-            : window.scrollTo(0, 0));
-      }, 50);
-      return () => clearTimeout(w);
-    }, [Q.pathname, Q.search, Q.hash]),
-    React.useEffect(() => {
-      if (!D) return;
-      const w = setTimeout(() => X(""), 3500);
-      return () => clearTimeout(w);
-    }, [D]),
-    React.useEffect(() => {
-      const w = (ct) => {
-        ct.key === "Escape" && (f(!1), M(!1), y(!1), O(!1), setQuickSizeModal(null));
-      };
-      return (
-        window.addEventListener("keydown", w),
-        () => window.removeEventListener("keydown", w)
-      );
-    }, []));
+  }, [i]);
+
+  React.useEffect(() => {
+    const w = setTimeout(() => {
+      y(false);
+      O(false);
+      M(false);
+      if (Q.hash) {
+        document.getElementById(Q.hash.slice(1))?.scrollIntoView({
+          behavior: "smooth",
+        });
+      } else {
+        window.scrollTo(0, 0);
+      }
+    }, 50);
+    return () => clearTimeout(w);
+  }, [Q.pathname, Q.search, Q.hash]);
+
+  React.useEffect(() => {
+    if (!D) return;
+    const w = setTimeout(() => X(""), 3500);
+    return () => clearTimeout(w);
+  }, [D]);
+
+  React.useEffect(() => {
+    const w = (ct) => {
+      if (ct.key === "Escape") {
+        f(false);
+        M(false);
+        y(false);
+        O(false);
+        setQuickSizeModal(null);
+      }
+    };
+    window.addEventListener("keydown", w);
+    return () => window.removeEventListener("keydown", w);
+  }, []);
   function U(w, ct, G, qtyToAdd = 1) {
     if (!w) return;
 
@@ -436,7 +456,7 @@ function Storefront() {
 
     const validSize = G;
 
-    (s((W) => {
+    s((W) => {
       const wt = W.find(
         (jt) => jt.id === w.id && jt.size === validSize && jt.color === selectedColor,
       );
@@ -458,8 +478,8 @@ function Storefront() {
               qty: qtyToAdd,
             },
           ];
-    }),
-      X(`${qtyToAdd > 1 ? `${qtyToAdd}x ` : ""}${w.name} (${validSize}) added to bag`));
+    });
+    X(`${qtyToAdd > 1 ? `${qtyToAdd}x ` : ""}${w.name} (${validSize}) added to bag`);
   }
   function J(w, ct) {
     s((G) =>
@@ -500,6 +520,28 @@ function Storefront() {
     Tt = products.filter((w) =>
       `${w.name} ${w.category}`.toLowerCase().includes(R.toLowerCase()),
     );
+  const isAdminRoute = Q.pathname.startsWith("/admin");
+  if (isAdminRoute) {
+    return (
+      <Routes>
+        <Route
+          path="/admin/*"
+          element={
+            <React.Suspense
+              fallback={
+                <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+                  <div className="h-8 w-8 animate-spin rounded-full border-2 border-orange-500 border-t-transparent" />
+                </div>
+              }
+            >
+              <AdminRouter />
+            </React.Suspense>
+          }
+        />
+      </Routes>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-paper">
       <WordsPreloader />
@@ -707,7 +749,7 @@ function Storefront() {
                   <button
                     type="button"
                     onClick={() => {
-                      (f(!1), Y("/products"));
+                      f(false); Y("/products");
                     }}
                     className="mt-4 w-full text-center text-xs font-bold uppercase tracking-[.16em] underline underline-offset-4"
                   >
@@ -732,7 +774,7 @@ function Storefront() {
                 </p>
                 <button
                   onClick={() => {
-                    (f(!1), Y("/#new-arrivals"));
+                    f(false); Y("/#new-arrivals");
                   }}
                   className="mt-6 rounded-full bg-ink px-7 py-3 text-xs font-bold uppercase tracking-widest text-paper hover:bg-fox"
                 >

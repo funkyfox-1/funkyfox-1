@@ -37,6 +37,14 @@ interface ProductDetailPageProps {
 export default function ProductDetailPage({ addToCart }: ProductDetailPageProps) {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const [, setStoreTick] = React.useState<number>(0)
+
+  // Live Storefront Synchronization with Admin Store
+  React.useEffect(() => {
+    const handleSync = () => setStoreTick((t) => t + 1)
+    window.addEventListener('funkyfox:store_updated', handleSync)
+    return () => window.removeEventListener('funkyfox:store_updated', handleSync)
+  }, [])
 
   // Find product by id
   const product = products.find((p) => p.id === id)
@@ -1635,4 +1643,3 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
     </div>
   )
 }
-

@@ -25,4 +25,16 @@ dist-ssr
 *.sw?
 .vite-source-tags.js
 
-.vercel
+# Environment and Credentials (DO NOT COMMIT REAL SECRETS)
+.env
+.env.*
+!.env.example
+!.env.staging.example
+
+# Local tools and database backups
+tools/
+backups/
+*.dump
+*.sql.bak
+*.dpapi
+*.credential

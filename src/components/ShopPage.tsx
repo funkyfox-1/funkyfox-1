@@ -92,6 +92,14 @@ export default function ShopPage({ addToCart }: ShopPageProps) {
   const [selectedPriceRange, setSelectedPriceRange] = React.useState<string>('all')
   const [onlyInStock, setOnlyInStock] = React.useState<boolean>(false)
   const [sortBy, setSortBy] = React.useState<SortOption>('featured')
+  const [storeTick, setStoreTick] = React.useState<number>(0)
+
+  // Live Storefront Synchronization with Admin Store
+  React.useEffect(() => {
+    const handleSync = () => setStoreTick((t) => t + 1)
+    window.addEventListener('funkyfox:store_updated', handleSync)
+    return () => window.removeEventListener('funkyfox:store_updated', handleSync)
+  }, [])
 
   // UI state for popovers (desktop) and drawer (mobile)
   const [openPopover, setOpenPopover] = React.useState<string | null>(null)
@@ -133,7 +141,7 @@ export default function ShopPage({ addToCart }: ShopPageProps) {
       })
     })
     return Array.from(map.entries()).map(([name, value]) => ({ name, value }))
-  }, [])
+  }, [allProducts, storeTick])
 
   // Handle Category Change
   const handleCategorySelect = (cat: string) => {
@@ -1150,4 +1158,3 @@ export default function ShopPage({ addToCart }: ShopPageProps) {
     </div>
   )
 }
-

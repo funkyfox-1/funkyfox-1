@@ -13,6 +13,7 @@ import {
   Banknote,
   Edit2,
   Tag,
+  AlertCircle,
 } from 'lucide-react'
 import { products, formatPrice, getCategoryFallbackImage } from '../data/products'
 import { isDemoLoggedIn, getDemoUser, getDemoAddresses, createDemoOrder } from '../data/accountMockData'
@@ -23,6 +24,7 @@ import { EmptyState, InlineFieldError, OrderConfirmation } from './feedback'
 import SlideCommit from './SlideCommit'
 import type { CartItem } from './CartPage'
 import Footer from './Footer'
+import { storeService } from '../admin/services/storeService'
 import './CheckoutPage.css'
 
 interface CheckoutPageProps {
@@ -148,6 +150,16 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
   // Checkout Stages: 1. delivery -> 2. payment -> 3. review
   const [stage, setStage] = React.useState<CheckoutStage>('delivery')
   const [selectedPaymentMethod, setSelectedPaymentMethod] = React.useState<string>('upi')
+  const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const [submitError, setSubmitError] = React.useState<string | null>(null)
+
+  const IDEMPOTENCY_STORAGE_KEY = 'funkyfox_checkout_idempotency_key'
+  const FINGERPRINT_STORAGE_KEY = 'funkyfox_checkout_payload_fingerprint'
+
+  const generateIdempotencyKey = () =>
+    typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+      ? `ff-chk-${crypto.randomUUID()}`
+      : `ff-chk-${Date.now()}-${Math.random().toString(36).substring(2, 10)}-${Math.random().toString(36).substring(2, 10)}`
 
   // Initial form values from sessionStorage if present or prefilled from demo user
   const [values, setValues] = React.useState<FormValues>(() => {
@@ -196,23 +208,6 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
     }
   }, [])
 
-  const [errors, setErrors] = React.useState<FormErrors>({})
-  const [touched, setTouched] = React.useState<Record<string, boolean>>({})
-
-  // Scroll to top on mount and on stage changes
-  React.useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [stage])
-
-  // Save to sessionStorage when values change
-  React.useEffect(() => {
-    try {
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(values))
-    } catch {
-      // ignore storage errors
-    }
-  }, [values])
-
   // Subtotal & items calculation
   const totalItems = React.useMemo(() => {
     return cartItems.reduce((acc, item) => acc + item.qty, 0)
@@ -241,6 +236,64 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
   const effectiveShipping = (appliedCoupon && appliedCoupon.discountType === 'free_shipping') || isFree ? 0 : shippingFee
   const orderTotal = Math.max(0, subtotal - discountAmount + effectiveShipping)
 
+  // Material checkout payload fingerprint: tracks every input that affects order definition or pricing
+  const materialPayloadFingerprint = React.useMemo(() => {
+    const itemsSig = cartItems
+      .map((ci) => `${ci.id}:${ci.qty}:${ci.size || ''}:${ci.color || ''}`)
+      .sort()
+      .join('|')
+    const addrSig = `${values.addressLine1}|${values.addressLine2 || ''}|${values.city}|${values.state}|${values.pincode}|${values.country || 'India'}`
+    const custSig = `${values.email.toLowerCase().trim()}|${values.phone.trim()}|${values.fullName.trim()}`
+    const pricingSig = `subtotal:${subtotal}|shipping:${effectiveShipping}|total:${orderTotal}|coupon:${(appliedCoupon?.code || '').trim().toUpperCase()}`
+    return `${custSig}::${addrSig}::${itemsSig}::${selectedPaymentMethod}::${pricingSig}`
+  }, [cartItems, values, selectedPaymentMethod, subtotal, effectiveShipping, orderTotal, appliedCoupon])
+
+  // Persistent client-side idempotency key surviving reloads and retries
+  const [idempotencyKey, setIdempotencyKey] = React.useState<string>(() => {
+    try {
+      const existingKey = sessionStorage.getItem(IDEMPOTENCY_STORAGE_KEY)
+      if (existingKey && existingKey.trim().length >= 16) {
+        return existingKey.trim()
+      }
+    } catch {}
+    const newKey = generateIdempotencyKey()
+    try {
+      sessionStorage.setItem(IDEMPOTENCY_STORAGE_KEY, newKey)
+    } catch {}
+    return newKey
+  })
+
+  // Synchronize idempotency key with material changes
+  React.useEffect(() => {
+    try {
+      const lastFingerprint = sessionStorage.getItem(FINGERPRINT_STORAGE_KEY)
+      if (!lastFingerprint) {
+        sessionStorage.setItem(FINGERPRINT_STORAGE_KEY, materialPayloadFingerprint)
+      } else if (lastFingerprint !== materialPayloadFingerprint) {
+        const freshKey = generateIdempotencyKey()
+        setIdempotencyKey(freshKey)
+        sessionStorage.setItem(IDEMPOTENCY_STORAGE_KEY, freshKey)
+        sessionStorage.setItem(FINGERPRINT_STORAGE_KEY, materialPayloadFingerprint)
+      }
+    } catch {}
+  }, [materialPayloadFingerprint])
+
+  const [errors, setErrors] = React.useState<FormErrors>({})
+  const [touched, setTouched] = React.useState<Record<string, boolean>>({})
+
+  // Scroll to top on mount and on stage changes
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [stage])
+
+  // Save to sessionStorage when values change
+  React.useEffect(() => {
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(values))
+    } catch {
+      // ignore storage errors
+    }
+  }, [values])
   // Field change handler
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -433,69 +486,82 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
 
   // Handle final confirmation via SlideCommit on stage 3
   const handleFinalOrderConfirm = async () => {
-    // 500ms delay for smooth animation
-    await new Promise((resolve) => setTimeout(resolve, 500))
+    setIsSubmitting(true)
+    setSubmitError(null)
 
-    const mappedItems = cartItems.map((item) => {
-      const prod = products.find((p) => p.id === item.id)
-      return {
-        id: item.id,
-        name: prod?.name || 'Funky Fox Garment',
-        price: prod?.price || 0,
-        originalPrice: prod?.originalPrice,
-        color: item.color,
-        size: item.size,
-        quantity: item.qty,
-        image: prod?.image || '/images/category-shirts.jpg',
-      }
-    })
-
-    const selectedPayTitle =
-      PAYMENT_METHODS.find((p) => p.id === selectedPaymentMethod)?.title || 'UPI'
-
-    const createdOrder = createDemoOrder({
-      items: mappedItems,
-      subtotal,
-      discount: discountAmount,
-      discountCode: appliedCoupon?.code,
-      shipping: effectiveShipping,
-      tax: Math.round(orderTotal * 0.05),
-      total: orderTotal,
-      paymentMethod: {
-        type: selectedPayTitle,
-        last4: 'Verified',
-        status: 'Paid',
-        holderName: values.fullName,
-      },
-      deliveryAddress: {
-        fullName: values.fullName,
-        phone: values.phone,
-        street: `${values.addressLine1}${values.addressLine2 ? ', ' + values.addressLine2 : ''}`,
-        city: values.city,
-        state: values.state,
-        pincode: values.pincode,
-        country: values.country || 'India',
-      },
-    })
-
-    // Clear cart in localStorage and notify session
-    localStorage.removeItem('funky-fox-cart')
-    window.dispatchEvent(new Event('storage'))
-
-    navigate('/order-confirmation', {
-      state: {
-        orderReference: createdOrder.orderNumber,
-        orderId: createdOrder.id,
+    try {
+      const created = await storeService.createCustomerOrder({
+        idempotencyKey,
         customerName: values.fullName,
         customerEmail: values.email,
-        deliveryCity: values.city,
-        deliveryState: values.state,
-        deliveryPincode: values.pincode,
-        orderTotal,
-        paymentMethod: selectedPayTitle,
-        itemsCount: totalItems,
-      },
-    })
+        customerPhone: values.phone,
+        deliveryAddress: {
+          street: values.addressLine1 + (values.addressLine2 ? ', ' + values.addressLine2 : ''),
+          city: values.city,
+          state: values.state,
+          pincode: values.pincode,
+          country: values.country || 'India',
+        },
+        items: cartItems.map((ci) => {
+          const prod = products.find((p) => p.id === ci.id)
+          return {
+            id: ci.id,
+            name: prod?.name || 'Funky Fox Garment',
+            price: prod?.price || 999,
+            quantity: ci.qty,
+            size: ci.size || 'M',
+            color: ci.color || 'Standard',
+            image: prod?.image || '/images/product-tshirt.webp',
+          }
+        }),
+        subtotal,
+        discount: discountAmount,
+        couponCode: appliedCoupon?.code?.trim() || undefined,
+        shippingCharge: effectiveShipping,
+        total: orderTotal,
+        paymentMethod: selectedPaymentMethod || 'upi',
+      })
+
+      const orderRef = created?.orderNumber || `FF-${Math.floor(100000 + Math.random() * 900000)}`
+
+      // Clear customer bag and idempotency key from storage on successful verified order
+      try {
+        localStorage.removeItem('funky-fox-cart')
+        sessionStorage.removeItem(IDEMPOTENCY_STORAGE_KEY)
+        sessionStorage.removeItem(FINGERPRINT_STORAGE_KEY)
+        sessionStorage.removeItem('funkyfox_coupon_code')
+        sessionStorage.removeItem('funky-fox-coupon')
+        window.dispatchEvent(new CustomEvent('funkyfox:cart_cleared'))
+        window.dispatchEvent(new Event('storage'))
+      } catch {}
+
+      await new Promise((resolve) => setTimeout(resolve, 400))
+      const selectedPayTitle =
+        PAYMENT_METHODS.find((p) => p.id === selectedPaymentMethod)?.title || 'UPI'
+
+      navigate('/order-confirmation', {
+        state: {
+          orderReference: orderRef,
+          orderId: created?.orderId,
+          customerName: values.fullName,
+          customerEmail: values.email,
+          deliveryCity: values.city,
+          deliveryState: values.state,
+          deliveryPincode: values.pincode,
+          orderTotal: created?.total || orderTotal,
+          paymentMethod: selectedPayTitle,
+          itemsCount: totalItems,
+        },
+      })
+    } catch (err: any) {
+      const message =
+        err?.message || 'Order submission failed. Please check product stock and try again.'
+      console.error('[Checkout] Order placement failure:', err)
+      setSubmitError(message)
+      throw err // Ensures SlideCommit enters error state, shakes, and resets
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   // Handle empty cart
@@ -1134,10 +1200,21 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
 
                 {/* Slide to Confirm Interaction */}
                 <div className="pt-4 flex flex-col items-center">
+                  {submitError && (
+                    <div className="w-full max-w-[340px] mb-3 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-left">
+                      <p className="text-xs font-semibold text-red-600 flex items-start gap-1.5">
+                        <AlertCircle size={15} className="shrink-0 mt-0.5" />
+                        <span>{submitError}</span>
+                      </p>
+                    </div>
+                  )}
+
                   <div className="w-full max-w-[340px]">
                     <SlideCommit
-                      label="Slide to confirm preview"
+                      label={isSubmitting ? 'Processing Order...' : 'Slide to confirm preview'}
                       doneLabel="Preview verified"
+                      errorLabel="Order Failed — Try Again"
+                      disabled={isSubmitting}
                       trackColor="#191919"
                       handleColor="#FFFFFF"
                       successColor="#E87535"
@@ -1149,7 +1226,7 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
                   </div>
 
                   <p className="mt-3 text-center text-[11px] text-soft">
-                    Slide right to authorise the order demonstration
+                    {isSubmitting ? 'Verifying inventory and recording order...' : 'Slide right to authorise the order demonstration'}
                   </p>
 
                   <button
