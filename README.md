@@ -3,7 +3,7 @@
 > **Premium Everyday Indian Streetwear & Men's Essentials Storefront**  
 > *Cut well. Priced fair. Delivered across India.*
 
-🌐 **Live Demo:** [https://funkyfox-demo1.vercel.app](https://funkyfox-demo1.vercel.app)  
+🌐 **Live Demo:** [https://funkyfox-1.vercel.app](https://funkyfox-demo1.vercel.app)  
 📦 **Repository:** [https://github.com/prashanthpoloju990-oss/funkyfox](https://github.com/prashanthpoloju990-oss/funkyfox)
 
 ---
