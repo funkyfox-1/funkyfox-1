@@ -542,7 +542,7 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
       navigate('/order-confirmation', {
         state: {
           orderReference: orderRef,
-          orderId: created?.orderId,
+          orderId: created?.id,
           customerName: values.fullName,
           customerEmail: values.email,
           deliveryCity: values.city,
