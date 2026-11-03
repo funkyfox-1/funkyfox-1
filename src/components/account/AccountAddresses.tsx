@@ -149,16 +149,16 @@ export default function AccountAddresses() {
               <button
                 type="button"
                 onClick={() => openEditModal(addr)}
-                className="inline-flex items-center gap-1 font-semibold text-neutral-600 hover:text-ink"
+                className="inline-flex items-center gap-1.5 py-2 px-2.5 rounded-lg font-semibold text-neutral-600 hover:text-ink hover:bg-[#FAF7F0] min-h-[38px] touch-manipulation"
               >
-                <Edit2 size={13} /> Edit
+                <Edit2 size={14} /> Edit
               </button>
               <button
                 type="button"
                 onClick={() => handleDelete(addr.id)}
-                className="inline-flex items-center gap-1 font-semibold text-red-600 hover:text-red-700 ml-2"
+                className="inline-flex items-center gap-1.5 py-2 px-2.5 rounded-lg font-semibold text-red-600 hover:text-red-700 hover:bg-red-50 min-h-[38px] touch-manipulation"
               >
-                <Trash2 size={13} /> Remove
+                <Trash2 size={14} /> Remove
               </button>
             </div>
           </div>

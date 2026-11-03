@@ -77,7 +77,7 @@ export default function AccountLayout() {
 
             <Link
               to="/products"
-              className="group inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#1c1d1a] hover:text-[#f16c24] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f16c24] rounded-md px-2 py-1"
+              className="group inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#1c1d1a] hover:text-[#f16c24] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#f16c24] rounded-lg px-2.5 py-2 min-h-[38px] touch-manipulation"
             >
               {isProfileLanding && (
                 <span className="transition-transform duration-200 group-hover:-translate-x-1" aria-hidden="true">&larr;</span>

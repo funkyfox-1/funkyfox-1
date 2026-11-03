@@ -565,9 +565,9 @@ function Storefront() {
             type="button"
             onClick={dismissBanner}
             aria-label="Dismiss shipping announcement"
-            className="absolute right-3 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded text-paper/70 transition-colors hover:text-paper focus-visible:outline-2 focus-visible:outline-white"
+            className="absolute right-2 top-1/2 flex h-9 w-9 min-h-[36px] min-w-[36px] -translate-y-1/2 items-center justify-center rounded text-paper/70 transition-colors hover:text-paper focus-visible:outline-2 focus-visible:outline-white touch-manipulation"
           >
-            <CloseIcon size={12} />
+            <CloseIcon size={14} />
           </button>
         </div>
       )}

@@ -489,7 +489,7 @@ const CSS =
   ".tpf-handle{color:#191919;font-weight:600}" +
   ".tpf-handle:hover{text-decoration:underline;text-underline-offset:.2em}" +
   "@container (max-width: 620px){" +
-  ".tpf-top{padding:0 7%}.tpf-flank,.tpf-mail span{display:none}" +
+  ".tpf-top{padding:0 7%}.tpf-flank,.tpf-mail span{display:none}.tpf-ib{width:max(38px,2.2em);height:max(38px,2.2em);margin:0}.tpf-mail{min-width:38px;min-height:38px;display:grid;place-items:center}" +
   ".tpf-news{top:16%}.tpf-pill{width:min(80cqw,320px)}" +
   ".tpf-status{top:29%}.tpf-badge{top:33%}" +
   ".tpf-col{top:36.5%}.tpf-col.l{left:7%}.tpf-col.r{right:7%}.tpf-col li:nth-child(n+3){display:none}" +

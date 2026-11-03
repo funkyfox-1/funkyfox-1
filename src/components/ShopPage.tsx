@@ -767,7 +767,7 @@ export default function ShopPage({ addToCart }: ShopPageProps) {
                               ? 'Saved in Wishlist'
                               : 'Save to Wishlist'
                           }
-                          className="absolute top-2.5 right-2.5 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-neutral-600 shadow-sm backdrop-blur-xs transition-transform hover:scale-110 hover:bg-white cursor-pointer"
+                          className="absolute top-2.5 right-2.5 z-10 flex h-9 w-9 min-h-[36px] min-w-[36px] items-center justify-center rounded-full bg-white/90 text-neutral-600 shadow-sm backdrop-blur-xs transition-transform hover:scale-110 hover:bg-white cursor-pointer touch-manipulation"
                         >
                           <Heart
                             size={15}
@@ -859,7 +859,7 @@ export default function ShopPage({ addToCart }: ShopPageProps) {
                                   [product.id]: c.name,
                                 }))
                               }
-                              className={`flex h-[18px] w-[18px] items-center justify-center rounded-full border transition-colors hover:border-ink sm:h-5 sm:w-5 ${
+                              className={`relative flex h-[18px] w-[18px] items-center justify-center rounded-full border transition-colors hover:border-ink sm:h-5 sm:w-5 before:absolute before:-inset-2 before:content-[''] touch-manipulation ${
                                 currentColorName === c.name
                                   ? 'border-fox ring-1 ring-fox/40'
                                   : 'border-transparent'

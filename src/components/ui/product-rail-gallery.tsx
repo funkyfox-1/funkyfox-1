@@ -1097,7 +1097,7 @@ export function ClothingRailHero({
       {size.carousel && count > 1 && (
         <div className="relative z-10 mt-1 flex justify-center gap-1.5" role="group" aria-label={labels.show}>
           {items.map((item, i) => (
-            <button key={item.id} type="button" aria-label={`${labels.show} ${item.name}`} aria-current={carouselIndex === i} onClick={() => { stop(); choose(i); }} className={`h-1.5 rounded-full outline-none transition-[width,background-color] duration-300 focus-visible:ring-2 focus-visible:ring-fox ${carouselIndex === i ? "w-6 bg-[#191919]" : "w-1.5 bg-[#191919]/25 hover:bg-[#191919]/45"}`} />
+            <button key={item.id} type="button" aria-label={`${labels.show} ${item.name}`} aria-current={carouselIndex === i} onClick={() => { stop(); choose(i); }} className={`relative py-2.5 px-0.5 touch-manipulation before:content-[''] before:absolute before:inset-0 outline-none focus-visible:ring-2 focus-visible:ring-fox`}><span className={`block h-1.5 rounded-full transition-[width,background-color] duration-300 ${carouselIndex === i ? "w-6 bg-[#191919]" : "w-1.5 bg-[#191919]/25 hover:bg-[#191919]/45"}`} /></button>
           ))}
         </div>
       )}

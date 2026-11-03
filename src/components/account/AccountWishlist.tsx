@@ -289,7 +289,7 @@ export default function AccountWishlist({ onAddToCart }: AccountWishlistProps) {
                               key={c.name}
                               type="button"
                               onClick={() => setSelectedColors((prev) => ({ ...prev, [p.id]: c.name }))}
-                              className={`w-4 h-4 rounded-full border transition-all ${
+                              className={`relative w-4 h-4 rounded-full border transition-all before:absolute before:-inset-2 before:content-[''] touch-manipulation ${
                                 currentColor === c.name
                                   ? 'ring-2 ring-[#E87535] ring-offset-1 scale-110'
                                   : 'border-[#D9D4C7] opacity-80 hover:opacity-100'
@@ -321,7 +321,7 @@ export default function AccountWishlist({ onAddToCart }: AccountWishlistProps) {
                               key={s}
                               type="button"
                               onClick={() => setSelectedSizes((prev) => ({ ...prev, [p.id]: s }))}
-                              className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all ${
+                              className={`min-w-[36px] min-h-[36px] px-2.5 py-1.5 flex items-center justify-center rounded-lg text-xs font-bold transition-all touch-manipulation ${
                                 isSelected
                                   ? 'bg-[#1c1d1a] text-white shadow-xs'
                                   : 'bg-[#FAF6ED] text-[#1c1d1a] hover:bg-[#F0EAE0] border border-[#EDE7D9]'

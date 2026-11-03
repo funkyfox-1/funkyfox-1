@@ -196,7 +196,7 @@ export default function DeliveredOrderReviewCard({ order, onReviewSubmitted }: D
                     onClick={() => setRating(star)}
                     onMouseEnter={() => setHoverRating(star)}
                     onMouseLeave={() => setHoverRating(0)}
-                    className="p-1 rounded-lg transition-transform hover:scale-115 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E87535]"
+                    className="p-1.5 sm:p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl transition-transform hover:scale-110 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#E87535] touch-manipulation"
                     aria-label={`Rate ${star} of 5 stars`}
                   >
                     <Star
@@ -230,7 +230,7 @@ export default function DeliveredOrderReviewCard({ order, onReviewSubmitted }: D
                     key={tag}
                     type="button"
                     onClick={() => setSelectedFitTag(tag)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                    className={`px-3 py-2 min-h-[38px] inline-flex items-center rounded-xl text-xs font-semibold transition-all touch-manipulation ${
                       isSelected
                         ? 'bg-[#1c1d1a] text-white shadow-xs'
                         : 'bg-white hover:bg-[#F3EFE6] text-[#403e39] border border-[#DDD6C8]'

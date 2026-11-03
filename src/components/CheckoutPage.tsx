@@ -573,7 +573,7 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
           <div className="checkout-top-bar-inner">
             <Link
               to="/cart"
-              className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-soft hover:text-ink transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-soft hover:text-ink transition-colors py-2 px-2.5 -ml-2 rounded-lg min-h-[40px] touch-manipulation"
             >
               <ArrowLeft size={14} />
               <span>Back to bag</span>
