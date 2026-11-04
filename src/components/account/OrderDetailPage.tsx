@@ -8,6 +8,7 @@ import {
   RotateCcw,
   XCircle,
   MessageSquare,
+  MessageCircle,
   AlertTriangle,
   Receipt,
   MapPin,
@@ -162,6 +163,14 @@ export default function OrderDetailPage() {
 
   React.useEffect(() => {
     loadOrder();
+    window.addEventListener('funkyfox:store_updated', loadOrder);
+    window.addEventListener('funky-fox-order-change', loadOrder);
+    window.addEventListener('storage', loadOrder);
+    return () => {
+      window.removeEventListener('funkyfox:store_updated', loadOrder);
+      window.removeEventListener('funky-fox-order-change', loadOrder);
+      window.removeEventListener('storage', loadOrder);
+    };
   }, [loadOrder]);
 
   if (order === undefined) {
@@ -448,8 +457,16 @@ export default function OrderDetailPage() {
                   to="/help"
                   className="py-2.5 px-4 rounded-full bg-ink text-white text-xs font-bold uppercase tracking-wider hover:bg-neutral-800 transition-colors flex items-center justify-center gap-1.5 w-full sm:w-auto"
                 >
-                  <MessageSquare size={14} /> Chat Support
+                  <MessageSquare size={14} /> Help Center
                 </Link>
+                <a
+                  href={`https://wa.me/919493551595?text=${encodeURIComponent('Hi Funky Fox support, I need assistance with Order #' + order.orderNumber)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="py-2.5 px-4 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 w-full sm:w-auto shadow-xs"
+                >
+                  <MessageCircle size={14} /> WhatsApp Support
+                </a>
 
                 {/* Cancel Action if Processing */}
                 {order.status === 'processing' && (
@@ -545,7 +562,7 @@ export default function OrderDetailPage() {
             {/* Vertical Milestones Timeline (Image 2 Northwind Style) */}
             <div className="md:col-span-7 border border-[#E8E5DF] rounded-2xl p-5 bg-white">
               <h3 className="font-display text-sm font-black uppercase text-ink mb-4 pb-2 border-b border-[#F0ECE1]">
-                Live Status Log
+                Milestone Updates
               </h3>
 
               <div className="fox-vertical-timeline">

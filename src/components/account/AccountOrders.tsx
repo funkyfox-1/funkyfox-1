@@ -17,7 +17,24 @@ import './AccountStyles.css';
 
 export default function AccountOrders() {
   const [filter, setFilter] = React.useState<string>('all');
-  const allOrders = getDemoOrders();
+  const [allOrders, setAllOrders] = React.useState<Order[]>(() => getDemoOrders());
+
+  React.useEffect(() => {
+    const handleSync = () => {
+      setAllOrders(getDemoOrders());
+    };
+    handleSync();
+    window.addEventListener('funkyfox:store_updated', handleSync);
+    window.addEventListener('funky-fox-order-change', handleSync);
+    window.addEventListener('storage', handleSync);
+    window.addEventListener('funky-fox-auth-change', handleSync);
+    return () => {
+      window.removeEventListener('funkyfox:store_updated', handleSync);
+      window.removeEventListener('funky-fox-order-change', handleSync);
+      window.removeEventListener('storage', handleSync);
+      window.removeEventListener('funky-fox-auth-change', handleSync);
+    };
+  }, []);
 
   const filteredOrders = React.useMemo(() => {
     if (filter === 'all') return allOrders;

@@ -222,8 +222,9 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
 
   const subtotal = React.useMemo(() => {
     return cartItems.reduce((acc, item) => {
-      const product = products.find((p) => p.id === item.id || (p as any).slug === item.id)
-      return acc + (product?.price || 0) * item.qty
+      const product = storeService.getProductById(item.id) || products.find((p) => p.id === item.id || (p as any).slug === item.id);
+      const unitPrice = product?.price || 0;
+      return acc + unitPrice * item.qty;
     }, 0)
   }, [cartItems])
 
@@ -423,9 +424,7 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
       newErrors.addressLine1 = 'Please enter your house, flat, or building details.'
     }
 
-    if (!values.addressLine2.trim()) {
-      newErrors.addressLine2 = 'Please enter your street, locality, or area.'
-    }
+    // addressLine2 is optional for customer convenience
 
     if (!values.city.trim()) {
       newErrors.city = 'Please enter your city.'
@@ -510,15 +509,18 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
           country: values.country || 'India',
         },
         items: cartItems.map((ci) => {
-          const prod = products.find((p) => p.id === ci.id || (p as any).slug === ci.id)
+          const authProd = storeService.getProductById(ci.id) || products.find((p) => p.id === ci.id || (p as any).slug === ci.id);
+          if (!authProd) {
+            throw new Error(`Product "${ci.id}" is no longer available in the active catalog.`);
+          }
           return {
-            id: prod?.id || ci.id,
-            name: prod?.name || 'Funky Fox Garment',
-            price: prod?.price || 999,
+            id: authProd.id || ci.id,
+            name: authProd.name,
+            price: authProd.price,
             quantity: ci.qty,
             size: ci.size || 'M',
             color: ci.color || 'Standard',
-            image: prod?.image || '/images/product-tshirt.webp',
+            image: authProd.image || '/images/product-tshirt.webp',
           }
         }),
         subtotal,
@@ -1135,13 +1137,9 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
             {/* STAGE 3: FINAL REVIEW & SLIDE COMMIT */}
             {stage === 'review' && (
               <div className="space-y-6">
-                <div>
-                  <h2 className="font-display text-xl font-black uppercase tracking-tight text-ink sm:text-2xl">
-                    FINAL ORDER REVIEW
-                  </h2>
-                  <p className="mt-1.5 text-xs sm:text-sm text-soft">
-                    Please verify your delivery address and items before completing this preview.
-                  </p>
+                <div className="rounded-xl border border-line bg-sand/40 p-3.5 flex items-center gap-2.5 text-xs text-soft">
+                  <CheckCircle2 size={16} className="text-[#E87535] shrink-0" />
+                  <span>Please review your delivery destination and items below before confirming this preview.</span>
                 </div>
 
                 {/* Delivery Summary Card */}
@@ -1164,7 +1162,7 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
                   </div>
                   <div className="pt-3 text-xs text-soft space-y-1">
                     <p className="font-bold text-ink">{values.fullName}</p>
-                    <p>{values.addressLine1}, {values.addressLine2}</p>
+                    <p>{values.addressLine1}{values.addressLine2 ? `, ${values.addressLine2}` : ''}</p>
                     <p>{values.city}, {values.state} – {values.pincode}</p>
                     <p className="pt-1 text-[11px]">Phone: {values.phone} • Email: {values.email}</p>
                   </div>
@@ -1216,7 +1214,7 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
                     </div>
                   )}
 
-                  <div className="w-full max-w-[340px]">
+                  <div className="w-full max-w-[340px] touch-none">
                     <SlideCommit
                       label={isSubmitting ? 'Processing Order...' : 'Slide to confirm preview'}
                       doneLabel="Preview verified"
@@ -1225,12 +1223,23 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
                       trackColor="#191919"
                       handleColor="#FFFFFF"
                       successColor="#E87535"
-                      width={340}
+                      width={Math.min(340, typeof window !== 'undefined' ? Math.max(280, window.innerWidth - 40) : 340)}
                       height={54}
                       radius={27}
                       onConfirm={handleFinalOrderConfirm}
                     />
                   </div>
+
+                  {/* Accessible Mobile Tap Alternative */}
+                  <button
+                    type="button"
+                    onClick={handleFinalOrderConfirm}
+                    disabled={isSubmitting}
+                    className="mt-3 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-full bg-white hover:bg-sand-deep border border-line text-ink text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-50 cursor-pointer shadow-2xs touch-manipulation"
+                  >
+                    <span>{isSubmitting ? 'Verifying...' : 'Or Tap to Confirm Preview'}</span>
+                    <ArrowRight size={13} className="text-fox" />
+                  </button>
 
                   <p className="mt-3 text-center text-[11px] text-soft">
                     {isSubmitting ? 'Verifying inventory and recording order...' : 'Slide right to authorise the order demonstration'}

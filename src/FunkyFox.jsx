@@ -22,6 +22,7 @@ import FloatingNavbar from "./components/ui/FloatingNavbar";
 import ClothingRailHero from "./components/ui/product-rail-gallery";
 import JellyRadio from "./components/ui/JellyRadio";
 import WordsPreloader from "./components/ui/WordsPreloader";
+import WhatsAppButton from "./components/ui/WhatsAppButton";
 import "./components/ui/TactileOrderButton.css";
 import { LoginPage, RegisterPage, ForgotPasswordPage } from "./components/account/AuthPages";
 import AccountLayout from "./components/account/AccountLayout";
@@ -459,6 +460,29 @@ function Storefront() {
 
     const validSize = G;
 
+    // Authoritative Variant Stock Verification
+    try {
+      const sp = storeService.getProductById(w.id);
+      if (sp) {
+        if (sp.status !== 'active' || sp.totalStock <= 0) {
+          X(`${w.name} is currently out of stock`);
+          return;
+        }
+        if (sp.variants && sp.variants.length > 0) {
+          const normColor = (selectedColor || '').toLowerCase().trim();
+          const variant = sp.variants.find(
+            (v) =>
+              v.size.toLowerCase().trim() === validSize.toLowerCase().trim() &&
+              (!normColor || v.colorName.toLowerCase().trim() === normColor)
+          );
+          if (variant && (variant.stock <= 0 || variant.inStock === false)) {
+            X(`${w.name} (${validSize}) is currently out of stock`);
+            return;
+          }
+        }
+      }
+    } catch {}
+
     s((W) => {
       const wt = W.find(
         (jt) => jt.id === w.id && jt.size === validSize && jt.color === selectedColor,
@@ -878,6 +902,9 @@ function Storefront() {
           </div>
         </div>
       )}
+
+      {/* WhatsApp Support Floating Action Button */}
+      <WhatsAppButton />
 
       {/* Global Toast Notification */}
       {D && (

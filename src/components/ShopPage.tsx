@@ -17,6 +17,7 @@ import {
   ALL_SIZES,
   type Product,
 } from '../data/products'
+import { storeService } from '../admin/services/storeService'
 import { isDemoLoggedIn, toggleDemoWishlist, getDemoWishlist } from '../data/accountMockData'
 import { showToast } from '../utils/toast'
 import { matchesProductSearch, findTypoSuggestions } from '../utils/search'
@@ -131,10 +132,48 @@ export default function ShopPage({ addToCart }: ShopPageProps) {
   }, [mobileDrawerOpen])
 
   // Extract unique colors available across all products
+  // Dynamic reactive product catalog from storeService with fallback to allProducts
+  const currentCatalog: Product[] = React.useMemo(() => {
+    try {
+      const activeAdminProducts = storeService.getProducts().filter((p) => p.status === 'active');
+      if (activeAdminProducts.length > 0) {
+        return activeAdminProducts.map((ap) => ({
+          id: ap.id,
+          name: ap.name,
+          price: ap.price,
+          originalPrice: ap.originalPrice,
+          image: ap.image,
+          images: ap.images && ap.images.length > 0 ? ap.images : [ap.image],
+          alt: ap.alt || ap.name,
+          category: ap.category as any,
+          colors:
+            ap.variants && ap.variants.length > 0
+              ? Array.from(
+                  new Map(
+                    ap.variants.map((v) => [v.colorName, { name: v.colorName, value: v.colorHex }])
+                  ).values()
+                )
+              : [{ name: 'Standard', value: '#171717' }],
+          sizes:
+            ap.variants && ap.variants.length > 0
+              ? (Array.from(new Set(ap.variants.map((v) => v.size))) as any)
+              : (['S', 'M', 'L', 'XL'] as any),
+          inStock: ap.totalStock > 0,
+          isNew: ap.isNew || false,
+          isBestseller: ap.isBestseller || false,
+          featuredOrder: ap.featuredOrder || 99,
+          description: ap.description,
+          details: ap.details,
+        }));
+      }
+    } catch {}
+    return allProducts;
+  }, [allProducts, storeTick]);
+
   const availableColors = React.useMemo(() => {
     const map = new Map<string, string>()
-    allProducts.forEach((p) => {
-      p.colors.forEach((c) => {
+    currentCatalog.forEach((p: Product) => {
+      p.colors.forEach((c: { name: string; value: string }) => {
         if (!map.has(c.name)) {
           map.set(c.name, c.value)
         }
@@ -203,7 +242,7 @@ export default function ShopPage({ addToCart }: ShopPageProps) {
 
   // Filter products
   const filteredProducts = React.useMemo(() => {
-    return allProducts.filter((product) => {
+    return currentCatalog.filter((product: Product) => {
       // 0. Search Query Filter using shared search normalizer
       if (searchQuery.trim() && !matchesProductSearch(product, searchQuery)) {
         return false
@@ -216,13 +255,13 @@ export default function ShopPage({ addToCart }: ShopPageProps) {
 
       // 2. Size Filter (product must have at least one of the selected sizes)
       if (selectedSizes.length > 0) {
-        const hasSize = product.sizes.some((s) => selectedSizes.includes(s))
+        const hasSize = product.sizes.some((s: string) => selectedSizes.includes(s))
         if (!hasSize) return false
       }
 
       // 3. Color Filter (product must have at least one of the selected colors)
       if (selectedColors.length > 0) {
-        const hasColor = product.colors.some((c) => selectedColors.includes(c.name))
+        const hasColor = product.colors.some((c: { name: string; value: string }) => selectedColors.includes(c.name))
         if (!hasColor) return false
       }
 
@@ -241,7 +280,7 @@ export default function ShopPage({ addToCart }: ShopPageProps) {
 
       return true
     })
-  }, [searchQuery, activeCategory, selectedSizes, selectedColors, selectedPriceRange, onlyInStock])
+  }, [currentCatalog, searchQuery, activeCategory, selectedSizes, selectedColors, selectedPriceRange, onlyInStock, storeTick])
 
   // Sort filtered products
   const sortedProducts = React.useMemo(() => {
@@ -281,10 +320,10 @@ export default function ShopPage({ addToCart }: ShopPageProps) {
       }
       return `${filteredProducts.length} ${filteredProducts.length === 1 ? 'PRODUCT' : 'PRODUCTS'} FOUND`
     }
-    if (visibleProducts.length < allProducts.length) {
-      return `SHOWING ${visibleProducts.length} OF ${allProducts.length} PRODUCTS`
+    if (visibleProducts.length < currentCatalog.length) {
+      return `SHOWING ${visibleProducts.length} OF ${currentCatalog.length} PRODUCTS`
     }
-    return `${allProducts.length} PRODUCTS`
+    return `${currentCatalog.length} PRODUCTS`
   }, [activeCategory, toolbarActiveCount, visibleProducts.length, filteredProducts.length])
 
   return (

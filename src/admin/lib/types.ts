@@ -181,7 +181,13 @@ export interface AdminOrder {
     }>;
   };
   timeline: AdminOrderTimelineEvent[];
+  cancellation?: {
+    cancelledAt: string;
+    reason: string;
+    refundStatus: string;
+  };
   internalNotes?: string[];
+  notes?: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -53,6 +53,7 @@ export default function Footer() {
         {
           title: "help",
           links: [
+            { label: "WhatsApp Support", href: "https://wa.me/919493551595?text=Hi%20Funky%20Fox%2C%20I%20have%20an%20inquiry%20regarding%20products%20or%20an%20order" },
             { label: "Contact Us", href: "/help#contact" },
             { label: "Shipping Info", href: "/help?topic=Shipping" },
             { label: "Returns & Exchanges", href: "/help?topic=Returns%20%26%20Exchanges" },

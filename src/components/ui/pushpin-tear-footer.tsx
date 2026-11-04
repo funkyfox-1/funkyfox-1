@@ -438,7 +438,7 @@ const CSS =
   ".tpf-flank{top:22.4%;transform:translate(-50%,-50%);font-size:var(--fs);letter-spacing:.04em;white-space:nowrap;text-transform:uppercase}" +
   ".tpf-clock{font-variant-numeric:tabular-nums}.tpf-clock i{font-style:normal;animation:tpf-blink 2s steps(1) infinite}" +
   ".tpf-status{left:50%;top:30.6%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:.6em;font-size:max(14px,2.25cqmin);white-space:nowrap;letter-spacing:.01em}" +
-  ".tpf-live{position:relative;width:.5em;height:.5em;border-radius:50%;background:currentColor}" +
+  ".tpf-live{display:none}" +
   ".tpf-live::after{content:'';position:absolute;inset:0;border-radius:50%;border:1.5px solid currentColor;animation:tpf-ping 2.2s var(--ease) infinite}" +
   ".tpf a.tpf-status:hover span{text-decoration:underline;text-underline-offset:.2em}" +
   ".tpf-badge{left:50%;top:35.4%;transform:translate(-50%,-50%);width:max(15px,2.3cqmin);height:max(15px,2.3cqmin)}" +
@@ -489,15 +489,19 @@ const CSS =
   ".tpf-handle{color:#191919;font-weight:600}" +
   ".tpf-handle:hover{text-decoration:underline;text-underline-offset:.2em}" +
   "@container (max-width: 620px){" +
-  ".tpf-top{padding:0 7%}.tpf-flank,.tpf-mail span{display:none}.tpf-ib{width:max(38px,2.2em);height:max(38px,2.2em);margin:0}.tpf-mail{min-width:38px;min-height:38px;display:grid;place-items:center}" +
-  ".tpf-news{top:16%}.tpf-pill{width:min(80cqw,320px)}" +
-  ".tpf-status{top:29%}.tpf-badge{top:33%}" +
-  ".tpf-col{top:36.5%}.tpf-col.l{left:7%}.tpf-col.r{right:7%}.tpf-col li:nth-child(n+3){display:none}" +
+  ".tpf-top{padding:0 5%}.tpf-flank,.tpf-mail span{display:none}" +
+  ".tpf-row .tpf-ib:not(.tpf-up){display:none}" +
+  ".tpf-ib{width:max(36px,2em);height:max(36px,2em);margin:0}.tpf-mail{min-width:36px;min-height:36px;display:grid;place-items:center}" +
+  ".tpf-logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:calc(100% - 90px);overflow:hidden}" +
+  ".tpf-news{top:15.5%}.tpf-pill{width:min(88cqw,320px)}" +
+  ".tpf-status{top:28%;max-width:90cqw;font-size:12px;overflow:hidden}" +
+  ".tpf-badge{display:none}" +
+  ".tpf-col{top:36%}.tpf-col.l{left:6%}.tpf-col.r{right:6%}.tpf-col li:nth-child(n+3){display:none}" +
   ".tpf-map-pill{top:66%;gap:8px;padding:6px 10px 6px 12px;max-width:calc(100% - 20px)}" +
   ".tpf-map-pill-title{font-size:10px}" +
   ".tpf-map-pill-address{font-size:8px;max-width:130px}" +
   ".tpf-map-pill-cta{font-size:9px;padding:5px 10px}" +
-  ".tpf-foot{padding:0 6%;bottom:2.5%}.tpf-credit{display:none}" +
+  ".tpf-foot{padding:0 5%;bottom:2.5%}.tpf-credit{display:none}" +
   "}" +
   "@keyframes tpf-hit{0%{transform:translateY(0)}30%{transform:translateY(2px)}60%{transform:translateY(-.5px)}100%{transform:translateY(0)}}" +
   "@keyframes tpf-drop{0%{transform:translateY(-62cqh) rotate(-28deg) scale(1.5);opacity:0}25%{opacity:1}80%{transform:translateY(0) rotate(3deg) scale(1)}90%{transform:scale(1.04,.95)}100%{transform:none;opacity:1}}" +
@@ -1005,7 +1009,7 @@ export default function PushpinTearFooter({
       {status && (
         <>
           <A href={status.href ?? mailto} className="tpf-z tpf-status tpf-h" style={H(5)}>
-            <i className="tpf-live" aria-hidden="true" />
+            
             <span>{status.label}</span>
           </A>
           <span className="tpf-z tpf-badge" aria-hidden="true">

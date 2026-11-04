@@ -170,10 +170,10 @@ export default function AccountProfile() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 self-start sm:self-auto">
-            <span className="flex h-2.5 w-2.5 rounded-full bg-[#22C55E]" />
-            <span className="text-xs font-semibold text-neutral-300">
-              Account Verified
+          <div className="flex items-center gap-1.5 self-start sm:self-auto px-3 py-1 rounded-full bg-white/10 border border-white/15">
+            <CheckCircle2 size={13} className="text-emerald-400 shrink-0" />
+            <span className="text-xs font-semibold text-neutral-200">
+              Verified Member
             </span>
           </div>
         </div>
@@ -455,7 +455,7 @@ export default function AccountProfile() {
               <div className="flex items-center gap-3">
                 <Smartphone size={17} className="text-neutral-500" />
                 <div>
-                  <p className="text-xs font-bold text-ink">WhatsApp & SMS Live Dispatch Alerts</p>
+                  <p className="text-xs font-bold text-ink">WhatsApp & SMS Dispatch Updates</p>
                   <p className="text-[11px] text-neutral-500">Real-time out-for-delivery notifications directly to your phone.</p>
                 </div>
               </div>

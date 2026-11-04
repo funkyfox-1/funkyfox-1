@@ -91,12 +91,11 @@ export default function JellyRadio({
   const list: JellyRadioItemObj[] = items.map(it =>
     typeof it === 'string' ? { value: it, label: it } : it
   );
-  const [inner, setInner] = useState(() => defaultValue ?? list[0]?.value);
-  const current = value ?? inner;
-  const at = Math.max(
-    0,
-    list.findIndex(it => it.value === current)
-  );
+  const [inner, setInner] = useState(() => defaultValue);
+  const current = value !== undefined ? value : inner;
+  const foundIndex = list.findIndex(it => it.value === current);
+  const hasSelection = current !== '' && current !== undefined && foundIndex !== -1;
+  const at = hasSelection ? foundIndex : -1;
   const reduce = useReducedMotion();
   const groupRef = useRef<HTMLDivElement | null>(null);
   const chipRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -119,6 +118,22 @@ export default function JellyRadio({
 
   const apply = (sel: number, instant: boolean) => {
     const C = cfg.current;
+    if (sel < 0 || sel >= C.count) {
+      for (let i = 0; i < C.count; i++) {
+        const mv = mvFor(i);
+        if (instant || C.reduce) {
+          mv.x.jump(0);
+          mv.sx.jump(1);
+          mv.sy.jump(1);
+        } else {
+          animate(mv.x, 0);
+          animate(mv.sx, 1);
+          animate(mv.sy, 1);
+        }
+      }
+      return;
+    }
+
     const group = groupRef.current;
     const rtl = group ? getComputedStyle(group).direction === 'rtl' : false;
     const push = ((widths.current[sel] ?? 0) * C.swell) / 2 + C.barge;
@@ -188,7 +203,7 @@ export default function JellyRadio({
   );
 
   const commit = (i: number, instant: boolean) => {
-    if (disabled || i === at || !list[i] || list[i].disabled) return;
+    if (disabled || (hasSelection && i === at) || !list[i] || list[i].disabled) return;
     applied.current = i;
     apply(i, instant);
     if (value === undefined) setInner(list[i].value);
@@ -246,11 +261,11 @@ export default function JellyRadio({
           }}
           type="button"
           role="radio"
-          aria-checked={i === at}
-          tabIndex={i === at ? 0 : -1}
+          aria-checked={hasSelection && i === at}
+          tabIndex={hasSelection ? (i === at ? 0 : -1) : (i === 0 ? 0 : -1)}
           disabled={disabled || !!it.disabled}
           className="jelly-radio__chip"
-          data-on={i === at ? 'true' : 'false'}
+          data-on={hasSelection && i === at ? 'true' : 'false'}
           onClick={e => commit(i, e.detail === 0)}
           onKeyDown={e => onKeyDown(e, i)}
         >

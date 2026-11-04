@@ -27,12 +27,12 @@ function seedAdminProducts(): AdminProduct[] {
     colors.forEach((col, cIdx) => {
       sizes.forEach((sz) => {
         variants.push({
-          id: `${p.id}-${col.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${sz.toLowerCase()}`,
+          id: ${p.id}--,
           productId: p.id,
           size: sz,
           colorName: col.name,
           colorHex: col.value,
-          sku: `${pSku}-C${cIdx + 1}-${sz}`,
+          sku: ${pSku}-C-,
           stock: 15,
           price: p.price,
           inStock: true,
@@ -700,7 +700,27 @@ class StoreService {
     paymentMethod?: string;
   }): Promise<AdminOrder> {
     if (!isSupabaseConfigured) {
-      throw new Error('Supabase database is not configured. Customer checkout is currently disabled.');
+      // Local Demo Mode: Validate all items against local authoritative records
+      for (const it of input.items) {
+        const prod = this.getProductById(it.id);
+        if (!prod || prod.status !== 'active') {
+          throw new Error(`Product "${it.name}" (${it.id}) is not active for sale.`);
+        }
+        if (prod.variants && prod.variants.length > 0) {
+          const normSize = it.size.toLowerCase().trim();
+          const normColor = it.color.toLowerCase().trim();
+          const variant = prod.variants.find(
+            (v) => v.size.toLowerCase().trim() === normSize &&
+                   (!normColor || v.colorName.toLowerCase().trim() === normColor)
+          );
+          if (!variant) {
+            throw new Error(`Unavailable product combination: "${prod.name}" in size "${it.size}" and color "${it.color}" does not exist.`);
+          }
+          if (variant.stock < it.quantity) {
+            throw new Error(`Insufficient stock for "${prod.name}" (${it.size} / ${it.color}): requested ${it.quantity}, available ${variant.stock}.`);
+          }
+        }
+      }
     }
 
     const randomOrderNumber = `FF-${Math.floor(100000 + Math.random() * 900000)}`;
@@ -762,7 +782,9 @@ class StoreService {
     };
 
     // 1. Authoritative Cloud Persistence via PostgreSQL RPC (Atomic locking & validation)
-    const cloudResult = await SupabaseDbService.createCustomerOrder({
+    let cloudResult: any = null;
+    if (isSupabaseConfigured) {
+      cloudResult = await SupabaseDbService.createCustomerOrder({
       idempotencyKey: input.idempotencyKey,
       customer: {
         id: customerId,
@@ -806,6 +828,12 @@ class StoreService {
     }
     if (cloudResult?.tax !== undefined) {
       newOrder.tax = cloudResult.tax;
+    }
+      newOrder.notes = '[SUPABASE CLOUD] Verified atomic PostgreSQL transaction';
+      newOrder.internalNotes = ['[SUPABASE CLOUD] Persisted via RPC create_customer_order'];
+    } else {
+      newOrder.notes = '[LOCAL DEMO] Verified order created in local development mode';
+      newOrder.internalNotes = ['[LOCAL DEMO] Verified order created in local development mode'];
     }
 
     // 2. Add to orders list
@@ -934,11 +962,88 @@ class StoreService {
     this.persist('orders', this.orders);
     this.logAudit(performedBy, 'UPDATE_ORDER_STATUS', 'Order', order.id, `Status updated to ${newStatus}`);
 
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('funkyfox:store_updated'));
+      window.dispatchEvent(new CustomEvent('funky-fox-order-change', { detail: { orderId: order.id, status: newStatus } }));
+    }
+
     if (isSupabaseConfigured) {
       SupabaseDbService.updateOrderStatus(order.id, newStatus, order.timeline).catch(() => {});
     }
 
     return order;
+  }
+
+  cancelCustomerOrder(
+    orderId: string,
+    reason: string,
+    performedBy: string = 'Customer'
+  ): { success: boolean; error?: string; order?: AdminOrder } {
+    const order = this.orders.find((o) => o.id === orderId || o.orderNumber === orderId);
+    if (!order) {
+      return { success: false, error: 'Order record could not be found.' };
+    }
+
+    const ineligibleStatuses: AdminOrder['shippingStatus'][] = [
+      'shipped',
+      'out_for_delivery',
+      'delivered',
+      'returned',
+      'cancelled',
+    ];
+
+    if (ineligibleStatuses.includes(order.shippingStatus)) {
+      const statusMsg = order.shippingStatus === 'cancelled'
+        ? 'This order has already been cancelled.'
+        : `Order #${order.orderNumber} cannot be cancelled because it is already marked as "${order.shippingStatus}". You may request an exchange or return upon delivery.`;
+      return { success: false, error: statusMsg };
+    }
+
+    const prevStatus = order.shippingStatus;
+    order.shippingStatus = 'cancelled';
+    order.fulfillmentStatus = 'unfulfilled';
+    order.updatedAt = new Date().toISOString();
+
+    const dateStr = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const timeStr = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+    order.cancellation = {
+      cancelledAt: `${dateStr}, ${timeStr}`,
+      reason: reason?.trim() || 'Cancelled by customer request',
+      refundStatus: order.paymentStatus === 'captured'
+        ? `Cancellation confirmed. Refund request for ₹${order.total.toLocaleString('en-IN')} has been logged for administrative verification.`
+        : 'Order cancelled. No charges were captured for this order.',
+    };
+
+    order.timeline.push({
+      status: 'cancelled',
+      label: 'Order Cancelled',
+      description: `Order cancelled by ${performedBy}. Reason: ${reason?.trim() || 'Customer request'}.`,
+      timestamp: new Date().toISOString(),
+      performedBy,
+    });
+
+    this.persist('orders', this.orders);
+    this.logAudit(performedBy, 'CANCEL_ORDER', 'Order', order.id, `Status transitioned from ${prevStatus} to cancelled: ${reason}`);
+
+    if (isSupabaseConfigured) {
+      SupabaseDbService.updateOrderStatus(order.id, 'cancelled', order.timeline).catch(() => {});
+    }
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('funkyfox:store_updated'));
+      window.dispatchEvent(new CustomEvent('funky-fox-order-change', { detail: { orderId: order.id, status: 'cancelled' } }));
+    }
+
+    return { success: true, order };
+  }
+
+  getCustomerOrders(email?: string): AdminOrder[] {
+    if (!email) return [...this.orders];
+    const clean = email.trim().toLowerCase();
+    return this.orders.filter(
+      (o) => o.customer?.email?.trim().toLowerCase() === clean
+    );
   }
 
   addOrderNote(orderId: string, noteText: string, adminName: string = 'Admin') {

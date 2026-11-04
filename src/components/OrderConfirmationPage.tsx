@@ -82,19 +82,52 @@ export default function OrderConfirmationPage() {
 
             {/* Subtle order reference for reassurance */}
             {activeReference && (
-              <p className="mt-2 text-xs font-medium text-[#7a7b78] tracking-wider uppercase">
-                Order #{activeReference}
-              </p>
+              <div className="mt-4 w-full max-w-md mx-auto bg-white/90 backdrop-blur-xs rounded-2xl border border-[#EAE5D9] p-4 text-left shadow-xs">
+                <div className="flex items-center justify-between border-b border-[#F5F2EB] pb-2.5 mb-2.5">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#7a7b78]">
+                    Order Number
+                  </span>
+                  <span className="font-display font-black text-sm text-[#1c1d1a]">
+                    #{activeReference}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <span className="text-[#8a8b88] text-[11px] block">Items & Total</span>
+                    <span className="font-bold text-[#1c1d1a]">
+                      {orderData?.itemsCount || 1} {(orderData?.itemsCount || 1) === 1 ? 'item' : 'items'} · ₹{Number(orderData?.orderTotal || 0).toLocaleString('en-IN')}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[#8a8b88] text-[11px] block">Payment & Status</span>
+                    <span className="font-bold text-[#1c1d1a] truncate block">
+                      {orderData?.paymentMethod || 'UPI / Online'} · <span className="text-emerald-700">Confirmed</span>
+                    </span>
+                  </div>
+                  {orderData?.deliveryCity && (
+                    <div className="col-span-2 pt-1 border-t border-[#F5F2EB]/60 text-[11px] text-[#7a7b78]">
+                      Delivering to: <strong className="text-[#1c1d1a] font-semibold">{orderData.deliveryCity}{orderData.deliveryState ? `, ${orderData.deliveryState}` : ''} {orderData.deliveryPincode ? `(${orderData.deliveryPincode})` : ''}</strong>
+                    </div>
+                  )}
+                </div>
+              </div>
             )}
 
-            {/* Primary Action Button */}
-            <div className="mt-8 sm:mt-10">
+            {/* Action Buttons: View Order Details & Continue Shopping */}
+            <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-md mx-auto">
+              <Link
+                to={`/account/orders/${orderData?.orderId || activeReference || ''}`}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl sm:rounded-2xl bg-[#1c1d19] hover:bg-[#2e2f2b] text-white text-sm font-semibold tracking-normal transition-all duration-200 shadow-sm active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1c1d19]"
+              >
+                <span>View Order Details</span>
+                <span className="text-base leading-none" aria-hidden="true">&rarr;</span>
+              </Link>
               <Link
                 to="/products"
-                className="inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 py-3.5 sm:py-4 rounded-xl sm:rounded-2xl bg-[#1c1d19] hover:bg-[#2e2f2b] text-white text-sm sm:text-base font-semibold tracking-normal transition-all duration-200 shadow-sm active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1c1d19] focus-visible:ring-offset-2 focus-visible:ring-offset-[#FBF8F1]"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl sm:rounded-2xl bg-white/80 border border-[#EAE5D9] hover:bg-[#F2EDE2] text-[#1c1d1a] text-sm font-semibold tracking-normal transition-all duration-200 shadow-2xs active:scale-[0.98]"
               >
                 <span>Continue Shopping</span>
-                <span className="text-lg leading-none" aria-hidden="true">&rarr;</span>
               </Link>
             </div>
           </>
@@ -105,15 +138,23 @@ export default function OrderConfirmationPage() {
               No Active Order Found
             </h1>
             <p className="mt-3 text-sm sm:text-base text-[#4a4b48] leading-relaxed">
-              You have reached the confirmation page without an active order session. Explore our catalog to find pieces for your wardrobe.
+              You have reached the confirmation page without an active order session. Explore our catalog or check your account order history.
             </p>
-            <Link
-              to="/products"
-              className="mt-8 inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl bg-[#1c1d19] hover:bg-[#2e2f2b] text-white text-sm font-semibold tracking-normal transition-all duration-200 shadow-sm active:scale-[0.98]"
-            >
-              <span>Explore Collection</span>
-              <span aria-hidden="true">&rarr;</span>
-            </Link>
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
+              <Link
+                to="/products"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-[#1c1d19] hover:bg-[#2e2f2b] text-white text-sm font-semibold tracking-normal transition-all duration-200 shadow-sm active:scale-[0.98]"
+              >
+                <span>Explore Collection</span>
+                <span aria-hidden="true">&rarr;</span>
+              </Link>
+              <Link
+                to="/account/orders"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-white/80 border border-[#EAE5D9] hover:bg-[#F2EDE2] text-[#1c1d1a] text-sm font-semibold tracking-normal transition-all duration-200 shadow-2xs active:scale-[0.98]"
+              >
+                <span>My Orders</span>
+              </Link>
+            </div>
           </div>
         )}
       </main>

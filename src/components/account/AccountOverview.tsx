@@ -46,9 +46,13 @@ export default function AccountOverview() {
     };
     window.addEventListener('storage', syncData);
     window.addEventListener('funky-fox-auth-change', syncData);
+    window.addEventListener('funkyfox:store_updated', syncData);
+    window.addEventListener('funky-fox-order-change', syncData);
     return () => {
       window.removeEventListener('storage', syncData);
       window.removeEventListener('funky-fox-auth-change', syncData);
+      window.removeEventListener('funkyfox:store_updated', syncData);
+      window.removeEventListener('funky-fox-order-change', syncData);
     };
   }, []);
 
@@ -196,23 +200,6 @@ export default function AccountOverview() {
 
         {/* RIGHT COLUMN: Funky Fox Mascot Artwork */}
         <div className="w-full lg:w-1/2 flex items-center justify-center lg:justify-end relative pt-4 lg:pt-0">
-          {/* Subtle golden sparkle accent */}
-          <span
-            className="absolute -top-3 left-8 sm:left-14 lg:left-8 text-[#f16c24] text-3xl font-serif select-none pointer-events-none opacity-80 animate-pulse"
-            aria-hidden="true"
-          >
-            ✦
-          </span>
-
-          {/* Whimsical orange ear marks matching reference */}
-          <div
-            className="absolute top-2 right-8 sm:right-16 lg:right-12 flex gap-1.5 select-none pointer-events-none opacity-90"
-            aria-hidden="true"
-          >
-            <span className="w-1.5 h-5 rounded-full bg-[#f16c24] -rotate-12" />
-            <span className="w-1.5 h-6 rounded-full bg-[#f16c24] rotate-6" />
-          </div>
-
           {/* Seamless SVG-blended mascot illustration */}
           <div className="relative w-full max-w-[320px] sm:max-w-[400px] md:max-w-[460px] lg:max-w-[500px] xl:max-w-[540px] flex items-center justify-center">
             <img

@@ -1,5 +1,7 @@
 // Central Mock Data Module for Funky Fox Customer Account Experience
 // Local Demo Simulation — No real passwords or sensitive data collected or transmitted.
+import { storeService } from '../admin/services/storeService';
+import type { AdminOrder } from '../admin/lib/types';
 
 export interface OrderItem {
   id: string;
@@ -638,13 +640,137 @@ export function updateDemoProfile(updates: Partial<UserProfile>): UserProfile {
   return merged;
 }
 
-// Orders Management
+// Orders Management & Authoritative Store Adapter
+export function adminOrderToCustomerOrder(adminOrder: AdminOrder): Order {
+  const createdAt = adminOrder.createdAt ? new Date(adminOrder.createdAt) : new Date();
+  const dateStr = createdAt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  const timeStr = createdAt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+  // Map admin shippingStatus to customer Order status
+  let customerStatus: Order['status'] = 'processing';
+  if (adminOrder.shippingStatus === 'cancelled') {
+    customerStatus = 'cancelled';
+  } else if (adminOrder.shippingStatus === 'returned') {
+    customerStatus = 'returned';
+  } else if (adminOrder.shippingStatus === 'delivered') {
+    customerStatus = 'delivered';
+  } else if (adminOrder.shippingStatus === 'shipped' || adminOrder.shippingStatus === 'out_for_delivery') {
+    customerStatus = 'shipped';
+  } else {
+    customerStatus = 'processing';
+  }
+
+  // Map timeline
+  let timeline: OrderMilestone[] = [];
+  if (adminOrder.timeline && adminOrder.timeline.length > 0) {
+    timeline = adminOrder.timeline.map((tl, idx, arr) => {
+      const tlDate = tl.timestamp ? new Date(tl.timestamp) : new Date();
+      return {
+        status: tl.status,
+        label: tl.label || tl.status,
+        date: tlDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        time: tlDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+        description: tl.description || '',
+        completed: true,
+        current: idx === arr.length - 1,
+      };
+    });
+  } else {
+    timeline = [
+      {
+        status: 'placed',
+        label: 'Order Placed',
+        date: dateStr,
+        time: timeStr,
+        description: 'Order confirmed and verified on storefront.',
+        completed: true,
+        current: true,
+      },
+    ];
+  }
+
+  return {
+    id: adminOrder.id,
+    orderNumber: adminOrder.orderNumber,
+    date: `${dateStr}, ${timeStr}`,
+    estimatedDelivery: adminOrder.shipmentDetails?.courierName ? '2–3 business days' : '3–4 business days',
+    status: customerStatus,
+    items: (adminOrder.items || []).map((it) => ({
+      id: it.id || it.productId,
+      name: it.name,
+      price: it.price,
+      originalPrice: Math.round(it.price * 1.25),
+      color: it.color || 'Standard',
+      size: it.size || 'M',
+      quantity: it.quantity,
+      image: it.image || '/images/product-tshirt.webp',
+    })),
+    subtotal: adminOrder.subtotal,
+    discount: adminOrder.discount || 0,
+    discountCode: adminOrder.couponCode,
+    shipping: adminOrder.shippingCharge || 0,
+    tax: adminOrder.tax || 0,
+    total: adminOrder.total,
+    paymentMethod: {
+      type: (adminOrder.paymentMethod || 'UPI').toUpperCase(),
+      last4: adminOrder.paymentDetails?.transactionId?.slice(-4) || 'Online',
+      status: adminOrder.paymentStatus === 'captured' ? 'Paid' : (adminOrder.paymentStatus === 'refunded' ? 'Refunded' : 'Pending'),
+      holderName: adminOrder.customer?.name || adminOrder.shippingAddress?.fullName || 'Customer',
+    },
+    deliveryAddress: {
+      fullName: adminOrder.shippingAddress?.fullName || adminOrder.customer?.name || 'Customer',
+      phone: adminOrder.shippingAddress?.phone || adminOrder.customer?.phone || '',
+      street: adminOrder.shippingAddress?.street + (adminOrder.shippingAddress?.addressLine2 ? ', ' + adminOrder.shippingAddress.addressLine2 : ''),
+      city: adminOrder.shippingAddress?.city || '',
+      state: adminOrder.shippingAddress?.state || '',
+      pincode: adminOrder.shippingAddress?.pincode || '',
+      country: adminOrder.shippingAddress?.country || 'India',
+      mapsUrl: `https://maps.google.com/maps?q=${encodeURIComponent((adminOrder.shippingAddress?.city || '') + ' ' + (adminOrder.shippingAddress?.pincode || ''))}`,
+    },
+    carrier: adminOrder.shipmentDetails?.courierName
+      ? {
+          name: adminOrder.shipmentDetails.courierName,
+          trackingNumber: adminOrder.shipmentDetails.awbCode || 'Pending Dispatch',
+          trackingUrl: adminOrder.shipmentDetails.trackingUrl || '#',
+        }
+      : undefined,
+    timeline,
+    cancellation: adminOrder.cancellation,
+  };
+}
+
 export function getDemoOrders(): Order[] {
-  return safeGet<Order[]>(STORAGE_KEYS.ORDERS, INITIAL_ORDERS);
+  const user = getDemoUser();
+  const allAdminOrders = storeService.getOrders();
+
+  if (user?.email) {
+    const cleanEmail = user.email.trim().toLowerCase();
+    const customerAdminOrders = allAdminOrders.filter(
+      (o) => o.customer?.email?.trim().toLowerCase() === cleanEmail
+    );
+
+    if (customerAdminOrders.length > 0) {
+      const converted = customerAdminOrders.map(adminOrderToCustomerOrder);
+      if (cleanEmail === DEFAULT_PROFILE.email.toLowerCase()) {
+        const initialFiltered = INITIAL_ORDERS.filter(
+          (init) => !customerAdminOrders.some((co) => co.id === init.id || co.orderNumber === init.orderNumber)
+        );
+        return [...converted, ...initialFiltered];
+      }
+      return converted;
+    }
+
+    if (cleanEmail === DEFAULT_PROFILE.email.toLowerCase()) {
+      return INITIAL_ORDERS;
+    }
+
+    return [];
+  }
+
+  return [];
 }
 
 export function createDemoOrder(orderData: Partial<Order>): Order {
-  const orders = getDemoOrders();
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
   const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
@@ -683,54 +809,42 @@ export function createDemoOrder(orderData: Partial<Order>): Order {
         label: 'Order Placed',
         date: dateStr,
         time: timeStr,
-        description: 'Order confirmed and verified via instant payment.',
+        description: 'Order confirmed and verified on storefront.',
         completed: true,
         current: true,
-      },
-      {
-        status: 'processing',
-        label: 'Fabric Inspection & Packing',
-        date: 'Next business day',
-        time: '10:00 AM',
-        description: 'Undergoing 12-point garment and seam quality verification.',
-        completed: false,
-      },
-      {
-        status: 'shipped',
-        label: 'Handed to BlueDart Express',
-        date: 'In 2 days',
-        time: '--',
-        description: 'Air dispatch to regional sorting hub.',
-        completed: false,
-      },
-      {
-        status: 'delivered',
-        label: 'Doorstep Delivery',
-        date: 'In 4 days',
-        time: '--',
-        description: 'Delivered in eco-friendly cotton pouch.',
-        completed: false,
       },
     ],
   };
 
-  const updatedOrders = [newOrder, ...orders];
-  safeSet(STORAGE_KEYS.ORDERS, updatedOrders);
   return newOrder;
 }
 
 export function getDemoOrderById(id: string): Order | undefined {
-  const orders = getDemoOrders();
-  const clean = id.toLowerCase().replace('#', '');
-  return orders.find(
-    o => o.id.toLowerCase() === clean || o.orderNumber.toLowerCase().replace('#', '') === clean
+  if (!id) return undefined;
+  const clean = id.trim().toLowerCase().replace('#', '');
+
+  const allAdminOrders = storeService.getOrders();
+  const foundAdmin = allAdminOrders.find(
+    (o) => o.id.toLowerCase() === clean || o.orderNumber.toLowerCase().replace('#', '') === clean
+  );
+  if (foundAdmin) {
+    return adminOrderToCustomerOrder(foundAdmin);
+  }
+
+  return INITIAL_ORDERS.find(
+    (o) => o.id.toLowerCase() === clean || o.orderNumber.toLowerCase().replace('#', '') === clean
   );
 }
 
 export function cancelDemoOrder(orderId: string, reason: string): { success: boolean; error?: string } {
-  const orders = getDemoOrders();
+  const adminOrder = storeService.getOrderById(orderId);
+  if (adminOrder) {
+    return storeService.cancelCustomerOrder(orderId, reason, 'Customer');
+  }
+
+  const orders = safeGet<Order[]>(STORAGE_KEYS.ORDERS, INITIAL_ORDERS);
   const index = orders.findIndex(
-    o => o.id === orderId || o.orderNumber === orderId
+    (o) => o.id === orderId || o.orderNumber === orderId
   );
   if (index === -1) return { success: false, error: 'Order not found' };
 
@@ -752,16 +866,16 @@ export function cancelDemoOrder(orderId: string, reason: string): { success: boo
     cancellation: {
       cancelledAt: `${dateStr}, ${timeStr}`,
       reason: reason || 'Cancelled by customer',
-      refundStatus: `Full refund of ₹${target.total.toLocaleString('en-IN')} initiated to your payment method.`
+      refundStatus: `Cancellation recorded. Refund request for ₹${target.total.toLocaleString('en-IN')} logged for verification.`
     },
     timeline: [
-      ...target.timeline.map(t => ({ ...t, current: false })),
+      ...target.timeline.map((t) => ({ ...t, current: false })),
       {
         status: 'cancelled',
         label: 'Order Cancelled',
         date: dateStr,
         time: timeStr,
-        description: `Cancelled: ${reason || 'Customer request'}. Refund processed in demo mode.`,
+        description: `Cancelled: ${reason || 'Customer request'}.`,
         completed: true,
         current: true
       }
@@ -770,6 +884,12 @@ export function cancelDemoOrder(orderId: string, reason: string): { success: boo
 
   orders[index] = updatedOrder;
   safeSet(STORAGE_KEYS.ORDERS, orders);
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('funkyfox:store_updated'));
+    window.dispatchEvent(new CustomEvent('funky-fox-order-change', { detail: { orderId, status: 'cancelled' } }));
+  }
+
   return { success: true };
 }
 

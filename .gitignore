@@ -1,4 +1,4 @@
-﻿# Logs
+# Logs
 logs
 *.log
 npm-debug.log*
@@ -39,6 +39,10 @@ backups/
 *.sql.bak
 *.dpapi
 *.credential
+
+# Python and temp files
+__pycache__/
+*.py[cod]
 
 # Local AI tools
 .gemini/

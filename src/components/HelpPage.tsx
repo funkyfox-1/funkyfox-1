@@ -415,14 +415,25 @@ export default function HelpPage() {
               help you find the right answer.
             </p>
 
-            <button
-              type="button"
-              onClick={() => setIsContactModalOpen(true)}
-              className="help-contact-btn"
-            >
-              <span>CONTACT OUR TEAM</span>
-              <ArrowRight size={15} />
-            </button>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <a
+                href="https://wa.me/919493551595?text=Hi%20Funky%20Fox%2C%20I%20have%20an%20inquiry%20regarding%20products%20or%20an%20order"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold uppercase tracking-wider transition-all shadow-sm touch-manipulation"
+              >
+                <MessageSquare size={15} />
+                <span>Chat on WhatsApp</span>
+              </a>
+              <button
+                type="button"
+                onClick={() => setIsContactModalOpen(true)}
+                className="help-contact-btn"
+              >
+                <span>CONTACT FORM</span>
+                <ArrowRight size={15} />
+              </button>
+            </div>
           </div>
         </div>
       </section>

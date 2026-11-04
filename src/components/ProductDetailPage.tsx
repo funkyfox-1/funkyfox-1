@@ -20,6 +20,7 @@ import {
   Heart,
 } from 'lucide-react'
 import { products, formatPrice, getCategoryFallbackImage, ALL_SIZES, type Product } from '../data/products'
+import { storeService } from '../admin/services/storeService'
 import { isDemoLoggedIn, isInDemoWishlist, toggleDemoWishlist } from '../data/accountMockData'
 import { showToast } from '../utils/toast'
 import { PROVISIONAL_SHIPPING_POLICY } from '../config/shipping'
@@ -37,7 +38,7 @@ interface ProductDetailPageProps {
 export default function ProductDetailPage({ addToCart }: ProductDetailPageProps) {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const [, setStoreTick] = React.useState<number>(0)
+  const [storeTick, setStoreTick] = React.useState<number>(0)
 
   // Live Storefront Synchronization with Admin Store
   React.useEffect(() => {
@@ -46,8 +47,44 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
     return () => window.removeEventListener('funkyfox:store_updated', handleSync)
   }, [])
 
-  // Find product by id or slug
-  const product = products.find((p) => p.id === id || (p as any).slug === id)
+  // Find product by id (authoritative from storeService with fallback to products)
+  const product: Product | undefined = React.useMemo(() => {
+    try {
+      const sp = storeService.getProductById(id || '');
+      if (sp) {
+        return {
+          id: sp.id,
+          name: sp.name,
+          price: sp.price,
+          originalPrice: sp.originalPrice,
+          image: sp.image,
+          images: sp.images && sp.images.length > 0 ? sp.images : [sp.image],
+          alt: sp.alt || sp.name,
+          category: sp.category as any,
+          colors:
+            sp.variants && sp.variants.length > 0
+              ? Array.from(
+                  new Map(
+                    sp.variants.map((v) => [v.colorName, { name: v.colorName, value: v.colorHex }])
+                  ).values()
+                )
+              : [{ name: 'Standard', value: '#171717' }],
+          sizes:
+            sp.variants && sp.variants.length > 0
+              ? (Array.from(new Set(sp.variants.map((v) => v.size))) as any)
+              : (['S', 'M', 'L', 'XL'] as any),
+          inStock: sp.totalStock > 0 && sp.status === 'active',
+          isNew: sp.isNew,
+          isBestseller: sp.isBestseller,
+          featuredOrder: sp.featuredOrder || 99,
+          description: sp.description,
+          details: sp.details,
+          fitFabric: (sp as any).fitFabric || (products.find((p) => p.id === id || (p as any).slug === id) as any)?.fitFabric,
+        };
+      }
+    } catch {}
+    return products.find((p) => p.id === id || (p as any).slug === id);
+  }, [id, storeTick]);
 
   // Gallery state
   const images = React.useMemo(() => {
@@ -64,6 +101,29 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
   const [selectedColor, setSelectedColor] = React.useState<string>(
     product?.colors[0]?.name || ''
   )
+
+  // Variant availability checking
+  const isSizeAvailable = React.useCallback(
+    (size: string) => {
+      if (!product || !product.sizes.includes(size as any)) return false;
+      try {
+        const ap = storeService.getProductById(product.id);
+        if (ap && ap.variants && ap.variants.length > 0) {
+          const normCol = (selectedColor || '').toLowerCase().trim();
+          const variant = ap.variants.find(
+            (v) =>
+              v.size.toLowerCase().trim() === size.toLowerCase().trim() &&
+              (!normCol || v.colorName.toLowerCase().trim() === normCol)
+          );
+          if (variant) {
+            return variant.stock > 0 && variant.inStock !== false;
+          }
+        }
+      } catch {}
+      return product.inStock;
+    },
+    [product, selectedColor, storeTick]
+  );
   const [selectedSize, setSelectedSize] = React.useState<string>('')
   const [quantity, setQuantity] = React.useState<number>(1)
   const [sizeError, setSizeError] = React.useState<string>('')
@@ -218,6 +278,12 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
       if (sizeElement) {
         sizeElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
       }
+      return
+    }
+
+    // Availability validation
+    if (!isSizeAvailable(selectedSize)) {
+      setSizeError(`Size ${selectedSize} is currently out of stock. Please select another size.`)
       return
     }
 
@@ -1486,7 +1552,7 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
             {/* Quick Size Pills (shown on desktop if size not selected) */}
             {!selectedSize && product.sizes && product.sizes.length > 0 && (
               <div className="hidden md:flex items-center gap-1.5 mr-1" aria-label="Quick select size">
-                {product.sizes.map((sz) => (
+                {product.sizes.map((sz: string) => (
                   <button
                     key={sz}
                     type="button"
