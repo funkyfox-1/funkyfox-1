@@ -2,13 +2,14 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 // Retrieve credentials safely from Vite env using direct static access for Vite AST substitution
 const envUrl =
-  import.meta.env.VITE_SUPABASE_URL ||
+  (typeof import.meta !== 'undefined' && (import.meta as any).env ? import.meta.env.VITE_SUPABASE_URL : '') ||
   (typeof process !== 'undefined' ? process.env?.VITE_SUPABASE_URL : '') ||
   '';
 
 const envKey =
-  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
-  import.meta.env.VITE_SUPABASE_ANON_KEY ||
+  (typeof import.meta !== 'undefined' && (import.meta as any).env
+    ? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY
+    : '') ||
   (typeof process !== 'undefined'
     ? process.env?.VITE_SUPABASE_PUBLISHABLE_KEY || process.env?.VITE_SUPABASE_ANON_KEY
     : '') ||

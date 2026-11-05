@@ -27,12 +27,12 @@ function seedAdminProducts(): AdminProduct[] {
     colors.forEach((col, cIdx) => {
       sizes.forEach((sz) => {
         variants.push({
-          id: ${p.id}--,
+          id: `${p.id}-${col.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${sz.toLowerCase()}`,
           productId: p.id,
           size: sz,
           colorName: col.name,
           colorHex: col.value,
-          sku: ${pSku}-C-,
+          sku: `${pSku}-C${cIdx + 1}-${sz}`,
           stock: 15,
           price: p.price,
           inStock: true,

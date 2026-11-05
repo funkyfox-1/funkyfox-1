@@ -149,7 +149,7 @@ async function runPhase1Verification() {
   // TEST 8: Admin Product Creation
   let createdTestProductId = '';
   try {
-    const testProd = storeService.saveProduct({
+    const testProd = await storeService.saveProduct({
       id: `test-suit-${Date.now()}`,
       slug: `test-suit-${Date.now()}`,
       name: 'Automated Test Luxury Velvet Blazer',
@@ -209,7 +209,7 @@ async function runPhase1Verification() {
       if (prod) {
         prod.name = 'Automated Test Luxury Velvet Blazer (Edited)';
         prod.price = 3999;
-        storeService.saveProduct(prod);
+        await storeService.saveProduct(prod);
         const updated = storeService.getProductById(createdTestProductId);
         if (updated && updated.name.includes('(Edited)') && updated.price === 3999) {
           results.push({

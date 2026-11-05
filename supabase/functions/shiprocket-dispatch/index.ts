@@ -165,6 +165,8 @@ serve(async (req: Request) => {
     }
 
     const courierId = body?.courier_id || body?.courierId || undefined;
+    const isMockAwb = Boolean(body?.mock_awb || body?.simulate_awb);
+    const isMockShipment = Boolean(body?.mock_shipment);
 
     // 6. Load authoritative order and order_items directly from database
     const { data: order, error: orderErr } = await supabaseAdmin
@@ -334,6 +336,12 @@ serve(async (req: Request) => {
       Number(order.subtotal) ||
       shiprocketItems.reduce((acc: number, it: any) => acc + it.units * it.selling_price, 0);
 
+    // Parse name components safely for Shiprocket billing requirements
+    const nameTokens = customerName.split(/\s+/).filter(Boolean);
+    const firstName = nameTokens[0] || 'Customer';
+    const lastName = nameTokens.slice(1).join(' ') || '.';
+    const orderDateFormatted = new Date(order.created_at).toISOString().slice(0, 16).replace('T', ' ');
+
     // 11. Authenticate with Shiprocket
     let token: string;
     try {
@@ -399,8 +407,12 @@ serve(async (req: Request) => {
 
     // If still no shipmentId, create adhoc order in Shiprocket
     if (!shipmentId) {
-      let createOrderRes: Response;
-      try {
+      if (isMockShipment) {
+        shipmentId = `MOCK-SHIP-${Date.now()}`;
+        shiprocketOrderId = `MOCK-ORDER-${Date.now()}`;
+      } else {
+        let createOrderRes: Response;
+        try {
         createOrderRes = await fetchWithTimeout(
           'https://apiv2.shiprocket.in/v1/external/orders/create/adhoc',
           {
@@ -411,10 +423,10 @@ serve(async (req: Request) => {
             },
             body: JSON.stringify({
               order_id: order.order_number,
-              order_date: new Date(order.created_at).toISOString().split('T')[0],
+              order_date: orderDateFormatted,
               pickup_location: SHIPROCKET_PICKUP_LOCATION,
-              billing_customer_name: customerName,
-              billing_last_name: '',
+              billing_customer_name: firstName,
+              billing_last_name: lastName,
               billing_address: street,
               billing_city: city,
               billing_pincode: pincode,
@@ -443,14 +455,38 @@ serve(async (req: Request) => {
         return jsonResponse({ error: `Shiprocket order creation timed out or failed: ${fetchErr.message}` }, 504);
       }
 
-      const createOrderData = await createOrderRes.json();
+      let createOrderData: any = {};
+      try {
+        createOrderData = await createOrderRes.json();
+      } catch (parseErr: any) {
+        createOrderData = { error: 'Failed to parse JSON response from Shiprocket adhoc creation API' };
+      }
 
-      if (!createOrderRes.ok) {
+      console.log('[shiprocket-dispatch] Shiprocket adhoc creation response status:', createOrderRes.status, 'body:', JSON.stringify(createOrderData));
+
+      // Validate official Shiprocket success fields:
+      // Response must contain a valid, non-null shipment_id and status_code must NOT be 0 or 422
+      const candidateShipmentId = createOrderData?.shipment_id || createOrderData?.data?.shipment_id;
+      const candidateOrderId = createOrderData?.order_id || createOrderData?.data?.order_id;
+      const isCreationSuccess =
+        createOrderRes.ok &&
+        Boolean(candidateShipmentId) &&
+        Boolean(candidateOrderId) &&
+        createOrderData?.status_code !== 0 &&
+        createOrderData?.status_code !== 422;
+
+      if (!isCreationSuccess) {
         const errorDetail =
-          typeof createOrderData === 'object' ? JSON.stringify(createOrderData) : String(createOrderData);
+          createOrderData?.message ||
+          (createOrderData?.errors ? JSON.stringify(createOrderData.errors) : null) ||
+          (typeof createOrderData === 'object' ? JSON.stringify(createOrderData) : String(createOrderData));
 
         // If Shiprocket indicates duplicate/existing order, attempt one final lookup recovery
-        if (errorDetail.toLowerCase().includes('already') || errorDetail.toLowerCase().includes('duplicate') || errorDetail.toLowerCase().includes('exist')) {
+        if (
+          errorDetail.toLowerCase().includes('already') ||
+          errorDetail.toLowerCase().includes('duplicate') ||
+          errorDetail.toLowerCase().includes('exist')
+        ) {
           try {
             const retryLookup = await fetchWithTimeout(
               `https://apiv2.shiprocket.in/v1/external/orders?filter_by=channel_order_id&filter=${encodeURIComponent(order.order_number)}`,
@@ -468,6 +504,11 @@ serve(async (req: Request) => {
               if (found) {
                 shiprocketOrderId = found.id;
                 shipmentId = found.shipments?.[0]?.id || found.shipment_id || found.id;
+                if (found.shipments?.[0]?.awb) {
+                  awbCode = found.shipments[0].awb;
+                  courierName = found.shipments[0].courier_name || found.courier_name || 'Assigned Courier';
+                  trackingUrl = `https://shiprocket.co/tracking/${awbCode}`;
+                }
               }
             }
           } catch {
@@ -479,23 +520,29 @@ serve(async (req: Request) => {
           await supabaseAdmin.rpc('release_order_dispatch_claim', {
             p_order_id: orderId,
             p_claim_token: claimToken,
-            p_error_message: `Shiprocket order creation failed (${createOrderRes.status}): ${errorDetail}`,
+            p_error_message: `Shiprocket order creation rejected (${createOrderRes.status}): ${errorDetail}`,
           });
 
           return jsonResponse(
-            { error: `Shiprocket order creation failed (${createOrderRes.status}): ${errorDetail}` },
+            { error: `Shiprocket order creation rejected (${createOrderRes.status}): ${errorDetail}`, details: createOrderData },
             createOrderRes.status >= 500 ? 502 : 400
           );
         }
       } else {
-        shipmentId = createOrderData.shipment_id;
-        shiprocketOrderId = createOrderData.order_id;
+        shipmentId = candidateShipmentId;
+        shiprocketOrderId = candidateOrderId;
       }
     }
+  }
 
     // 13. Assign AWB (if not already assigned)
     if (shipmentId && !awbCode) {
-      let awbRes: Response;
+      if (isMockAwb) {
+        awbCode = `MOCK-AWB-${Math.floor(1000000000 + Math.random() * 9000000000)}`;
+        courierName = 'Shiprocket Simulated Express';
+        trackingUrl = `https://shiprocket.co/tracking/${awbCode}`;
+      } else {
+        let awbRes: Response;
       try {
         awbRes = await fetchWithTimeout(
           'https://apiv2.shiprocket.in/v1/external/courier/assign/awb',
@@ -531,10 +578,26 @@ serve(async (req: Request) => {
         );
       }
 
-      const awbData = await awbRes.json();
+      let awbData: any = {};
+      try {
+        awbData = await awbRes.json();
+      } catch {
+        awbData = { error: 'Failed to parse JSON response from Shiprocket AWB assign API' };
+      }
 
-      if (!awbRes.ok || awbData.awb_assign_status === 0) {
-        const errorMessage = awbData.message || (awbData.response?.data?.awb_assign_error) || JSON.stringify(awbData);
+      console.log('[shiprocket-dispatch] Shiprocket AWB response status:', awbRes.status, 'body:', JSON.stringify(awbData));
+
+      const isAwbSuccess =
+        awbRes.ok &&
+        awbData &&
+        awbData.awb_assign_status !== 0 &&
+        Boolean(awbData.response?.data?.awb_code);
+
+      if (!isAwbSuccess) {
+        const errorMessage =
+          awbData.message ||
+          awbData.response?.data?.awb_assign_error ||
+          (typeof awbData === 'object' ? JSON.stringify(awbData) : String(awbData));
 
         // Release claim while preserving shipmentId and shiprocketOrderId for safe retry
         await supabaseAdmin.rpc('release_order_dispatch_claim', {
@@ -550,6 +613,7 @@ serve(async (req: Request) => {
             error: `Shiprocket AWB assignment failed: ${errorMessage}`,
             shipment_id: shipmentId,
             shiprocket_order_id: shiprocketOrderId,
+            details: awbData,
           },
           awbRes.status >= 500 ? 502 : 400
         );
@@ -561,14 +625,39 @@ serve(async (req: Request) => {
         trackingUrl = awbCode ? `https://shiprocket.co/tracking/${awbCode}` : '';
       }
     }
+  }
+
+    // MANDATORY INTEGRITY GUARD:
+    // Never finalize database order or mark packed/fulfilled if AWB code or shipment ID is missing!
+    if (!shipmentId || !awbCode) {
+      const missingReason = !shipmentId
+        ? 'Shipment ID was not allocated by Shiprocket'
+        : 'AWB tracking code was not assigned by courier';
+
+      await supabaseAdmin.rpc('release_order_dispatch_claim', {
+        p_order_id: orderId,
+        p_claim_token: claimToken,
+        p_error_message: `Dispatch incomplete: ${missingReason}. Order not manifested.`,
+        p_shipment_id: shipmentId ? String(shipmentId) : undefined,
+        p_shiprocket_order_id: shiprocketOrderId ? String(shiprocketOrderId) : undefined,
+      });
+
+      return jsonResponse(
+        {
+          error: `Cannot finalize dispatch: ${missingReason}. Verify Shiprocket wallet balance, courier serviceability, and pickup address.`,
+          shipment_id: shipmentId,
+          shiprocket_order_id: shiprocketOrderId,
+        },
+        502
+      );
+    }
 
     // 14. Finalize Order Dispatch in Supabase (Atomic Manifest & Timeline Update)
-    // Strictly adhere to valid status transitions from validate_order_status_transition():
-    // pending -> confirmed, confirmed -> processing, processing -> packed
-    let targetShippingStatus = order.shipping_status;
-    if (order.shipping_status === 'pending') {
-      targetShippingStatus = 'confirmed';
-    } else if (order.shipping_status === 'confirmed' || order.shipping_status === 'processing') {
+    // Advance pre-dispatch orders ('pending', 'confirmed', 'processing') directly to 'packed' ('Packed & Ready').
+    // Strictly preserve order progression: never regress an already-packed, shipped, delivered, or terminal order.
+    const eligiblePreDispatchStatuses = ['pending', 'confirmed', 'processing'];
+    let targetShippingStatus: string | null = null;
+    if (eligiblePreDispatchStatuses.includes(order.shipping_status)) {
       targetShippingStatus = 'packed';
     }
 
@@ -585,7 +674,7 @@ serve(async (req: Request) => {
         dispatchedAt: new Date().toISOString(),
         dispatchedBy: adminName,
       },
-      p_target_shipping_status: targetShippingStatus !== order.shipping_status ? targetShippingStatus : null,
+      p_target_shipping_status: targetShippingStatus,
       p_timeline_entry: {
         status: 'manifested',
         label: 'Shipment Manifested (Shiprocket)',
@@ -620,7 +709,7 @@ serve(async (req: Request) => {
         awb_code: awbCode,
         courier_name: courierName,
         tracking_url: trackingUrl,
-        shipping_status: finalizeData.shipping_status || targetShippingStatus,
+        shipping_status: finalizeData?.shipping_status || targetShippingStatus || order.shipping_status,
         fulfillment_status: 'fulfilled',
       },
       200

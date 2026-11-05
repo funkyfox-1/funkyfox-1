@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 import { products, formatPrice, getCategoryFallbackImage } from '../data/products'
 import { isDemoLoggedIn, getDemoUser, getDemoAddresses, createDemoOrder } from '../data/accountMockData'
+import { RazorpayService } from '../services/razorpayService'
 import { calculateShipping, PROVISIONAL_SHIPPING_POLICY } from '../config/shipping'
 import { CouponService, CouponValidationResult } from '../services/api'
 import { showToast } from '../utils/toast'
@@ -490,6 +491,24 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
     setStage('review')
   }
 
+  // Pre-load Razorpay SDK script on component mount
+  React.useEffect(() => {
+    RazorpayService.loadScript().catch(() => {})
+  }, [])
+
+  // Clear customer bag and idempotency key from storage on successful verified order
+  const clearCheckoutSession = () => {
+    try {
+      localStorage.removeItem('funky-fox-cart')
+      sessionStorage.removeItem(IDEMPOTENCY_STORAGE_KEY)
+      sessionStorage.removeItem(FINGERPRINT_STORAGE_KEY)
+      sessionStorage.removeItem('funkyfox_coupon_code')
+      sessionStorage.removeItem('funky-fox-coupon')
+      window.dispatchEvent(new CustomEvent('funkyfox:cart_cleared'))
+      window.dispatchEvent(new Event('storage'))
+    } catch {}
+  }
+
   // Handle final confirmation via SlideCommit on stage 3
   const handleFinalOrderConfirm = async () => {
     setIsSubmitting(true)
@@ -532,34 +551,112 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
       })
 
       const orderRef = created?.orderNumber || `FF-${Math.floor(100000 + Math.random() * 900000)}`
-
-      // Clear customer bag and idempotency key from storage on successful verified order
-      try {
-        localStorage.removeItem('funky-fox-cart')
-        sessionStorage.removeItem(IDEMPOTENCY_STORAGE_KEY)
-        sessionStorage.removeItem(FINGERPRINT_STORAGE_KEY)
-        sessionStorage.removeItem('funkyfox_coupon_code')
-        sessionStorage.removeItem('funky-fox-coupon')
-        window.dispatchEvent(new CustomEvent('funkyfox:cart_cleared'))
-        window.dispatchEvent(new Event('storage'))
-      } catch {}
-
-      await new Promise((resolve) => setTimeout(resolve, 400))
       const selectedPayTitle =
         PAYMENT_METHODS.find((p) => p.id === selectedPaymentMethod)?.title || 'UPI'
 
-      navigate('/order-confirmation', {
-        state: {
-          orderReference: orderRef,
-          orderId: created?.id,
-          customerName: values.fullName,
-          customerEmail: values.email,
-          deliveryCity: values.city,
-          deliveryState: values.state,
-          deliveryPincode: values.pincode,
-          orderTotal: created?.total || orderTotal,
-          paymentMethod: selectedPayTitle,
-          itemsCount: totalItems,
+      // CASE 1: Cash on Delivery (COD) - 100% Independent of Razorpay
+      if (selectedPaymentMethod === 'cod') {
+        clearCheckoutSession()
+        await new Promise((resolve) => setTimeout(resolve, 300))
+        navigate('/order-confirmation', {
+          state: {
+            orderReference: orderRef,
+            orderId: created?.id,
+            customerName: values.fullName,
+            customerEmail: values.email,
+            deliveryCity: values.city,
+            deliveryState: values.state,
+            deliveryPincode: values.pincode,
+            orderTotal: created?.total || orderTotal,
+            paymentMethod: selectedPayTitle,
+            itemsCount: totalItems,
+          },
+        })
+        return
+      }
+
+      // CASE 2: Online Payment via Razorpay
+      const razorpayKeyId = (import.meta.env.VITE_RAZORPAY_KEY_ID || '').trim()
+      const isTestPlaceholder = !razorpayKeyId || razorpayKeyId === 'rzp_live_or_test_key_id'
+
+      if (isTestPlaceholder) {
+        // Merchant Account Under Review: Process order in preview test mode
+        clearCheckoutSession()
+        await new Promise((resolve) => setTimeout(resolve, 400))
+        navigate('/order-confirmation', {
+          state: {
+            orderReference: orderRef,
+            orderId: created?.id,
+            customerName: values.fullName,
+            customerEmail: values.email,
+            deliveryCity: values.city,
+            deliveryState: values.state,
+            deliveryPincode: values.pincode,
+            orderTotal: created?.total || orderTotal,
+            paymentMethod: `${selectedPayTitle} (Preview Test Mode)`,
+            itemsCount: totalItems,
+          },
+        })
+        return
+      }
+
+      // Active Razorpay Merchant Key present: Create order on server and open Razorpay modal
+      const orderResp = await RazorpayService.createOrder(created.id)
+      if (!orderResp.success || !orderResp.razorpayOrderId) {
+        throw new Error(orderResp.error || 'Failed to initialize Razorpay payment order.')
+      }
+
+      await RazorpayService.openCheckout({
+        keyId: razorpayKeyId,
+        razorpayOrderId: orderResp.razorpayOrderId,
+        amountPaise: orderResp.amount || Math.round(orderTotal * 100),
+        currency: orderResp.currency || 'INR',
+        name: 'Funky Fox Clothing',
+        description: `Order #${orderRef}`,
+        customerName: values.fullName,
+        customerEmail: values.email,
+        customerPhone: values.phone,
+        onSuccess: async (payResponse) => {
+          try {
+            // Verify HMAC signature server-side
+            const verifyResp = await RazorpayService.verifyPayment({
+              order_id: created.id,
+              razorpay_order_id: payResponse.razorpay_order_id,
+              razorpay_payment_id: payResponse.razorpay_payment_id,
+              razorpay_signature: payResponse.razorpay_signature,
+            })
+
+            if (!verifyResp.verified) {
+              setSubmitError(verifyResp.error || 'Payment verification failed. Please contact support.')
+              setIsSubmitting(false)
+              return
+            }
+
+            clearCheckoutSession()
+            navigate('/order-confirmation', {
+              state: {
+                orderReference: orderRef,
+                orderId: created?.id,
+                customerName: values.fullName,
+                customerEmail: values.email,
+                deliveryCity: values.city,
+                deliveryState: values.state,
+                deliveryPincode: values.pincode,
+                orderTotal: created?.total || orderTotal,
+                paymentMethod: selectedPayTitle,
+                itemsCount: totalItems,
+                transactionId: payResponse.razorpay_payment_id,
+              },
+            })
+          } catch (verifyErr: any) {
+            console.error('[Checkout] Post-payment verification error:', verifyErr)
+            setSubmitError('Payment was captured by gateway, but order confirmation timed out. Our team will verify your payment.')
+            setIsSubmitting(false)
+          }
+        },
+        onDismiss: () => {
+          setIsSubmitting(false)
+          setSubmitError('Payment was cancelled. Your order remains pending; you may retry or choose Cash on Delivery.')
         },
       })
     } catch (err: any) {

@@ -29,6 +29,7 @@ import {
 import { formatPrice } from '../../data/products';
 import { OrderService, ReturnExchangeResponse } from '../../services/api';
 import { storeService } from '../../admin/services/storeService';
+import { SupabaseDbService } from '../../admin/services/supabaseDbService';
 import { AdminOrder } from '../../admin/lib/types';
 import { showToast } from '../../utils/toast';
 import DeliveredOrderReviewCard from './DeliveredOrderReviewCard';
@@ -147,7 +148,7 @@ export default function OrderDetailPage() {
   const [isSubmittingReturn, setIsSubmittingReturn] = React.useState(false);
   const [returnSuccessResult, setReturnSuccessResult] = React.useState<ReturnExchangeResponse | null>(null);
 
-  const loadOrder = React.useCallback(() => {
+  const loadOrder = React.useCallback(async () => {
     if (!orderId) {
       setOrder(null);
       return;
@@ -157,6 +158,14 @@ export default function OrderDetailPage() {
       setOrder(mapAdminOrderToOrder(adminFound));
       return;
     }
+    try {
+      const cloudOrder = await SupabaseDbService.fetchOrderById(orderId);
+      if (cloudOrder) {
+        setOrder(mapAdminOrderToOrder(cloudOrder));
+        return;
+      }
+    } catch {}
+
     const found = getDemoOrderById(orderId);
     setOrder(found || null);
   }, [orderId]);

@@ -100,13 +100,13 @@ BEGIN
     END IF;
 
     -- 3. Calculate lease expiration (bounded between 60 and 900 seconds, default 300s)
-    v_expires_at := v_now + (pg_catalog.greatest(60, pg_catalog.least(pg_catalog.coalesce(p_lease_seconds, 300), 900)) || ' seconds')::pg_catalog.interval;
+    v_expires_at := v_now + (GREATEST(60, LEAST(COALESCE(p_lease_seconds, 300), 900)) || ' seconds')::pg_catalog.interval;
 
     -- 4. Atomically persist claim while preserving existing shipment identifiers (e.g., shipmentId from previous retry)
-    v_updated_details := pg_catalog.coalesce(v_order.shipment_details, '{}'::pg_catalog.jsonb) || pg_catalog.jsonb_build_object(
+    v_updated_details := COALESCE(v_order.shipment_details, '{}'::pg_catalog.jsonb) || pg_catalog.jsonb_build_object(
         'claim_token', p_claim_token,
         'claimed_at', v_now,
-        'claimed_by', pg_catalog.coalesce(pg_catalog.nullif(pg_catalog.btrim(p_admin_name), ''), 'Admin'),
+        'claimed_by', COALESCE(NULLIF(pg_catalog.btrim(p_admin_name), ''), 'Admin'),
         'claim_expires_at', v_expires_at
     );
 
@@ -321,7 +321,7 @@ BEGIN
     END IF;
 
     -- Strip ephemeral claim fields from final shipment details
-    v_final_details := (pg_catalog.coalesce(v_order.shipment_details, '{}'::pg_catalog.jsonb) || pg_catalog.coalesce(p_shipment_details, '{}'::pg_catalog.jsonb))
+    v_final_details := (COALESCE(v_order.shipment_details, '{}'::pg_catalog.jsonb) || COALESCE(p_shipment_details, '{}'::pg_catalog.jsonb))
                        - 'claim_token' - 'claim_expires_at' - 'claimed_at' - 'claimed_by';
 
     -- Prepare timeline update
@@ -332,7 +332,7 @@ BEGIN
             v_updated_timeline := v_order.timeline || pg_catalog.jsonb_build_array(p_timeline_entry);
         END IF;
     ELSE
-        v_updated_timeline := pg_catalog.coalesce(v_order.timeline, '[]'::pg_catalog.jsonb);
+        v_updated_timeline := COALESCE(v_order.timeline, '[]'::pg_catalog.jsonb);
     END IF;
 
     -- Apply update (triggers trg_validate_order_status before update if shipping_status changes)
