@@ -11,3 +11,4 @@ Disallow: /api/
 
 # Sitemap location
 Sitemap: https://funkyfox.in/sitemap.xml
+
