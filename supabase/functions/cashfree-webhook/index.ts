@@ -142,6 +142,8 @@ serve(async (req: Request) => {
         cfOrderId: orderData.cf_order_id || existingDetails.cfOrderId || null,
         orderStatus: 'PAID',
         paymentMethod: paymentData.payment_group || 'cashfree_online',
+        amount: Number(paymentData.payment_amount || order.total),
+        currency: paymentData.payment_currency || 'INR',
         verifiedAt: nowIso,
         webhookReceivedAt: nowIso,
       };
@@ -185,6 +187,7 @@ serve(async (req: Request) => {
         const failureReason = paymentData.payment_message || 'Customer aborted or transaction declined';
         const updatedDetails = {
           ...existingDetails,
+          failureReason,
           lastFailureReason: failureReason,
           lastFailureAt: nowIso,
         };

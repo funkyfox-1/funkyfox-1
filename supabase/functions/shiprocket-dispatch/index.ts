@@ -183,7 +183,19 @@ serve(async (req: Request) => {
       return jsonResponse({ error: `Order "${orderId}" not found in database` }, 404);
     }
 
-    // 7. Payment Protection Check
+    // 7. Cancellation Guard
+    if (order.shipping_status === 'cancelled' || order.fulfillment_status === 'cancelled') {
+      return jsonResponse(
+        {
+          error: `Cannot dispatch cancelled order "${order.order_number}". Shipment booking is blocked.`,
+          shipping_status: order.shipping_status,
+          fulfillment_status: order.fulfillment_status,
+        },
+        400
+      );
+    }
+
+    // 8. Payment Protection Check
     const paymentMethod = (order.payment_method || '').toLowerCase();
     const paymentStatus = (order.payment_status || '').toLowerCase();
     const isCOD = paymentMethod === 'cod';
