@@ -93,6 +93,21 @@ serve(async (req: Request) => {
     let isPaymentVerified = false;
 
     // 6. Direct Cashfree Server Verification
+    if (CASHFREE_ENVIRONMENT === 'production') {
+      if (body.test_mode) {
+        return jsonResponse({
+          verified: false,
+          error: 'Test mode is strictly prohibited in production environment.',
+        }, 403);
+      }
+      if (!CASHFREE_CLIENT_ID || !CASHFREE_CLIENT_SECRET) {
+        return jsonResponse({
+          verified: false,
+          error: 'Production Cashfree credentials are not configured on server.',
+        }, 500);
+      }
+    }
+
     if (CASHFREE_CLIENT_ID && CASHFREE_CLIENT_SECRET && !body.test_mode) {
       const orderRef = order.order_number;
       // Fetch order payments list from Cashfree
@@ -124,8 +139,19 @@ serve(async (req: Request) => {
 
       // Find successful payment
       let successfulPayment = payments.find((p: any) => p.payment_status === 'SUCCESS');
-      if (!successfulPayment && CASHFREE_ENVIRONMENT === 'sandbox' && payments.length > 0) {
-        // In Cashfree Sandbox, trigger official simulation API for test payments
+
+      // Sandbox Simulation Guard:
+      // STRICT SAFETY RULES:
+      // 1. MUST only execute if CASHFREE_ENVIRONMENT is strictly 'sandbox'
+      // 2. MUST only execute against https://sandbox.cashfree.com/pg
+      // 3. CANNOT execute in production under any condition
+      // 4. CANNOT synthesize a fake payment object; Cashfree's server must explicitly confirm SUCCESS
+      if (
+        !successfulPayment &&
+        CASHFREE_ENVIRONMENT === 'sandbox' &&
+        CASHFREE_BASE_URL.includes('sandbox.cashfree.com') &&
+        payments.length > 0
+      ) {
         const pendingPayment = payments[0];
         try {
           const simRes = await fetch(`${CASHFREE_BASE_URL}/simulate`, {
@@ -157,10 +183,10 @@ serve(async (req: Request) => {
             });
             if (refreshRes.ok) {
               const refreshedPayments = await refreshRes.json();
-              successfulPayment = refreshedPayments.find((p: any) => p.payment_status === 'SUCCESS') || {
-                ...pendingPayment,
-                payment_status: 'SUCCESS',
-              };
+              // STRICT: Only use the payment if Cashfree's API legitimately returns SUCCESS. Never synthesize!
+              successfulPayment = Array.isArray(refreshedPayments)
+                ? refreshedPayments.find((p: any) => p.payment_status === 'SUCCESS')
+                : null;
             }
           }
         } catch (simErr) {
@@ -205,6 +231,12 @@ serve(async (req: Request) => {
       isPaymentVerified = true;
     } else {
       // Test-mode sandbox fallback verification
+      if (CASHFREE_ENVIRONMENT === 'production') {
+        return jsonResponse({
+          verified: false,
+          error: 'Test mode / fallback verification is strictly forbidden in production.',
+        }, 403);
+      }
       const isTestPayload = cf_payment_id || cf_order_id || body.test_mode;
       if (isTestPayload) {
         if (body.paid_amount !== undefined && Math.abs(Number(order.total) - Number(body.paid_amount)) > 0.05) {

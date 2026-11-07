@@ -7,6 +7,7 @@ import { createHmac } from 'https://deno.land/std@0.177.0/node/crypto.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.42.0';
 
 const CASHFREE_CLIENT_SECRET = Deno.env.get('CASHFREE_CLIENT_SECRET') || '';
+const CASHFREE_ENVIRONMENT = (Deno.env.get('CASHFREE_ENVIRONMENT') || 'sandbox').toLowerCase();
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || '';
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
 
@@ -63,12 +64,19 @@ serve(async (req: Request) => {
         .update(timestamp + rawBody)
         .digest('base64');
 
-      if (expectedSignature !== signature && !signature.startsWith('test_')) {
+      // In production, signature MUST match expectedSignature exactly.
+      // In sandbox only, permit test fixtures starting with 'test_'.
+      const isSandboxTestSig = CASHFREE_ENVIRONMENT === 'sandbox' && signature.startsWith('test_');
+
+      if (expectedSignature !== signature && !isSandboxTestSig) {
         console.error('[cashfree-webhook] Webhook signature mismatch.');
         return jsonResponse({ error: 'Invalid webhook signature' }, 401);
       }
     } else {
-      // Test-mode fallback when secrets are unset during dry-run testing
+      // If credentials unset, only permitted in sandbox for testing
+      if (CASHFREE_ENVIRONMENT === 'production') {
+        return jsonResponse({ error: 'Webhook processing blocked: CASHFREE_CLIENT_SECRET unset in production.' }, 500);
+      }
       const isTestSignature = signature.startsWith('test_') || signature.length > 20;
       if (!isTestSignature) {
         console.warn('[cashfree-webhook] CASHFREE_CLIENT_SECRET unset. Test signature required.');
