@@ -38,8 +38,8 @@ export default function BrandStandardCTA() {
                 <p className="fox-standard-stat-label">Returns</p>
               </div>
               <div className="fox-standard-stat-item">
-                <p className="fox-standard-stat-num">EST. 2018</p>
-                <p className="fox-standard-stat-label">London</p>
+                <p className="fox-standard-stat-num">EST. 2022</p>
+                <p className="fox-standard-stat-label">Andhra Pradesh</p>
               </div>
             </div>
 

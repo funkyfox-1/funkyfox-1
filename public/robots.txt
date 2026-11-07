@@ -3,12 +3,24 @@
 
 User-agent: *
 Allow: /
-Disallow: /admin/
+Allow: /shop
+Allow: /category/*
+Allow: /products/*
+Allow: /about
+Allow: /help
+
+# Disallow customer private account, cart and api paths from indexing
+Disallow: /account/*
+Disallow: /account/
+Disallow: /cart
 Disallow: /checkout
 Disallow: /order-confirmation
-Disallow: /account/
 Disallow: /api/
 
-# Sitemap location
+# Strictly disallow internal administrative control panel
+Disallow: /admin/*
+Disallow: /admin
+
+# Search Engine Sitemaps
 Sitemap: https://funkyfox.in/sitemap.xml
 

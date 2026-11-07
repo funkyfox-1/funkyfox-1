@@ -102,8 +102,6 @@ export interface UserProfile {
   phone: string;
   avatar: string;
   memberSince: string;
-  tier: string;
-  rewardsPoints: number;
   preferredSize: string;
 }
 
@@ -113,8 +111,6 @@ const DEFAULT_PROFILE: UserProfile = {
   phone: '+91 98765 43210',
   avatar: '/images/standard/model-tall-clean.jpg',
   memberSince: 'October 2024',
-  tier: 'Fox Club Gold',
-  rewardsPoints: 450,
   preferredSize: 'L'
 };
 

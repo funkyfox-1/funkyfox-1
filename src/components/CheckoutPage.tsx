@@ -14,9 +14,10 @@ import {
   Edit2,
   Tag,
   AlertCircle,
+  MapPin,
 } from 'lucide-react'
 import { products, formatPrice, getCategoryFallbackImage } from '../data/products'
-import { isDemoLoggedIn, getDemoUser, getDemoAddresses, createDemoOrder } from '../data/accountMockData'
+import { isDemoLoggedIn, getDemoUser, getDemoAddresses, saveDemoAddress, createDemoOrder, UserAddress } from '../data/accountMockData'
 import { CashfreeService } from '../services/cashfreeService'
 import { calculateShipping, PROVISIONAL_SHIPPING_POLICY } from '../config/shipping'
 import { CouponService, CouponValidationResult } from '../services/api'
@@ -96,6 +97,63 @@ const INDIAN_STATES = [
   'Puducherry',
 ]
 
+// Intelligent auto-resolution for major Indian postal regions
+function resolveIndianPincode(pincode: string): { city: string; state: string } | null {
+  const pin = pincode.replace(/\D/g, '')
+  if (pin.length !== 6) return null
+  const prefix3 = pin.slice(0, 3)
+  const prefix2 = pin.slice(0, 2)
+
+  // Telangana
+  if (prefix3 >= '500' && prefix3 <= '504') return { city: 'Hyderabad', state: 'Telangana' }
+  if (prefix3 >= '505' && prefix3 <= '509') return { city: 'Warangal', state: 'Telangana' }
+  // Andhra Pradesh
+  if (prefix3 >= '515' && prefix3 <= '518') return { city: 'Anantapur', state: 'Andhra Pradesh' }
+  if (prefix3 >= '520' && prefix3 <= '524') return { city: 'Vijayawada', state: 'Andhra Pradesh' }
+  if (prefix3 >= '530' && prefix3 <= '535') return { city: 'Visakhapatnam', state: 'Andhra Pradesh' }
+  // Karnataka
+  if (prefix3 >= '560' && prefix3 <= '563') return { city: 'Bengaluru', state: 'Karnataka' }
+  if (prefix3 === '570') return { city: 'Mysuru', state: 'Karnataka' }
+  if (prefix3 === '575') return { city: 'Mangaluru', state: 'Karnataka' }
+  // Maharashtra & Goa
+  if (prefix3 >= '400' && prefix3 <= '401') return { city: 'Mumbai', state: 'Maharashtra' }
+  if (prefix3 >= '411' && prefix3 <= '412') return { city: 'Pune', state: 'Maharashtra' }
+  if (prefix3 >= '440' && prefix3 <= '441') return { city: 'Nagpur', state: 'Maharashtra' }
+  if (prefix3 === '403') return { city: 'Panaji', state: 'Goa' }
+  // Delhi NCR
+  if (prefix2 === '11') return { city: 'New Delhi', state: 'Delhi' }
+  if (prefix3 === '122') return { city: 'Gurugram', state: 'Haryana' }
+  if (prefix3 === '201') return { city: 'Noida', state: 'Uttar Pradesh' }
+  // Tamil Nadu
+  if (prefix3 >= '600' && prefix3 <= '603') return { city: 'Chennai', state: 'Tamil Nadu' }
+  if (prefix3 === '641') return { city: 'Coimbatore', state: 'Tamil Nadu' }
+  if (prefix3 === '625') return { city: 'Madurai', state: 'Tamil Nadu' }
+  // West Bengal
+  if (prefix3 >= '700' && prefix3 <= '703') return { city: 'Kolkata', state: 'West Bengal' }
+  // Gujarat
+  if (prefix3 >= '380' && prefix3 <= '382') return { city: 'Ahmedabad', state: 'Gujarat' }
+  if (prefix3 === '390') return { city: 'Vadodara', state: 'Gujarat' }
+  if (prefix3 === '395') return { city: 'Surat', state: 'Gujarat' }
+  // Rajasthan
+  if (prefix3 === '302') return { city: 'Jaipur', state: 'Rajasthan' }
+  // Kerala
+  if (prefix3 === '682') return { city: 'Kochi', state: 'Kerala' }
+  if (prefix3 === '695') return { city: 'Thiruvananthapuram', state: 'Kerala' }
+  // Punjab / Chandigarh
+  if (prefix3 === '160') return { city: 'Chandigarh', state: 'Chandigarh' }
+  if (prefix3 === '141') return { city: 'Ludhiana', state: 'Punjab' }
+  // Uttar Pradesh
+  if (prefix3 === '226') return { city: 'Lucknow', state: 'Uttar Pradesh' }
+  if (prefix3 === '208') return { city: 'Kanpur', state: 'Uttar Pradesh' }
+  // Bihar
+  if (prefix3 === '800') return { city: 'Patna', state: 'Bihar' }
+  // Madhya Pradesh
+  if (prefix3 === '452') return { city: 'Indore', state: 'Madhya Pradesh' }
+  if (prefix3 === '462') return { city: 'Bhopal', state: 'Madhya Pradesh' }
+
+  return null
+}
+
 interface PaymentMethodOption {
   id: string
   title: string
@@ -138,8 +196,11 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
   // Auth Guard: User must create an account or sign in before ordering
   React.useEffect(() => {
     if (!isDemoLoggedIn()) {
+      try {
+        sessionStorage.setItem('funkyfox_auth_return_to', '/checkout');
+      } catch {}
       showToast('Please sign in or create an account to proceed to checkout.', { type: 'info' })
-      navigate('/login', {
+      navigate('/login?redirect=/checkout', {
         replace: true,
         state: {
           from: '/checkout',
@@ -154,6 +215,18 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = React.useState<string>('upi')
   const [isSubmitting, setIsSubmitting] = React.useState(false)
   const [submitError, setSubmitError] = React.useState<string | null>(null)
+
+  // Saved addresses from authenticated customer profile
+  const savedAddresses = React.useMemo(() => {
+    return isDemoLoggedIn() ? getDemoAddresses() : []
+  }, [])
+
+  const [selectedAddressId, setSelectedAddressId] = React.useState<string>(() => {
+    const def = savedAddresses.find((a) => a.isDefault)
+    return def ? def.id : savedAddresses[0]?.id || 'custom'
+  })
+
+  const [saveAddressToProfile, setSaveAddressToProfile] = React.useState<boolean>(true)
 
   const IDEMPOTENCY_STORAGE_KEY = 'funkyfox_checkout_idempotency_key'
   const FINGERPRINT_STORAGE_KEY = 'funkyfox_checkout_payload_fingerprint'
@@ -333,6 +406,25 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target
+
+    if (name === 'pincode') {
+      const clean = value.replace(/\D/g, '').slice(0, 6)
+      setValues((prev) => {
+        const resolved = clean.length === 6 ? resolveIndianPincode(clean) : null
+        return {
+          ...prev,
+          pincode: clean,
+          city: resolved?.city || prev.city,
+          state: resolved?.state || prev.state,
+        }
+      })
+
+      if (errors.pincode) {
+        setErrors((prev) => ({ ...prev, pincode: undefined }))
+      }
+      return
+    }
+
     setValues((prev) => ({ ...prev, [name]: value }))
 
     // Clear error for field once user starts typing
@@ -577,6 +669,23 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
       })
 
       const orderRef = created?.orderNumber || `FF-${Math.floor(100000 + Math.random() * 900000)}`
+
+      // Save delivery address to customer profile if enabled
+      if (saveAddressToProfile && (selectedAddressId === 'custom' || savedAddresses.length === 0)) {
+        try {
+          saveDemoAddress({
+            label: 'Home',
+            fullName: values.fullName,
+            phone: values.phone,
+            street: values.addressLine1 + (values.addressLine2 ? ', ' + values.addressLine2 : ''),
+            city: values.city,
+            state: values.state,
+            pincode: values.pincode,
+            country: values.country || 'India',
+            isDefault: savedAddresses.length === 0,
+          })
+        } catch {}
+      }
       const selectedPayTitle =
         PAYMENT_METHODS.find((p) => p.id === selectedPaymentMethod)?.title || 'Online Payment'
 
@@ -702,6 +811,23 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
     }
   }
 
+  // Immediate Auth barrier view while redirecting unauthenticated visitor
+  if (!isDemoLoggedIn()) {
+    return (
+      <div className="min-h-screen bg-paper flex flex-col items-center justify-center p-4">
+        <div className="flex flex-col items-center max-w-sm text-center">
+          <div className="h-10 w-10 animate-spin rounded-full border-3 border-fox border-t-transparent" />
+          <p className="mt-4 text-sm font-semibold uppercase tracking-wider text-ink font-display">
+            Redirecting to Secure Sign In...
+          </p>
+          <p className="mt-1 text-xs text-soft">
+            Please authenticate with your 6-digit email OTP to complete your order.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   // Handle empty cart
   if (cartItems.length === 0) {
     return (
@@ -760,27 +886,27 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
         <div className="checkout-top-bar-inner">
           <Link
             to="/cart"
-            className="group inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-soft hover:text-ink transition-colors"
+            className="group inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-soft hover:text-ink transition-colors shrink-0 py-2 -ml-1 touch-manipulation"
           >
             <ArrowLeft
               size={14}
-              className="transition-transform group-hover:-translate-x-0.5"
+              className="transition-transform group-hover:-translate-x-0.5 shrink-0"
             />
             <span>Back to bag</span>
           </Link>
 
           <Link
             to="/"
-            className="group flex items-baseline gap-1.5"
+            className="group flex items-baseline gap-1.5 shrink-0"
             aria-label="Funky Fox Home"
           >
-            <span className="font-display text-xl font-black uppercase tracking-tight text-ink sm:text-2xl">
+            <span className="font-display text-lg sm:text-2xl font-black uppercase tracking-tight text-ink">
               FUNKY <span className="text-fox transition-colors group-hover:text-fox-deep">FOX</span>
             </span>
             <span className="h-1.5 w-1.5 rounded-full bg-fox transition-transform duration-200 group-hover:scale-125" />
           </Link>
 
-          <div className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-soft">
+          <div className="flex items-center justify-end gap-1.5 text-[11px] font-bold uppercase tracking-wider text-soft shrink-0">
             <ShieldCheck size={14} className="text-fox shrink-0" />
             <span className="hidden sm:inline">Secure Checkout</span>
           </div>
@@ -866,6 +992,87 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
             {/* STAGE 1: DELIVERY DETAILS */}
             {stage === 'delivery' && (
               <form onSubmit={handleProceedToPayment} noValidate>
+                {/* Saved Delivery Addresses Selector */}
+                {savedAddresses.length > 0 && (
+                  <div className="mb-6 p-3.5 sm:p-4 rounded-xl border border-line bg-white shadow-2xs">
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <MapPin size={16} className="text-fox shrink-0" />
+                        <h3 className="font-display text-xs font-bold uppercase tracking-wider text-ink truncate">
+                          Select Delivery Address
+                        </h3>
+                      </div>
+                      <span className="shrink-0 text-[10.5px] font-semibold text-soft bg-sand/70 px-2.5 py-0.5 rounded-full whitespace-nowrap">
+                        {savedAddresses.length} saved
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      {savedAddresses.map((addr) => {
+                        const isSelected = selectedAddressId === addr.id
+                        return (
+                          <div
+                            key={addr.id}
+                            onClick={() => {
+                              setSelectedAddressId(addr.id)
+                              setValues((prev) => ({
+                                ...prev,
+                                fullName: addr.fullName || prev.fullName,
+                                phone: addr.phone || prev.phone,
+                                addressLine1: addr.street,
+                                addressLine2: '',
+                                city: addr.city,
+                                state: addr.state,
+                                pincode: addr.pincode,
+                              }))
+                              setErrors({})
+                            }}
+                            className={`p-3 rounded-lg border text-left transition-all cursor-pointer ${
+                              isSelected
+                                ? 'border-fox bg-fox/5 ring-1 ring-fox'
+                                : 'border-line hover:border-ink/40 bg-paper'
+                            }`}
+                          >
+                            <div className="flex items-center justify-between mb-1 gap-2">
+                              <span className="font-bold text-xs text-ink truncate">{addr.label || 'Saved Address'}</span>
+                              {addr.isDefault && (
+                                <span className="text-[9px] font-bold uppercase tracking-wider bg-sand px-1.5 py-0.5 rounded text-soft shrink-0">
+                                  Default
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-xs text-ink font-semibold truncate">{addr.fullName}</p>
+                            <p className="text-[11px] text-soft line-clamp-2 mt-0.5 break-words">{addr.street}</p>
+                            <p className="text-[11px] text-soft">{addr.city}, {addr.state} - {addr.pincode}</p>
+                          </div>
+                        )
+                      })}
+
+                      <div
+                        onClick={() => {
+                          setSelectedAddressId('custom')
+                          setValues((prev) => ({
+                            ...prev,
+                            addressLine1: '',
+                            addressLine2: '',
+                            city: '',
+                            state: '',
+                            pincode: '',
+                          }))
+                        }}
+                        className={`p-3 rounded-lg border border-dashed text-left transition-all flex flex-col justify-center items-center text-center cursor-pointer min-h-[78px] ${
+                          selectedAddressId === 'custom'
+                            ? 'border-fox bg-fox/5 ring-1 ring-fox'
+                            : 'border-line hover:border-ink/40 bg-paper'
+                        }`}
+                      >
+                        <span className="text-xs font-bold text-ink">+ Deliver to New Address</span>
+                        <span className="text-[10px] text-soft mt-0.5">Enter custom address details</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {/* SECTION 1: Contact details */}
                 <section className="checkout-section" aria-labelledby="contact-heading">
                   <div className="checkout-section-header">
@@ -894,7 +1101,7 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
                           ? 'checkout-input--error'
                           : ''
                       }`}
-                      placeholder="e.g. Arjun Mehta"
+                      placeholder="e.g. Rahul Sharma"
                     />
                     {touched.fullName && (
                       <InlineFieldError id="fullName-error" message={errors.fullName} />
@@ -1122,6 +1329,19 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
                       )}
                     </div>
                   </div>
+
+                  {/* Save address checkbox */}
+                  <label className="flex items-center gap-2 mt-4 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={saveAddressToProfile}
+                      onChange={(e) => setSaveAddressToProfile(e.target.checked)}
+                      className="h-4 w-4 rounded border-line text-fox accent-fox focus:ring-fox"
+                    />
+                    <span className="text-xs text-ink font-medium">
+                      Save this delivery address to my account profile for future orders
+                    </span>
+                  </label>
                 </section>
 
                 {/* SECTION 3: Delivery options */}

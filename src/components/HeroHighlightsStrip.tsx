@@ -7,7 +7,7 @@ interface TickerItem {
 }
 
 const TICKER_ITEMS: TickerItem[] = [
-  { id: '1', text: 'FREE SHIPPING OVER $120' },
+  { id: '1', text: 'FREE SHIPPING OVER ₹1,499' },
   { id: '2', text: 'MADE FOR EVERYDAY STYLE' },
   { id: '3', text: '30-DAY RETURNS' },
   { id: '4', text: 'CUT FOR REAL LIFE' },

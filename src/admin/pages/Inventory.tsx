@@ -85,9 +85,10 @@ export function Inventory() {
         variant.sku.toLowerCase().includes(search.toLowerCase()) ||
         variant.colorName.toLowerCase().includes(search.toLowerCase());
 
-      const isLow = variant.stock <= 3 && variant.stock > 0;
+      const threshold = product.lowStockThreshold || 5;
+      const isLow = variant.stock <= threshold && variant.stock > 0;
       const isOut = variant.stock === 0;
-      const isIn = variant.stock > 3;
+      const isIn = variant.stock > threshold;
 
       if (healthFilter === 'low_stock') return matchSearch && isLow;
       if (healthFilter === 'out_of_stock') return matchSearch && isOut;
@@ -95,6 +96,35 @@ export function Inventory() {
       return matchSearch;
     });
   }, [products, search, healthFilter]);
+
+  const handleQuickIncrement = (product: AdminProduct, variant: ProductVariant, amount: number) => {
+    const newStock = Math.max(0, variant.stock + amount);
+    storeService.adjustVariantStock(
+      product.id,
+      variant.id,
+      newStock,
+      'restock',
+      `Quick restock +${amount}`,
+      user?.name || 'Administrator'
+    );
+    showToast(`Updated ${variant.sku} stock to ${newStock} units`, 'success');
+    loadData();
+  };
+
+  const handleQuickDecrement = (product: AdminProduct, variant: ProductVariant) => {
+    if (variant.stock <= 0) return;
+    const newStock = variant.stock - 1;
+    storeService.adjustVariantStock(
+      product.id,
+      variant.id,
+      newStock,
+      'manual_adjustment',
+      'Quick deduction -1',
+      user?.name || 'Administrator'
+    );
+    showToast(`Decreased ${variant.sku} stock to ${newStock} units`, 'info');
+    loadData();
+  };
 
   const openAdjustment = (product: AdminProduct, variant: ProductVariant) => {
     setAdjustTarget({ product, variant });
@@ -275,7 +305,8 @@ export function Inventory() {
             <tbody className="divide-y divide-zinc-100">
               {variantRows.slice(0, 50).map(({ product, variant }) => {
                 const isOut = variant.stock === 0;
-                const isLow = variant.stock <= 3 && variant.stock > 0;
+                const threshold = product.lowStockThreshold || 5;
+                const isLow = variant.stock <= threshold && variant.stock > 0;
 
                 return (
                   <tr key={`${product.id}-${variant.id}`} className="hover:bg-zinc-50/60 transition-colors">
@@ -304,30 +335,58 @@ export function Inventory() {
                         <span className="font-bold text-zinc-900">{variant.size}</span>
                       </div>
                     </td>
-                    <td className="py-3 px-4 font-semibold text-zinc-900">
+                    <td className="py-3 px-4 font-semibold text-zinc-900 tabular-nums">
                       ₹{(variant.price ?? product.price).toLocaleString('en-IN')}
                     </td>
                     <td className="py-3 px-4">
-                      <span className="text-sm font-black text-zinc-900">{variant.stock}</span>
+                      <span className="text-sm font-black text-zinc-900 tabular-nums">{variant.stock}</span>
                       <span className="text-[11px] text-zinc-400 ml-1">units</span>
                     </td>
                     <td className="py-3 px-4">
                       {isOut ? (
-                        <Badge variant="error">Stockout (0)</Badge>
+                        <Badge variant="error">Depleted (0)</Badge>
                       ) : isLow ? (
-                        <Badge variant="warning">Low Stock</Badge>
+                        <Badge variant="warning">Low Stock ({variant.stock})</Badge>
                       ) : (
-                        <Badge variant="success">Healthy</Badge>
+                        <Badge variant="success">Healthy ({variant.stock})</Badge>
                       )}
                     </td>
                     <td className="py-3 px-4 text-right">
-                      <button
-                        type="button"
-                        onClick={() => openAdjustment(product, variant)}
-                        className="px-3 py-1.5 text-xs font-semibold text-zinc-800 bg-zinc-100 hover:bg-zinc-200 rounded-lg transition-colors inline-flex items-center gap-1"
-                      >
-                        <Edit3 size={13} /> Adjust Stock
-                      </button>
+                      <div className="flex items-center justify-end gap-1.5">
+                        {variant.stock > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => handleQuickDecrement(product, variant)}
+                            className="h-7 w-7 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-100 text-xs font-bold text-zinc-600 flex items-center justify-center cursor-pointer transition-colors"
+                            title="Decrement -1 unit"
+                          >
+                            -1
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleQuickIncrement(product, variant, 1)}
+                          className="h-7 w-7 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-100 text-xs font-bold text-zinc-700 flex items-center justify-center cursor-pointer transition-colors"
+                          title="Quick restock +1 unit"
+                        >
+                          +1
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleQuickIncrement(product, variant, 5)}
+                          className="h-7 px-2 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-100 text-xs font-bold text-zinc-700 flex items-center justify-center cursor-pointer transition-colors"
+                          title="Quick restock +5 units"
+                        >
+                          +5
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => openAdjustment(product, variant)}
+                          className="px-2.5 py-1.5 text-xs font-semibold text-zinc-800 bg-zinc-100 hover:bg-zinc-200 rounded-lg transition-colors inline-flex items-center gap-1 cursor-pointer"
+                        >
+                          <Edit3 size={12} /> Adjust
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );

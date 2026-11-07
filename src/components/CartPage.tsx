@@ -431,6 +431,9 @@ export default function CartPage({
                 type="button"
                 onClick={() => {
                   if (!isDemoLoggedIn()) {
+                    try {
+                      sessionStorage.setItem('funkyfox_auth_return_to', '/checkout');
+                    } catch {}
                     showToast('Please create an account or sign in to complete checkout.', { type: 'info' })
                     navigate('/login', {
                       state: {

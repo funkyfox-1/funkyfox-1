@@ -31,6 +31,7 @@ interface ShopPageProps {
 
 const CATEGORY_ITEMS = [
   'All Products',
+  'Essentials',
   'T-Shirts',
   'Shirts',
   'Trousers & Jeans',
@@ -343,13 +344,8 @@ export default function ShopPage({ addToCart }: ShopPageProps) {
         <header className="border-b border-line pb-4 pt-3 sm:pb-5 sm:pt-4">
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div className="max-w-2xl">
-              {/* Eyebrow */}
-              <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.25em] text-soft sm:text-[10.5px]">
-                <span aria-hidden="true" className="h-[2.5px] w-6 rounded-full bg-fox" />
-                The Collection
-              </p>
               {/* Main Heading */}
-              <h1 className="mt-1.5 sm:mt-2 font-display text-2xl font-black uppercase leading-[1] tracking-[-0.03em] text-ink sm:text-3xl lg:text-[2.25rem]">
+              <h1 className="font-display text-2xl font-black uppercase leading-[1] tracking-tight text-ink sm:text-3xl lg:text-[2.25rem]">
                 All The Good Stuff.
               </h1>
               {/* Supporting Text */}

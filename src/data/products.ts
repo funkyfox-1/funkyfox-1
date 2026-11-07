@@ -18,7 +18,7 @@ export interface Product {
   image: string
   images?: string[]
   alt: string
-  category: 'T-Shirts' | 'Shirts' | 'Trousers & Jeans' | 'Jackets'
+  category: 'T-Shirts' | 'Shirts' | 'Trousers & Jeans' | 'Jackets' | 'Essentials'
   colors: ProductColor[]
   sizes: ('S' | 'M' | 'L' | 'XL' | 'XXL')[]
   inStock: boolean
@@ -31,6 +31,7 @@ export interface Product {
 }
 
 export const categories = [
+  'Essentials',
   'T-Shirts',
   'Shirts',
   'Trousers & Jeans',
@@ -40,6 +41,7 @@ export const categories = [
 export type Category = (typeof categories)[number]
 
 export const categoryImages: string[] = [
+  '/images/funkyfox-storefront.jpg',
   '/images/category-tshirts.jpg',
   '/images/category-shirts.jpg',
   '/images/category-trousers.jpg',
@@ -51,6 +53,8 @@ export const formatPrice = (price: number): string =>
 
 export const getCategoryFallbackImage = (category: Category | string): string => {
   switch (category) {
+    case 'Essentials':
+      return '/images/category-essentials.jpg'
     case 'T-Shirts':
       return '/images/category-tshirts.jpg'
     case 'Shirts':
@@ -60,11 +64,617 @@ export const getCategoryFallbackImage = (category: Category | string): string =>
     case 'Jackets':
       return '/images/category-jackets.jpg'
     default:
-      return '/images/category-tshirts.jpg'
+      return '/images/funkyfox-storefront.jpg'
   }
 }
 
 export const products: Product[] = [
+  {
+    id: "essential-reversible-leather-belt",
+    name: "Reversible Full-Grain Leather Belt",
+    price: 899,
+    originalPrice: 1299,
+    image: "/images/category-essentials.jpg",
+    images: ["/images/category-essentials.jpg"],
+    alt: "Reversible black and brown full-grain leather belt with brushed metallic buckle",
+    category: "Essentials",
+    colors: [
+      { name: "Black / Cognac Brown", value: "#1a1a1a" },
+      { name: "Dark Tan / Espresso", value: "#4a3525" }
+    ],
+    sizes: ["S", "M", "L", "XL"],
+    inStock: true,
+    isNew: true,
+    isBestseller: true,
+    featuredOrder: 1,
+    description: "Reversible 100% full-grain leather belt engineered with a rotatable twist buckle. Wear black for formal meetings or flip to warm cognac for casual weekend denim.",
+    details: ["100% Genuine full-grain leather", "Brushed gunmetal rotatable buckle", "Handcrafted edge burnishing", "Width: 35mm"],
+    fitFabric: {
+      fit: "Adjustable 5-hole tailored fit.",
+      fabric: "Full-grain genuine oil-pull-up leather.",
+      care: "Wipe with clean dry microfiber cloth."
+    }
+  },
+  {
+    id: "essential-feather-edge-formal-leather-belt",
+    name: "Italian Feather-Edge Formal Dress Belt",
+    price: 999,
+    originalPrice: 1499,
+    image: "/images/category-essentials.jpg",
+    images: ["/images/category-essentials.jpg"],
+    alt: "Italian feather-edge formal dress belt with polished palladium buckle",
+    category: "Essentials",
+    colors: [
+      { name: "Executive Jet Black", value: "#111827" },
+      { name: "Deep Oxford Brown", value: "#451a03" }
+    ],
+    sizes: ["S", "M", "L", "XL"],
+    inStock: true,
+    isNew: true,
+    featuredOrder: 2,
+    description: "Sleek 30mm formal belt designed for suited tailoring. Features tapered feather edges, vegetable-tanned aniline leather, and polished chrome palladium buckle.",
+    details: ["Italian vegetable-tanned aniline leather", "Precision stitched feathered edges", "Solid zinc palladium buckle", "Width: 30mm formal profile"],
+    fitFabric: {
+      fit: "Tailored suit trouser fit.",
+      fabric: "100% Full-grain Italian cowhide.",
+      care: "Condition with neutral cream leather balm."
+    }
+  },
+  {
+    id: "essential-signature-amber-wood-perfume",
+    name: "Funky Fox Signature Amber Wood EDP (100ml)",
+    price: 1499,
+    originalPrice: 2199,
+    image: "/images/products/demo-perfume.jpg",
+    images: ["/images/products/demo-perfume.jpg"],
+    alt: "Funky Fox Signature Amber Wood Eau De Parfum bottle",
+    category: "Essentials",
+    colors: [
+      { name: "Amber Wood & Spiced Bergamot", value: "#92400e" }
+    ],
+    sizes: ["M"],
+    inStock: true,
+    isNew: true,
+    isBestseller: true,
+    featuredOrder: 3,
+    description: "A bold, long-lasting 100ml Eau De Parfum crafted for the modern man. Opens with zesty Italian bergamot and cracked black pepper, settling into warm amber, cedarwood, and smoky vetiver.",
+    details: ["100ml Eau De Parfum (20% oil concentration)", "8-12 hour skin longevity", "Top: Bergamot, Pink Peppercorn", "Base: Cedarwood, Amber, Bourbon Vanilla"],
+    fitFabric: {
+      fit: "All-day versatility (Office to Evening).",
+      fabric: "Artisanal fine fragrance oil blend.",
+      care: "Store in a cool, dry place away from direct sunlight."
+    }
+  },
+  {
+    id: "essential-aqua-vetiver-fresh-cologne",
+    name: "Funky Fox Fresh Aqua Vetiver Cologne (100ml)",
+    price: 1299,
+    originalPrice: 1899,
+    image: "/images/products/demo-perfume.jpg",
+    images: ["/images/products/demo-perfume.jpg"],
+    alt: "Funky Fox Fresh Aqua Vetiver Cologne bottle",
+    category: "Essentials",
+    colors: [
+      { name: "Aqua Marine & Vetiver", value: "#0284c7" }
+    ],
+    sizes: ["M"],
+    inStock: true,
+    isNew: true,
+    featuredOrder: 4,
+    description: "Crisp ocean air, sunlit Sicilian lemon, and earthy Haitian vetiver. The definitive daytime fragrance for hot summer afternoons and active workouts.",
+    details: ["100ml Eau De Cologne", "Energizing top notes of sea salt and crushed mint", "Heart notes of green cardamom and neroli", "Base notes of smoky Haitian vetiver and white musk"],
+    fitFabric: {
+      fit: "Crisp daytime signature scent.",
+      fabric: "Natural citrus and marine aromatic extracts.",
+      care: "Keep bottle upright in cool temperature."
+    }
+  },
+  {
+    id: "essential-cotton-air-weave-trunks-pack3",
+    name: "Breathable Combed Cotton Trunks (Pack of 3)",
+    price: 799,
+    originalPrice: 1099,
+    image: "/images/products/demo-inners.jpg",
+    images: ["/images/products/demo-inners.jpg"],
+    alt: "Funky Fox Combed Cotton Air-Weave Trunks Pack of 3",
+    category: "Essentials",
+    colors: [
+      { name: "Navy / Black / Grey", value: "#1e293b" }
+    ],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    inStock: true,
+    isBestseller: true,
+    featuredOrder: 5,
+    description: "Premium essentials daily inners: 3-pack of ultra-soft combed cotton trunks with anti-chafing flatlock stitching and micro-modal contoured pouch.",
+    details: ["Pack of 3 core neutrals", "Silky soft anti-roll waistband", "Antimicrobial & moisture wicking", "No-ride-up leg construction"],
+    fitFabric: {
+      fit: "Form-fitting contour support.",
+      fabric: "95% Long-staple combed cotton, 5% Elastane.",
+      care: "Machine wash warm, tumble dry low."
+    }
+  },
+  {
+    id: "essential-modal-ribbed-vests-pack3",
+    name: "Ultra-Soft Ribbed Cotton Vests (Pack of 3)",
+    price: 699,
+    originalPrice: 999,
+    image: "/images/products/demo-inners.jpg",
+    images: ["/images/products/demo-inners.jpg"],
+    alt: "Funky Fox Ultra-Soft Ribbed Cotton Undershirts / Vests Pack of 3",
+    category: "Essentials",
+    colors: [
+      { name: "Classic White / Charcoal / Slate", value: "#f1f5f9" }
+    ],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    inStock: true,
+    isNew: true,
+    featuredOrder: 6,
+    description: "All-day undershirt comfort. Premium 2x2 rib knit in combed Egyptian cotton that stays tucked, absorbs moisture, and disappears invisibly under dress shirts.",
+    details: ["Pack of 3 breathable vests", "Engineered stay-tucked extended length", "Tagless neck label prevents scratching", "Ultra-durable ribbed binding around armholes"],
+    fitFabric: {
+      fit: "Body-contoured base layer.",
+      fabric: "100% Super-combed breathable cotton.",
+      care: "Machine wash warm, tumble dry low."
+    }
+  },
+  {
+    id: "essential-unstructured-casual-blazer",
+    name: "Tailored Modern Unstructured Casual Blazer",
+    price: 3499,
+    originalPrice: 4799,
+    image: "/images/products/demo-blazer.jpg",
+    images: ["/images/products/demo-blazer.jpg"],
+    alt: "Unstructured casual navy cotton-linen blazer",
+    category: "Essentials",
+    colors: [
+      { name: "Midnight Navy", value: "#172554" },
+      { name: "Smoky Charcoal", value: "#374151" }
+    ],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    inStock: true,
+    isNew: true,
+    featuredOrder: 7,
+    description: "Lightweight, soft-shouldered blazer crafted without stiff padding. Combines sartorial elegance with the effortless ease of a cardigan.",
+    details: ["Unpadded natural shoulder construction", "Unlined interior with piped seams", "Classic notch lapels with two-button stance", "Dual patch front pockets & interior ticket pouch"],
+    fitFabric: {
+      fit: "Tailored modern fit.",
+      fabric: "70% Cotton, 30% Belgian Linen blend.",
+      care: "Dry clean only to preserve natural drape."
+    }
+  },
+  {
+    id: "essential-classic-italian-formal-blazer",
+    name: "Executive Italian-Cut Formal Wool-Blend Blazer",
+    price: 3999,
+    originalPrice: 5499,
+    image: "/images/products/demo-blazer.jpg",
+    images: ["/images/products/demo-blazer.jpg"],
+    alt: "Executive Italian-cut formal wool-blend blazer in charcoal black",
+    category: "Essentials",
+    colors: [
+      { name: "Charcoal Black", value: "#1f2937" },
+      { name: "Royal Prussian Navy", value: "#1e3a8a" }
+    ],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    inStock: true,
+    isNew: true,
+    isBestseller: true,
+    featuredOrder: 8,
+    description: "Structured boardroom-ready formal blazer constructed with half-canvas chest piece, pick-stitch lapels, and silky breathable cupro lining.",
+    details: ["Half-canvas construction moulds to your torso", "Pick-stitched notch lapels", "Twin rear vents for easy seated movement", "Genuine corozo horn buttons"],
+    fitFabric: {
+      fit: "Sharp European executive fit.",
+      fabric: "65% Merino Wool, 33% Viscose, 2% Elastane.",
+      care: "Professional dry clean only."
+    }
+  },
+  {
+    id: "essential-wrinkle-free-formal-trousers",
+    name: "Sharp Crease Wrinkle-Free Formal Trousers",
+    price: 1699,
+    originalPrice: 2299,
+    image: "/images/products/demo-pleated-wide-leg-trousers.jpg",
+    images: ["/images/products/demo-pleated-wide-leg-trousers.jpg"],
+    alt: "Sharp crease formal trousers in charcoal dark navy",
+    category: "Essentials",
+    colors: [
+      { name: "Formal Charcoal", value: "#334155" },
+      { name: "Formal Navy", value: "#1e293b" },
+      { name: "Jet Black", value: "#09090b" }
+    ],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    inStock: true,
+    featuredOrder: 9,
+    description: "Crisp, impeccably creased formal trousers tailored for boardrooms and celebrations. Resistant to creases throughout 14+ hours of active wear.",
+    details: ["Nano-treated wrinkle-repellent blend", "Permanent razor-sharp center crease", "French fly tab with interior anchor button", "Blind-stitched clean hem"],
+    fitFabric: {
+      fit: "Contemporary tailored formal fit.",
+      fabric: "65% Poly-viscose, 33% Cotton, 2% Lycra.",
+      care: "Dry clean or gentle cold machine wash."
+    }
+  },
+  {
+    id: "essential-crisp-oxford-cotton-shirt",
+    name: "Crisp Royal Oxford Cotton Casual & Formal Shirt",
+    price: 1499,
+    originalPrice: 1999,
+    image: "/images/product-shirt.webp",
+    images: ["/images/product-shirt.webp"],
+    alt: "Crisp Royal Oxford cotton button-down shirt in optic white and light blue",
+    category: "Essentials",
+    colors: [
+      { name: "Optic White", value: "#ffffff" },
+      { name: "Sky Blue", value: "#93c5fd" },
+      { name: "French Navy", value: "#1e3a8a" }
+    ],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    inStock: true,
+    isBestseller: true,
+    featuredOrder: 10,
+    description: "The quintessential menswear shirt. Woven from 60s two-ply organic long-staple cotton with a substantial basketweave Oxford texture, semi-spread collar, and mother-of-pearl buttons.",
+    details: ["60s Two-ply combed organic Oxford cotton", "Reinforced side hem gussets", "Button-down collar that stays structured", "Curved shirttail hem for tucked or untucked wear"],
+    fitFabric: {
+      fit: "Tailored regular fit.",
+      fabric: "100% Long-staple organic cotton.",
+      care: "Machine wash warm, iron while slightly damp."
+    }
+  },
+  {
+    id: "essential-tailored-stretch-chinos",
+    name: "Tailored Stretch Cotton Chinos",
+    price: 1599,
+    originalPrice: 2199,
+    image: "/images/products/demo-relaxed-tapered-chinos.jpg",
+    images: ["/images/products/demo-relaxed-tapered-chinos.jpg"],
+    alt: "Tailored stretch cotton chinos in classic British khaki",
+    category: "Essentials",
+    colors: [
+      { name: "British Khaki", value: "#c29b68" },
+      { name: "Midnight Navy", value: "#0f172a" },
+      { name: "Slate Olive", value: "#3f4f3c" }
+    ],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    inStock: true,
+    isBestseller: true,
+    featuredOrder: 11,
+    description: "The ultimate weekday-to-weekend trouser. Crafted from peach-finished compact cotton twill with an internal comfort waistband and clean rear welt pockets.",
+    details: ["Peach-finish compact twill", "Flexible stretch waistband curtain", "Front slash pockets & twin back welts", "Horn button front closure with sturdy YKK zip"],
+    fitFabric: {
+      fit: "Slim-tailored straight leg.",
+      fabric: "97% Cotton, 3% Spandex twill.",
+      care: "Machine wash cold. Warm iron if needed."
+    }
+  },
+  {
+    id: "essential-french-terry-weekend-shorts",
+    name: "Relaxed Weekend French Terry Sweat Shorts",
+    price: 999,
+    originalPrice: 1499,
+    image: "/images/products/demo-french-terry-hoodie.jpg",
+    images: ["/images/products/demo-french-terry-hoodie.jpg"],
+    alt: "Relaxed weekend French terry sweat shorts in heather grey",
+    category: "Essentials",
+    colors: [
+      { name: "Heather Grey", value: "#9ca3af" },
+      { name: "Washed Black", value: "#18181b" },
+      { name: "Sage Mist", value: "#84a98c" }
+    ],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    inStock: true,
+    featuredOrder: 12,
+    description: "Ultra-comfy 320 GSM French terry sweat shorts with a 7-inch inseam, deep pockets that keep your phone secure, and elasticized drawcord waist.",
+    details: ["320 GSM Cotton French terry", "Modern 7-inch inseam hit above knee", "Deep side pockets & rear patch pocket", "Tubular cotton drawcord with dipped silicone tips"],
+    fitFabric: {
+      fit: "Relaxed above-the-knee fit.",
+      fabric: "100% Combed ring-spun cotton.",
+      care: "Machine wash cold with like colors."
+    }
+  },
+  {
+    id: "essential-classic-stretch-chino-shorts",
+    name: "Tailored 8-Inch Stretch Chino Walk Shorts",
+    price: 1199,
+    originalPrice: 1699,
+    image: "/images/products/demo-relaxed-tapered-chinos.jpg",
+    images: ["/images/products/demo-relaxed-tapered-chinos.jpg"],
+    alt: "Tailored stretch chino shorts in summer sand khaki",
+    category: "Essentials",
+    colors: [
+      { name: "Summer Sand", value: "#e5dccb" },
+      { name: "Navy Blazer", value: "#1e3a8a" },
+      { name: "Washed Olive", value: "#4d5b43" }
+    ],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    inStock: true,
+    isNew: true,
+    featuredOrder: 13,
+    description: "Crisp, refined summer walk shorts tailored from lightweight stretch cotton twill. Perfect balance of casual resort ease and smart polish.",
+    details: ["8-inch inseam tailored walk cut", "Internal shirt-gripper waistband", "Front coin pocket and buttoned rear welts", "Reinforced crotch gusset prevents blowout"],
+    fitFabric: {
+      fit: "Tailored modern short fit.",
+      fabric: "98% Cotton, 2% Elastane twill.",
+      care: "Machine wash cold, tumble dry low."
+    }
+  },
+  {
+    id: "essential-slim-rfid-leather-wallet",
+    name: "Slim Bi-Fold RFID Top-Grain Leather Wallet",
+    price: 999,
+    originalPrice: 1499,
+    image: "/images/product-jacket.webp",
+    images: ["/images/product-jacket.webp"],
+    alt: "Slim bi-fold RFID-blocking top-grain leather wallet in chestnut brown",
+    category: "Essentials",
+    colors: [
+      { name: "Chestnut Brown", value: "#78350f" },
+      { name: "Obsidian Black", value: "#09090b" }
+    ],
+    sizes: ["M"],
+    inStock: true,
+    isBestseller: true,
+    featuredOrder: 14,
+    description: "Ultra-slim front-pocket wallet handcrafted from top-grain vegetable-tanned leather. Holds up to 8 cards and full-length currency notes with RFID anti-theft lining.",
+    details: ["Top-grain vegetable-tanned leather", "Certified RFID-blocking protective lining", "6 Quick-access card slots + currency sleeve", "Slim 8mm profile that won't bulge in trousers"],
+    fitFabric: {
+      fit: "Fits comfortably in front or back pockets.",
+      fabric: "100% Natural top-grain cowhide leather.",
+      care: "Condition with leather balm once a year."
+    }
+  },
+  {
+    id: "essential-minimalist-chronograph-watch",
+    name: "Minimalist Matte Black Chronograph Watch",
+    price: 2499,
+    originalPrice: 3499,
+    image: "/images/products/demo-zip-neck-textured-polo.png",
+    images: ["/images/products/demo-zip-neck-textured-polo.png"],
+    alt: "Minimalist matte black chronograph wristwatch with mesh strap",
+    category: "Essentials",
+    colors: [
+      { name: "Matte Black & Gunmetal", value: "#18181b" },
+      { name: "Brushed Silver / Tan Leather", value: "#a1a1aa" }
+    ],
+    sizes: ["M"],
+    inStock: true,
+    isNew: true,
+    featuredOrder: 15,
+    description: "An understated, architectural timepiece featuring high-precision Japanese quartz movement, hardened sapphire-crystal glass, and 50M water resistance.",
+    details: ["Japanese quartz movement", "316L Surgical stainless steel case", "Scratch-resistant sapphire crystal glass", "5 ATM / 50M Water resistant"],
+    fitFabric: {
+      fit: "40mm case diameter with quick-release 20mm strap.",
+      fabric: "316L Stainless steel and genuine leather.",
+      care: "Clean case with microfiber cloth."
+    }
+  },
+  {
+    id: "essential-fox-embroidered-cotton-cap",
+    name: "Embroidered Fox-Head Cotton Dad Cap",
+    price: 699,
+    originalPrice: 999,
+    image: "/images/standard/avatar-beige.png",
+    images: ["/images/standard/avatar-beige.png"],
+    alt: "Funky Fox Embroidered Fox-Head Cotton Dad Cap",
+    category: "Essentials",
+    colors: [
+      { name: "Vintage Washed Navy", value: "#1e3a8a" },
+      { name: "Stone Khaki", value: "#d6cfbe" },
+      { name: "Jet Black", value: "#18181b" }
+    ],
+    sizes: ["M"],
+    inStock: true,
+    featuredOrder: 16,
+    description: "Low-profile 6-panel unstructured dad cap made from washed cotton chino twill. Accented with subtle tonal 3D embroidered Funky Fox mascot.",
+    details: ["100% Washed cotton chino twill", "Subtle tonal embroidery at crown", "Antique brass tri-glide buckle strap", "Moisture-absorbent interior sweatband"],
+    fitFabric: {
+      fit: "One size fits all (adjustable strap).",
+      fabric: "100% Breathable cotton twill.",
+      care: "Spot clean with damp cloth."
+    }
+  },
+  {
+    id: "essential-urban-fleece-trackpants",
+    name: "Urban Heavyweight Fleece Trackpants",
+    price: 1299,
+    originalPrice: 1799,
+    image: "/images/products/demo-pleated-wide-leg-trousers.jpg",
+    images: ["/images/products/demo-pleated-wide-leg-trousers.jpg"],
+    alt: "Model wearing charcoal heavyweight cotton fleece trackpants",
+    category: "Trousers & Jeans",
+    colors: [
+      { name: "Charcoal Heather", value: "#2b2b2b" },
+      { name: "Jet Black", value: "#141414" },
+      { name: "Oatmeal Melange", value: "#d9d5ce" }
+    ],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    inStock: true,
+    isNew: true,
+    isBestseller: true,
+    featuredOrder: 0,
+    description: "Ultra-comfortable 380 GSM combed cotton fleece trackpants featuring deep zip-safe pockets, reinforced drawcord waistband, and ribbed ankle cuffs.",
+    details: ["380 GSM Combed cotton loopback fleece", "Dual concealed zip side pockets", "Metal-tipped cotton drawcords", "Anti-pilling enzyme wash"],
+    fitFabric: {
+      fit: "Relaxed athletic tapered fit.",
+      fabric: "95% Cotton, 5% Spandex loopback fleece.",
+      care: "Machine wash cold with like colors."
+    }
+  },
+  {
+    id: "essential-vintage-washed-stretch-jeans",
+    name: "Vintage Washed Stretch Denim Jeans",
+    price: 1799,
+    originalPrice: 2499,
+    image: "/images/product-jeans.webp",
+    images: ["/images/product-jeans.webp"],
+    alt: "Classic vintage washed indigo blue stretch denim jeans",
+    category: "Trousers & Jeans",
+    colors: [
+      { name: "Vintage Indigo", value: "#1e3a8a" },
+      { name: "Faded Mid-Blue", value: "#3b82f6" },
+      { name: "Washed Carbon Black", value: "#27272a" }
+    ],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    inStock: true,
+    isBestseller: true,
+    featuredOrder: 0,
+    description: "12.5 oz ring-spun cotton denim woven with 2% comfort stretch. Hand-buffed whiskering and tailored regular fit that never feels restrictive.",
+    details: ["12.5 oz Premium ring-spun denim", "2% Spandex for active comfort flex", "Custom antique brass rivets and shanks", "Reinforced triple-needle back yoke"],
+    fitFabric: {
+      fit: "Regular straight fit with slight ankle taper.",
+      fabric: "98% Cotton, 2% Elastane.",
+      care: "Wash inside out in cold water. Hang to air dry."
+    }
+  },
+  {
+    id: "essential-relaxed-baggy-cargo-pants",
+    name: "Streetwear Relaxed Baggy Cargo Trousers",
+    price: 1899,
+    originalPrice: 2599,
+    image: "/images/product-jeans.webp",
+    images: ["/images/product-jeans.webp"],
+    alt: "Streetwear relaxed baggy cargo trousers in army olive",
+    category: "Trousers & Jeans",
+    colors: [
+      { name: "Army Olive", value: "#4d533c" },
+      { name: "Washed Black", value: "#262626" },
+      { name: "Desert Sand", value: "#d6cfbe" }
+    ],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    inStock: true,
+    isNew: true,
+    isBestseller: true,
+    featuredOrder: 0,
+    description: "Authentic 90s-inspired baggy utility cargos featuring 6 reinforced bellows pockets, knee articulation darts, and adjustable ankle bungee cords.",
+    details: ["Heavyweight 280 GSM cotton ripstop", "6 Deep tactical utility pockets", "Reinforced seat and knee panels", "Adjustable bungee toggle hem"],
+    fitFabric: {
+      fit: "Wide-leg relaxed baggy cut.",
+      fabric: "100% High-density cotton ripstop.",
+      care: "Machine wash cold with mild detergent."
+    }
+  },
+  {
+    id: "essential-regular-fit-everyday-trousers",
+    name: "Everyday Regular Fit Comfort Trousers",
+    price: 1499,
+    originalPrice: 1999,
+    image: "/images/products/demo-relaxed-tapered-chinos.jpg",
+    images: ["/images/products/demo-relaxed-tapered-chinos.jpg"],
+    alt: "Everyday regular fit comfort trousers in grey and beige",
+    category: "Trousers & Jeans",
+    colors: [
+      { name: "Cement Grey", value: "#64748b" },
+      { name: "Warm Almond", value: "#d4c5b9" },
+      { name: "Dark Navy", value: "#0f172a" }
+    ],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    inStock: true,
+    featuredOrder: 0,
+    description: "Reliable, easy-to-style regular fit cotton trousers designed for all-day commuting and casual workwear.",
+    details: ["Standard room through thigh and seat", "Breathable 240 GSM twill weave", "Anti-fray hem tape", "Deep coin pocket inside right hip"],
+    fitFabric: {
+      fit: "Classic regular fit.",
+      fabric: "98% Cotton, 2% Spandex.",
+      care: "Machine wash cold."
+    }
+  },
+  {
+    id: "essential-classic-straight-fit-pants",
+    name: "Classic Straight Fit Cotton Chino Pants",
+    price: 1599,
+    originalPrice: 2099,
+    image: "/images/products/demo-pleated-wide-leg-trousers.jpg",
+    images: ["/images/products/demo-pleated-wide-leg-trousers.jpg"],
+    alt: "Classic straight fit cotton chino pants in sand",
+    category: "Trousers & Jeans",
+    colors: [
+      { name: "Sand Khaki", value: "#d7cbb5" },
+      { name: "Deep Charcoal", value: "#374151" }
+    ],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    inStock: true,
+    featuredOrder: 0,
+    description: "Timeless straight-leg cut from hip to hem. Pairs effortlessly with sneakers, loafers, and dress boots.",
+    details: ["Traditional straight leg silhouette", "Double-stitched stress points", "Mid-rise comfortable waist", "Clean-profile rear button pockets"],
+    fitFabric: {
+      fit: "True straight fit.",
+      fabric: "100% Combed ring-spun cotton twill.",
+      care: "Machine wash cold, tumble dry low."
+    }
+  },
+  {
+    id: "essential-flare-bootcut-trousers-black",
+    name: "Tailored Flare Bootcut Trousers (Jet Black)",
+    price: 1899,
+    originalPrice: 2499,
+    image: "/images/products/demo-pleated-wide-leg-trousers.jpg",
+    images: ["/images/products/demo-pleated-wide-leg-trousers.jpg"],
+    alt: "Tailored retro flare bootcut trousers in pitch jet black",
+    category: "Trousers & Jeans",
+    colors: [
+      { name: "Pitch Jet Black", value: "#09090b" }
+    ],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    inStock: true,
+    isNew: true,
+    featuredOrder: 0,
+    description: "High-fashion tailored bootcut pants featuring a slim fit through thigh and a subtle flare below the knee that stacks over boots and chunky sneakers.",
+    details: ["Subtle 19-inch bootcut leg opening", "High-density poly-viscose stretch gabardine", "Formal curtain waistband with grip tape", "Non-fade deep sulfur black dye"],
+    fitFabric: {
+      fit: "Tailored bootcut flare silhouette.",
+      fabric: "68% Polyester, 29% Viscose, 3% Elastane.",
+      care: "Machine wash cold, line dry in shade."
+    }
+  },
+  {
+    id: "essential-technical-windbreaker-jacket",
+    name: "Performance Technical Windbreaker Sports Jacket",
+    price: 2299,
+    originalPrice: 2999,
+    image: "/images/product-jacket.webp",
+    images: ["/images/product-jacket.webp"],
+    alt: "Performance technical windbreaker sport jacket in black and forest green",
+    category: "Jackets",
+    colors: [
+      { name: "Matte Black", value: "#18181b" },
+      { name: "Alpine Forest", value: "#14532d" }
+    ],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    inStock: true,
+    isBestseller: true,
+    featuredOrder: 0,
+    description: "Featherweight DWR weather-repellent windbreaker engineered for sudden drizzles, morning commutes, and gym warmups.",
+    details: ["Durable Water Repellent (DWR) finish", "Waterproof taped zip closures", "Underarm breathable mesh vents", "Packs into its own internal pocket"],
+    fitFabric: {
+      fit: "Athletic layer fit.",
+      fabric: "100% Ripstop micro-polyester with Teflon coating.",
+      care: "Machine wash cold on gentle cycle."
+    }
+  },
+  {
+    id: "essential-heavyweight-fleece-hoodie",
+    name: "Heavyweight 400GSM Loopback Cotton Hoodie",
+    price: 1999,
+    originalPrice: 2699,
+    image: "/images/products/demo-french-terry-hoodie.jpg",
+    images: ["/images/products/demo-french-terry-hoodie.jpg"],
+    alt: "Heavyweight 400GSM loopback cotton hoodie in washed black",
+    category: "Jackets",
+    colors: [
+      { name: "Washed Charcoal", value: "#262626" },
+      { name: "Warm Off-White", value: "#f5f5f4" },
+      { name: "Deep Maroon", value: "#7f1d1d" }
+    ],
+    sizes: ["S", "M", "L", "XL", "XXL"],
+    inStock: true,
+    isBestseller: true,
+    featuredOrder: 0,
+    description: "Heavyweight luxury hoodie made from 400 GSM 100% organic cotton loopback French terry. Features double-layered hood without tacky drawstrings for clean aesthetic.",
+    details: ["400 GSM Organic cotton loopback French terry", "Double-layered sculptural hood", "Seamless kangaroo pouch pocket", "Heavy ribbing at cuffs and hem"],
+    fitFabric: {
+      fit: "Boxy streetwear drape with dropped shoulders.",
+      fabric: "100% Organic combed cotton.",
+      care: "Cold wash inside out, lay flat to dry."
+    }
+  },
   {
     id: "modern-bandhgala-kurta",
     name: "Terracotta Raw Silk Bandhgala Kurta",

@@ -135,7 +135,38 @@ function AllFitsIcon({ className = 'w-10 h-10' }: { className?: string }) {
   )
 }
 
+function EssentialsIcon({ className = 'w-10 h-10' }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 48 48"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden="true"
+    >
+      {/* Essentials: Watch, Belt, Fragrance, Everyday Wardrobe */}
+      <circle cx="24" cy="24" r="11" strokeWidth="2.2" />
+      <path d="M24 17 L24 24 L28 27" strokeWidth="2" />
+      <path d="M18 13 L18 6 L30 6 L30 13" strokeWidth="2" />
+      <path d="M18 35 L18 42 L30 42 L30 35" strokeWidth="2" />
+      <path d="M37 10 L39 12 L37 14" strokeWidth="1.6" />
+      <path d="M11 38 L9 36 L11 34" strokeWidth="1.6" />
+    </svg>
+  )
+}
+
 const CATEGORY_ITEMS: CategoryItem[] = [
+  {
+    id: 'essentials',
+    name: 'Essentials',
+    count: '16 Styles',
+    badge: 'Belts, Inners & Fragrances',
+    tagline: 'Belts, Perfumes, Inners, Blazers, Formals & Shorts',
+    icon: EssentialsIcon,
+  },
   {
     id: 't-shirts',
     name: 'T-Shirts',

@@ -840,4 +840,51 @@ export class SupabaseDbService {
 
     return data.publicUrl;
   }
+
+  // --- NEWSLETTER SUBSCRIBERS ---
+  static async subscribeNewsletter(email: string): Promise<boolean> {
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) return false;
+
+    // 1. Persist to Supabase if configured
+    if (isSupabaseConfigured && supabase) {
+      try {
+        await supabase.from('newsletter_subscribers').upsert({
+          email: cleanEmail,
+          source: 'footer_newsletter',
+          subscribed_at: new Date().toISOString(),
+          is_active: true,
+          tags: ['newsletter', 'marketing', 'welcome_discount_10'],
+        }, { onConflict: 'email' });
+      } catch (err) {
+        console.warn('[SupabaseDb] newsletter_subscribers insert notice:', err);
+      }
+
+      // Also register or update in customers table so store managers can view/export them in /admin/customers
+      try {
+        await supabase.from('customers').upsert({
+          id: `cust-sub-${Date.now()}`,
+          name: cleanEmail.split('@')[0],
+          email: cleanEmail,
+          phone: '',
+          notes: 'Subscribed to Newsletter (10% first-order promo)',
+          total_orders: 0,
+          total_spent: 0,
+        }, { onConflict: 'email', ignoreDuplicates: true });
+      } catch (err) {
+        console.warn('[SupabaseDb] Customer record link notice:', err);
+      }
+    }
+
+    // 2. Client-side local storage backup
+    try {
+      const stored = JSON.parse(localStorage.getItem('funkyfox_newsletter_subscribers') || '[]');
+      if (!stored.includes(cleanEmail)) {
+        stored.push(cleanEmail);
+        localStorage.setItem('funkyfox_newsletter_subscribers', JSON.stringify(stored));
+      }
+    } catch (e) {}
+
+    return true;
+  }
 }

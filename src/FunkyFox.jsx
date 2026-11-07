@@ -15,7 +15,6 @@ import HeroHighlightsStrip from "./components/HeroHighlightsStrip";
 import EverydayLineup from "./components/EverydayLineup";
 import ShoppingProcess from "./components/ShoppingProcess";
 import EthnicWearSection from "./components/EthnicWearSection";
-import PullToRefresh from "./components/ui/PullToRefresh";
 import FAQSection from "./components/ui/FAQSection";
 import BrandStandardCTA from "./components/ui/BrandStandardCTA";
 import FloatingNavbar from "./components/ui/FloatingNavbar";
@@ -162,7 +161,7 @@ function ProductGrid({ items: i, addToCart: s }) {
 }
 function HomePage({ addToCart: i }) {
   return (
-    <PullToRefresh>
+    <>
       <section
         id="home"
         aria-labelledby="hero-heading"
@@ -170,9 +169,9 @@ function HomePage({ addToCart: i }) {
       >
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute -left-[.04em] top-1/2 z-0 hidden -translate-y-1/2 select-none font-display font-black uppercase leading-[.78] tracking-[-.06em] text-ghost md:block md:text-[24vw] xl:text-[21vw]"
+          className="pointer-events-none absolute -left-[.02em] top-1/2 z-0 hidden -translate-y-1/2 select-none font-display font-black uppercase leading-[.78] tracking-[-.04em] text-black/[0.035] md:block md:text-[13vw] lg:text-[12.5vw] xl:text-[12vw] whitespace-nowrap"
         >
-          {"Wear"}
+          {"FUNKY FOX"}
         </span>
         <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 items-center gap-y-8 pb-3 pt-6 md:grid-cols-12 md:gap-x-6 md:pb-4 md:pt-10 lg:gap-x-10 lg:pb-4 lg:pt-12">
@@ -247,14 +246,6 @@ function HomePage({ addToCart: i }) {
                     />
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/25 via-transparent to-transparent" />
                   </div>
-                  <div className="absolute -left-3 top-16 flex -rotate-3 flex-col rounded-lg border border-ink/10 bg-paper px-3 py-2 shadow-lg sm:-left-8 sm:top-20">
-                    <span className="text-[8.5px] font-bold uppercase tracking-[.24em] text-fox-deep">
-                      {"The Monsoon Edit"}
-                    </span>
-                    <span className="mt-0.5 font-display text-[12px] font-extrabold uppercase text-ink sm:text-[13px]">
-                      {"Vol. 04 — SS26"}
-                    </span>
-                  </div>
                 </div>
                 <button
                   type="button"
@@ -278,14 +269,6 @@ function HomePage({ addToCart: i }) {
                     </span>
                   </span>
                 </button>
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none absolute -right-1 bottom-40 hidden font-hand text-[21px] font-semibold leading-none text-fox-deep lg:block"
-                >
-                  {"your everyday,"}
-                  <br />
-                  {"sorted →"}
-                </span>
               </div>
             </div>
           </div>
@@ -309,7 +292,7 @@ function HomePage({ addToCart: i }) {
       <FAQSection />
       <BrandStandardCTA />
       <Footer />
-    </PullToRefresh>
+    </>
   );
 }
 

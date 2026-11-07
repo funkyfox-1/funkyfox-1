@@ -517,7 +517,7 @@ const ME = "funkyfox"
 const HOME = "/#home"
 
 const DEFAULT_SOCIALS: IconLink[] = [
-  { icon: "ig", label: "Instagram", href: "https://instagram.com" },
+  { icon: "ig", label: "Instagram", href: "https://www.instagram.com/funkyfox.menswear?utm_source=ig_web_button_share_sheet&cplk=ZDNlZDc0MzIxNw==" },
   { icon: "x", label: "X", href: "https://x.com" },
 ]
 
@@ -579,7 +579,7 @@ export default function PushpinTearFooter({
   sideLinks = DEFAULT_SIDES,
   copyright = "© 2026 FUNKY FOX",
   credit = "everyday menswear · crafted with care",
-  handle = { label: "@funkyfox.in", href: "https://instagram.com" },
+  handle = { label: "@funkyfox.menswear", href: "https://www.instagram.com/funkyfox.menswear?utm_source=ig_web_button_share_sheet&cplk=ZDNlZDc0MzIxNw==" },
   sheet = "#191919",
   paper = "#FAF9F6",
   sheetInk = "#ffffff",

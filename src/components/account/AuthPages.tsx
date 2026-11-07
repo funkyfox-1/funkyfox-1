@@ -2,16 +2,20 @@ import * as React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import {
   Mail,
-  Lock,
   User as UserIcon,
   Phone,
   ArrowRight,
   ShieldCheck,
   CheckCircle2,
   AlertCircle,
-  ShoppingBag
+  ShoppingBag,
+  KeyRound,
+  RefreshCw,
+  ArrowLeft,
+  MailCheck
 } from 'lucide-react';
 import { loginDemo, getDemoUser, isDemoLoggedIn } from '../../data/accountMockData';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { showToast } from '../../utils/toast';
 import './AuthStyles.css';
 
@@ -23,26 +27,68 @@ function AuthSplitScreen({ initialMode }: AuthSplitScreenProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const locationState = location.state as any;
-  const returnTo = locationState?.from || '/account';
-  const pendingAdd = locationState?.pendingAdd;
+  const queryParams = new URLSearchParams(location.search);
+  const queryRedirect = queryParams.get('redirect') || queryParams.get('from');
+
+  // Retrieve returnTo and pendingAdd from locationState, query params or fallback to persistent sessionStorage
+  const storedReturnTo = typeof window !== 'undefined' ? sessionStorage.getItem('funkyfox_auth_return_to') : null;
+  const storedPendingAddRaw = typeof window !== 'undefined' ? sessionStorage.getItem('funkyfox_auth_pending_add') : null;
+  const storedPendingAdd = React.useMemo(() => {
+    try {
+      return storedPendingAddRaw ? JSON.parse(storedPendingAddRaw) : null;
+    } catch {
+      return null;
+    }
+  }, [storedPendingAddRaw]);
+
+  const returnTo = queryRedirect || locationState?.from || storedReturnTo || '/account';
+  const pendingAdd = locationState?.pendingAdd || storedPendingAdd;
   const authNotice =
     locationState?.reason ||
     (pendingAdd ? 'Please sign in or create an account to add items to your bag.' : null);
 
+  React.useEffect(() => {
+    const target = queryRedirect || locationState?.from;
+    if (target) {
+      try {
+        sessionStorage.setItem('funkyfox_auth_return_to', target);
+      } catch {}
+    }
+    if (locationState?.pendingAdd) {
+      try {
+        sessionStorage.setItem('funkyfox_auth_pending_add', JSON.stringify(locationState.pendingAdd));
+      } catch {}
+    }
+  }, [locationState, queryRedirect]);
+
   const [mode, setMode] = React.useState<'login' | 'register'>(initialMode);
-  const [email, setEmail] = React.useState('arjun.mehta@example.com');
-  const [password, setPassword] = React.useState('••••••••');
-  const [name, setName] = React.useState('Arjun Mehta');
-  const [phone, setPhone] = React.useState('+91 98765 43210');
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [rememberMe, setRememberMe] = React.useState(true);
-  const [agreed, setAgreed] = React.useState(true);
+  const [email, setEmail] = React.useState('');
+  const [name, setName] = React.useState('');
+  const [phone, setPhone] = React.useState('');
+  const [agreed, setAgreed] = React.useState(false);
   const [error, setError] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
+
+  // Email OTP Authentication States (Mandatory primary auth flow)
+  const [authStep, setAuthStep] = React.useState<'form' | 'otp_screen'>('form');
+  const [otpDigits, setOtpDigits] = React.useState<string[]>(['', '', '', '', '', '']);
+  const [otpCountdown, setOtpCountdown] = React.useState(0);
+  const [otpNotice, setOtpNotice] = React.useState('');
+  const otpRefs = React.useRef<(HTMLInputElement | null)[]>([]);
+
+  // OTP Countdown timer
+  React.useEffect(() => {
+    if (otpCountdown <= 0) return;
+    const timer = setInterval(() => {
+      setOtpCountdown((prev) => Math.max(0, prev - 1));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [otpCountdown]);
 
   // Sync mode if route prop changes
   React.useEffect(() => {
     setMode(initialMode);
+    setAuthStep('form');
   }, [initialMode]);
 
   // If already logged in, redirect
@@ -52,8 +98,41 @@ function AuthSplitScreen({ initialMode }: AuthSplitScreenProps) {
     }
   }, [navigate, returnTo]);
 
+  // Listen for Supabase auth state change (handles direct OTP verification & incoming auth redirects)
+  React.useEffect(() => {
+    if (!isSupabaseConfigured || !supabase) return;
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if ((event === 'SIGNED_IN' || event === 'USER_UPDATED') && session?.user) {
+        const authedUser = session.user;
+        const resolvedName =
+          authedUser.user_metadata?.full_name ||
+          authedUser.user_metadata?.name ||
+          (mode === 'register' && name.trim() ? name.trim() : authedUser.email?.split('@')[0]) ||
+          'Customer';
+        const resolvedPhone =
+          authedUser.user_metadata?.phone ||
+          (mode === 'register' && phone.trim() ? phone.trim() : undefined);
+
+        handleSuccessfulAuth(authedUser.email || email, resolvedName, resolvedPhone);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [mode, name, phone, email, returnTo, pendingAdd]);
+
   const handleSuccessfulAuth = (authEmail: string, authName: string, authPhone?: string) => {
-    const user = loginDemo(authEmail, authName, authPhone);
+    try {
+      sessionStorage.removeItem('funkyfox_auth_return_to');
+      sessionStorage.removeItem('funkyfox_auth_pending_add');
+    } catch {}
+
+    const cleanName = authName?.trim() || authEmail.split('@')[0];
+    const user = loginDemo(authEmail, cleanName, authPhone);
 
     // If there was a pending item to be added to cart, safely merge it
     if (pendingAdd?.product) {
@@ -90,15 +169,15 @@ function AuthSplitScreen({ initialMode }: AuthSplitScreenProps) {
     navigate(returnTo, { replace: true });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSendOtp = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!email.trim() || !email.includes('@')) {
       setError('Please provide a valid email address.');
       return;
     }
     if (mode === 'register') {
       if (!name.trim()) {
-        setError('Please enter your full name.');
+        setError('Please enter your full name before requesting a verification code.');
         return;
       }
       if (!agreed) {
@@ -109,27 +188,139 @@ function AuthSplitScreen({ initialMode }: AuthSplitScreenProps) {
 
     setError('');
     setIsLoading(true);
+    setOtpNotice('');
 
-    setTimeout(() => {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error: otpError } = await supabase.auth.signInWithOtp({
+          email: email.trim().toLowerCase(),
+          options: {
+            shouldCreateUser: true,
+            data: mode === 'register' ? {
+              full_name: name.trim(),
+              phone: phone.trim(),
+            } : undefined,
+          },
+        });
+
+        if (otpError) {
+          console.error('[CustomerAuth] Supabase OTP send error:', otpError);
+          setError(otpError.message || 'Unable to dispatch verification code. Please check your email.');
+          setIsLoading(false);
+          return;
+        } else {
+          setOtpNotice(`6-digit code dispatched via Google SMTP to ${email.trim()}. Please check your inbox and spam folder.`);
+        }
+      } catch (err: any) {
+        console.error('[CustomerAuth] OTP request error:', err);
+        setError(err?.message || 'Failed to dispatch code. Please try again.');
+        setIsLoading(false);
+        return;
+      }
+    } else {
+      setError('Supabase connection is required to send email verification codes.');
       setIsLoading(false);
-      handleSuccessfulAuth(
-        email,
-        mode === 'register'
-          ? name
-          : email === 'arjun.mehta@example.com'
-          ? 'Arjun Mehta'
-          : email.split('@')[0],
-        mode === 'register' ? phone : undefined
-      );
-    }, 450);
+      return;
+    }
+
+    setIsLoading(false);
+    setAuthStep('otp_screen');
+    setOtpCountdown(60);
+    setTimeout(() => {
+      otpRefs.current[0]?.focus();
+    }, 150);
   };
 
-  const handleQuickDemoSignIn = () => {
+
+  const handleVerifyOtp = async (codeToVerify?: string) => {
+    const code = codeToVerify || otpDigits.join('');
+    if (code.length < 6) {
+      setError('Please enter all 6 digits of your verification code.');
+      return;
+    }
+
+    setError('');
     setIsLoading(true);
-    setTimeout(() => {
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error: verifyErr } = await supabase.auth.verifyOtp({
+          email: email.trim().toLowerCase(),
+          token: code,
+          type: 'email',
+        });
+
+        if (verifyErr) {
+          console.error('[CustomerAuth] Supabase OTP verify error:', verifyErr);
+          setError(verifyErr.message || 'Invalid or expired verification code.');
+          setIsLoading(false);
+          return;
+        }
+
+        if (data.user) {
+          setIsLoading(false);
+          const metaName =
+            data.user.user_metadata?.full_name ||
+            (mode === 'register' ? name.trim() : email.split('@')[0]);
+          const metaPhone =
+            data.user.user_metadata?.phone ||
+            (mode === 'register' ? phone.trim() : undefined);
+          handleSuccessfulAuth(data.user.email || email, metaName, metaPhone);
+          return;
+        }
+      } catch (err: any) {
+        console.error('[CustomerAuth] Verify error:', err);
+        setError(err?.message || 'Verification failed. Please try again.');
+        setIsLoading(false);
+        return;
+      }
+    } else {
+      setError('Supabase connection is required to verify OTP code.');
       setIsLoading(false);
-      handleSuccessfulAuth('arjun.mehta@example.com', 'Arjun Mehta', '+91 98765 43210');
-    }, 300);
+      return;
+    }
+
+    setError('Invalid verification code.');
+    setIsLoading(false);
+  };
+
+  const handleDigitChange = (index: number, val: string) => {
+    const char = val.replace(/\D/g, '').slice(-1);
+    const nextDigits = [...otpDigits];
+    nextDigits[index] = char;
+    setOtpDigits(nextDigits);
+
+    if (char && index < 5) {
+      otpRefs.current[index + 1]?.focus();
+    }
+
+    const fullCode = nextDigits.join('');
+    if (fullCode.length === 6 && !nextDigits.includes('')) {
+      handleVerifyOtp(fullCode);
+    }
+  };
+
+  const handleDigitKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && !otpDigits[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handleDigitPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    if (!pasted) return;
+    const nextDigits = ['', '', '', '', '', ''];
+    for (let i = 0; i < pasted.length; i++) {
+      nextDigits[i] = pasted[i];
+    }
+    setOtpDigits(nextDigits);
+    const nextFocusIdx = Math.min(pasted.length, 5);
+    otpRefs.current[nextFocusIdx]?.focus();
+
+    if (pasted.length === 6) {
+      handleVerifyOtp(pasted);
+    }
   };
 
   return (
@@ -156,13 +347,13 @@ function AuthSplitScreen({ initialMode }: AuthSplitScreenProps) {
           <div className="relative z-10 my-10 lg:my-auto max-w-xl">
             {/* Oversized 2 to 3 Line Value-Prop Headline */}
             <h1 className="font-bricolage text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-[1.08] tracking-tight">
-              Ship your best work,{' '}
-              <span className="ff-apricot-underline inline-block">faster.</span>
+              Everyday menswear,{' '}
+              <span className="ff-apricot-underline inline-block">crafted for you.</span>
             </h1>
 
             {/* Short Translucent-White Supporting Line */}
-            <p className="mt-4 text-base sm:text-lg text-white/75 leading-relaxed font-normal">
-              The unified platform for teams who want to stop managing tools and start building products. Everyday menswear essentials, easy layers and precision fits.
+            <p className="mt-4 text-base sm:text-lg text-white/80 leading-relaxed font-normal">
+              Pure combed cotton, relaxed silhouettes, and modern fits delivered directly to your doorstep across India. Sign in to track your orders, manage returns, and unlock member-only releases.
             </p>
 
             {/* Minimal Inline Testimonial with Apricot Stars */}
@@ -184,26 +375,29 @@ function AuthSplitScreen({ initialMode }: AuthSplitScreenProps) {
               {/* Attribution */}
               <div className="mt-3.5 flex items-center gap-3">
                 <div className="h-8 w-8 rounded-full bg-white text-[#E05A1B] font-bricolage font-bold text-xs flex items-center justify-center shrink-0 shadow-sm">
-                  AM
+                  SR
                 </div>
                 <div>
-                  <div className="text-xs font-semibold text-white">Arjun Mehta</div>
-                  <div className="text-[11px] text-white/75">Lead Designer &amp; Club Member</div>
+                  <div className="text-xs font-semibold text-white">Syed R.</div>
+                  <div className="text-[11px] text-white/75">Club Member • Verified Buyer</div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* BOTTOM: Trusted by Modern Teams + Text-Only Client Wordmarks */}
+          {/* BOTTOM: Text-Only Authentic Trust Badges */}
           <div className="relative z-10 pt-6 border-t border-white/15">
             <div className="text-[11px] uppercase tracking-[0.2em] font-semibold text-white/70 mb-3.5">
-              TRUSTED BY MODERN TEAMS
+              THE FUNKY FOX STANDARD
             </div>
-            <div className="flex items-center flex-wrap gap-x-8 gap-y-2 text-xs font-bold uppercase tracking-wider text-white/75">
-              <span>ACME CORP</span>
-              <span>GLOBEX</span>
-              <span>SOYLENT</span>
-              <span>INITECH</span>
+            <div className="flex items-center flex-wrap gap-x-5 gap-y-2 text-xs font-bold uppercase tracking-wider text-white/85">
+              <span>100% COMBED COTTON</span>
+              <span>•</span>
+              <span>EXPRESS DELIVERY</span>
+              <span>•</span>
+              <span>30-DAY EXCHANGES</span>
+              <span>•</span>
+              <span>GST: 36DCEPS1960B1Z5</span>
             </div>
           </div>
         </div>
@@ -217,7 +411,8 @@ function AuthSplitScreen({ initialMode }: AuthSplitScreenProps) {
               <span>
                 New here?{' '}
                 <Link
-                  to="/register"
+                  to={`/register${location.search}`}
+                  state={location.state}
                   onClick={() => setMode('register')}
                   className="font-semibold text-[#E05A1B] hover:underline ml-1"
                 >
@@ -228,7 +423,8 @@ function AuthSplitScreen({ initialMode }: AuthSplitScreenProps) {
               <span>
                 Already have an account?{' '}
                 <Link
-                  to="/login"
+                  to={`/login${location.search}`}
+                  state={location.state}
                   onClick={() => setMode('login')}
                   className="font-semibold text-[#E05A1B] hover:underline ml-1"
                 >
@@ -241,252 +437,265 @@ function AuthSplitScreen({ initialMode }: AuthSplitScreenProps) {
           {/* Center Form Card Region */}
           <div className="w-full max-w-md mx-auto my-auto py-8">
             
-            {/* Heading Block */}
-            <div className="mb-6">
-              <h2 className="font-bricolage text-2xl sm:text-3xl font-bold text-[#0d1220]">
-                {mode === 'login' ? 'Welcome back' : 'Create your account'}
-              </h2>
-              <p className="mt-1.5 text-xs sm:text-sm text-[#5b6478]">
-                {mode === 'login'
-                  ? 'Sign in to your account to continue'
-                  : 'Start shopping and tracking your orders today'}
-              </p>
-            </div>
+            {authStep === 'otp_screen' ? (
+              /* ================= DEDICATED OTP VERIFICATION SCREEN ================= */
+              <div className="space-y-6">
+                {/* Back button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAuthStep('form');
+                    setError('');
+                    setOtpNotice('');
+                  }}
+                  className="inline-flex items-center gap-2 text-xs font-semibold text-[#5b6478] hover:text-[#0d1220] transition-colors cursor-pointer"
+                >
+                  <ArrowLeft size={14} />
+                  <span>Back to {mode === 'register' ? 'Registration' : 'Login'}</span>
+                </button>
 
-            {/* Auth Notice (If redirected from Add to Bag or Checkout) */}
-            {authNotice && (
-              <div className="mb-5 p-3 rounded-lg bg-orange-50 border border-orange-200 text-left flex items-start gap-2.5">
-                <ShoppingBag size={16} className="text-[#E05A1B] shrink-0 mt-0.5" />
-                <div className="text-xs text-orange-950 leading-relaxed font-medium">
-                  <span className="font-bold text-[#E05A1B]">Account Required: </span>
-                  {authNotice}
-                </div>
-              </div>
-            )}
-
-            {/* 1-Click Interactive Demo Login Button */}
-            <div className="mb-5 ff-demo-banner flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <ShieldCheck size={18} className="text-[#b45309] shrink-0" />
-                <span className="text-xs font-semibold text-[#92400e]">
-                  Instant Test Sign-In as <strong>Arjun Mehta</strong>
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={handleQuickDemoSignIn}
-                disabled={isLoading}
-                className="py-1 px-3 rounded-md bg-[#92400e] hover:bg-[#78350f] text-white text-[11px] font-bold uppercase tracking-wider shrink-0 transition-colors shadow-xs"
-              >
-                1-Click Demo →
-              </button>
-            </div>
-
-            {/* Two Side-By-Side SSO Buttons (Stacked on mobile 390px) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
-              {/* Google SSO */}
-              <button
-                type="button"
-                onClick={handleQuickDemoSignIn}
-                disabled={isLoading}
-                className="ff-sso-btn"
-              >
-                <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-                  <path
-                    fill="#4285F4"
-                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                  />
-                  <path
-                    fill="#34A853"
-                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                  />
-                  <path
-                    fill="#FBBC05"
-                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
-                  />
-                  <path
-                    fill="#EA4335"
-                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
-                  />
-                </svg>
-                <span>Continue with Google</span>
-              </button>
-
-              {/* GitHub SSO */}
-              <button
-                type="button"
-                onClick={handleQuickDemoSignIn}
-                disabled={isLoading}
-                className="ff-sso-btn"
-              >
-                <svg className="w-4 h-4 shrink-0 fill-[#0d1220]" viewBox="0 0 24 24">
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-                  />
-                </svg>
-                <span>Continue with GitHub</span>
-              </button>
-            </div>
-
-            {/* Hairline Divider */}
-            <div className="relative flex items-center justify-center my-6">
-              <div className="w-full border-t border-[#e6e8ee]" />
-              <span className="absolute bg-white px-3 text-xs text-[#5b6478]">
-                or continue with email
-              </span>
-            </div>
-
-            {/* Error Message */}
-            {error && (
-              <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700 flex items-center gap-2">
-                <AlertCircle size={15} className="shrink-0" />
-                <span>{error}</span>
-              </div>
-            )}
-
-            {/* Email / Password Form */}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              
-              {mode === 'register' && (
+                {/* Header Icon + Title */}
                 <div>
-                  <label className="block text-[12.5px] font-semibold text-[#0d1220] mb-1.5">
-                    Full Name
-                  </label>
-                  <div className="ff-auth-input-wrap">
-                    <UserIcon
-                      size={16}
-                      className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] pointer-events-none"
-                    />
-                    <input
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      required
-                      placeholder="e.g. Rahul Sharma"
-                      className="ff-auth-input"
-                    />
+                  <div className="w-12 h-12 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center text-[#E05A1B] mb-4 shadow-xs">
+                    <MailCheck size={24} />
+                  </div>
+                  <h2 className="font-bricolage text-2xl sm:text-3xl font-bold text-[#0d1220]">
+                    Verify Email Code
+                  </h2>
+                  <p className="mt-1.5 text-xs sm:text-sm text-[#5b6478] leading-relaxed">
+                    {mode === 'register' ? 'Activate your account by entering' : 'Enter'} the 6-digit one-time code sent to:
+                  </p>
+                  <div className="mt-2.5 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#f4f5f8] border border-[#e2e5eb]">
+                    <span className="text-xs font-semibold text-[#0d1220] font-mono">{email}</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAuthStep('form');
+                        setError('');
+                      }}
+                      className="text-[11px] font-bold text-[#E05A1B] hover:underline cursor-pointer"
+                    >
+                      Change
+                    </button>
                   </div>
                 </div>
-              )}
 
-              {/* Email Address */}
-              <div>
-                <label className="block text-[12.5px] font-semibold text-[#0d1220] mb-1.5">
-                  Email address
-                </label>
-                <div className="ff-auth-input-wrap">
-                  <Mail
-                    size={16}
-                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] pointer-events-none"
-                  />
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    placeholder="you@example.com"
-                    className="ff-auth-input"
-                  />
-                </div>
-              </div>
-
-              {mode === 'register' && (
-                <div>
-                  <label className="block text-[12.5px] font-semibold text-[#0d1220] mb-1.5">
-                    Phone Number (Optional)
-                  </label>
-                  <div className="ff-auth-input-wrap">
-                    <Phone
-                      size={16}
-                      className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] pointer-events-none"
-                    />
-                    <input
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="+91 98765 43210"
-                      className="ff-auth-input"
-                    />
+                {/* Error Banner */}
+                {error && (
+                  <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700 flex items-center gap-2">
+                    <AlertCircle size={15} className="shrink-0" />
+                    <span>{error}</span>
                   </div>
-                </div>
-              )}
-
-              {/* Password */}
-              <div>
-                <label className="block text-[12.5px] font-semibold text-[#0d1220] mb-1.5">
-                  Password
-                </label>
-                <div className="ff-auth-input-wrap">
-                  <Lock
-                    size={16}
-                    className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] pointer-events-none"
-                  />
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    placeholder="Enter your password"
-                    className="ff-auth-input pr-16"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#5b6478] hover:text-[#0d1220] transition-colors"
-                  >
-                    {showPassword ? 'Hide' : 'Show'}
-                  </button>
-                </div>
-              </div>
-
-              {/* Remember Me & Forgot Password */}
-              {mode === 'login' ? (
-                <div className="flex items-center justify-between pt-0.5">
-                  <label className="flex items-center gap-2 text-xs font-medium text-[#0d1220] cursor-pointer select-none">
-                    <input
-                      type="checkbox"
-                      checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                      className="rounded border-[#dfe2ea] text-[#E05A1B] focus:ring-[#E05A1B]"
-                    />
-                    <span>Remember me</span>
-                  </label>
-                  <Link
-                    to="/forgot-password"
-                    className="text-xs font-semibold text-[#E05A1B] hover:underline"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
-              ) : (
-                <label className="flex items-start gap-2 pt-1 text-xs text-[#5b6478] cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    checked={agreed}
-                    onChange={(e) => setAgreed(e.target.checked)}
-                    className="mt-0.5 rounded border-[#dfe2ea] text-[#E05A1B] focus:ring-[#E05A1B]"
-                  />
-                  <span>
-                    I agree to the Terms of Service and Privacy Policy.
-                  </span>
-                </label>
-              )}
-
-              {/* Primary Sign In Button */}
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="ff-primary-btn mt-2"
-              >
-                {isLoading ? (
-                  <span>Signing in...</span>
-                ) : (
-                  <span>{mode === 'login' ? 'Sign in' : 'Create account'}</span>
                 )}
-              </button>
-            </form>
+
+                {/* Success/Info Notice */}
+                {otpNotice && (
+                  <div className="p-3 rounded-lg bg-green-50 border border-green-200 text-xs text-green-800 flex items-start gap-2">
+                    <CheckCircle2 size={16} className="text-green-600 shrink-0 mt-0.5" />
+                    <div>
+                      <p className="font-semibold text-green-900">OTP Sent via Google SMTP</p>
+                      <p className="mt-0.5 text-green-700">{otpNotice}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* 6-Digit PIN Boxes */}
+                <div>
+                  <label className="block text-[12px] font-semibold uppercase tracking-wider text-[#0d1220] mb-2.5">
+                    Enter 6-Digit Code
+                  </label>
+                  <div className="grid grid-cols-6 gap-1.5 sm:gap-3">
+                    {otpDigits.map((digit, idx) => (
+                      <input
+                        key={idx}
+                        ref={(el) => {
+                          otpRefs.current[idx] = el;
+                        }}
+                        type="text"
+                        inputMode="numeric"
+                        autoComplete="one-time-code"
+                        maxLength={1}
+                        value={digit}
+                        onChange={(e) => handleDigitChange(idx, e.target.value)}
+                        onKeyDown={(e) => handleDigitKeyDown(idx, e)}
+                        onPaste={handleDigitPaste}
+                        aria-label={`Digit ${idx + 1}`}
+                        className="w-full h-12 sm:h-14 text-center text-xl sm:text-2xl font-bold font-mono rounded-lg sm:rounded-xl border border-[#dfe2ea] focus:border-[#E05A1B] focus:ring-2 focus:ring-[#E05A1B]/25 outline-none transition-all bg-white text-[#0d1220] shadow-2xs"
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Verify Button */}
+                <button
+                  type="button"
+                  onClick={() => handleVerifyOtp()}
+                  disabled={isLoading || otpDigits.join('').length < 6}
+                  className="ff-primary-btn cursor-pointer disabled:opacity-50"
+                >
+                  {isLoading ? (
+                    <span>Verifying Code...</span>
+                  ) : (
+                    <span>
+                      {mode === 'register' ? 'Activate Account & Sign In' : 'Verify & Continue'} →
+                    </span>
+                  )}
+                </button>
+
+                {/* Resend Action */}
+                <div className="flex items-center justify-between pt-2 border-t border-[#f1f3f7] text-xs text-[#5b6478]">
+                  <span>Didn't receive code?</span>
+                  {otpCountdown > 0 ? (
+                    <span className="font-medium text-[#94a3b8]">Resend in {otpCountdown}s</span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => handleSendOtp()}
+                      disabled={isLoading}
+                      className="font-semibold text-[#E05A1B] hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      <RefreshCw size={12} />
+                      <span>Resend OTP Code</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              /* ================= CREDENTIALS FORM SCREEN ================= */
+              <div>
+                {/* Heading Block */}
+                <div className="mb-6">
+                  <h2 className="font-bricolage text-2xl sm:text-3xl font-bold text-[#0d1220]">
+                    {mode === 'login' ? 'Sign in with One-Time Code' : 'Create your account'}
+                  </h2>
+                  <p className="mt-1.5 text-xs sm:text-sm text-[#5b6478]">
+                    {mode === 'login'
+                      ? 'We will dispatch a secure 6-digit verification code to your email'
+                      : 'Enter your details to receive your 6-digit activation code'}
+                  </p>
+                </div>
+
+                {/* Auth Notice (If redirected from Add to Bag or Checkout) */}
+                {authNotice && (
+                  <div className="mb-5 p-3 rounded-lg bg-orange-50 border border-orange-200 text-left flex items-start gap-2.5">
+                    <ShoppingBag size={16} className="text-[#E05A1B] shrink-0 mt-0.5" />
+                    <div className="text-xs text-orange-950 leading-relaxed font-medium">
+                      <span className="font-bold text-[#E05A1B]">Account Required: </span>
+                      {authNotice}
+                    </div>
+                  </div>
+                )}
+
+                {/* Error Message */}
+                {error && (
+                  <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700 flex items-center gap-2">
+                    <AlertCircle size={15} className="shrink-0" />
+                    <span>{error}</span>
+                  </div>
+                )}
+
+                {/* Mandatory Email OTP Form */}
+                <form onSubmit={handleSendOtp} className="space-y-4">
+                  {mode === 'register' && (
+                    <div>
+                      <label className="block text-[12.5px] font-semibold text-[#0d1220] mb-1.5">
+                        Full Name
+                      </label>
+                      <div className="ff-auth-input-wrap">
+                        <UserIcon
+                          size={16}
+                          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] pointer-events-none"
+                        />
+                        <input
+                          type="text"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          required
+                          placeholder="e.g. Rahul Sharma"
+                          className="ff-auth-input"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Email Address */}
+                  <div>
+                    <label className="block text-[12.5px] font-semibold text-[#0d1220] mb-1.5">
+                      Email address
+                    </label>
+                    <div className="ff-auth-input-wrap">
+                      <Mail
+                        size={16}
+                        className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] pointer-events-none"
+                      />
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        placeholder="you@example.com"
+                        className="ff-auth-input"
+                      />
+                    </div>
+                  </div>
+
+                  {mode === 'register' && (
+                    <div>
+                      <label className="block text-[12.5px] font-semibold text-[#0d1220] mb-1.5">
+                        Phone Number (Optional)
+                      </label>
+                      <div className="ff-auth-input-wrap">
+                        <Phone
+                          size={16}
+                          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] pointer-events-none"
+                        />
+                        <input
+                          type="tel"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          placeholder="+91 98765 43210"
+                          className="ff-auth-input"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {mode === 'register' && (
+                    <label className="flex items-start gap-2 pt-1 text-xs text-[#5b6478] cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={agreed}
+                        onChange={(e) => setAgreed(e.target.checked)}
+                        className="mt-0.5 rounded border-[#dfe2ea] text-[#E05A1B] focus:ring-[#E05A1B]"
+                      />
+                      <span>
+                        I agree to the Terms of Service and Privacy Policy.
+                      </span>
+                    </label>
+                  )}
+
+                  {/* Single Mandatory OTP Dispatch Button */}
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="ff-primary-btn mt-3 cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    {isLoading ? (
+                      <span>Sending OTP code...</span>
+                    ) : (
+                      <>
+                        <KeyRound size={15} />
+                        <span>
+                          {mode === 'login'
+                            ? 'Send 6-Digit One-Time Code →'
+                            : 'Send 6-Digit Verification Code →'}
+                        </span>
+                      </>
+                    )}
+                  </button>
+                </form>
+              </div>
+            )}
 
             {/* Footnote */}
             <div className="mt-6 text-center text-xs text-[#5b6478]">
@@ -494,7 +703,8 @@ function AuthSplitScreen({ initialMode }: AuthSplitScreenProps) {
                 <span>
                   Don't have an account?{' '}
                   <Link
-                    to="/register"
+                    to={`/register${location.search}`}
+                    state={location.state}
                     onClick={() => setMode('register')}
                     className="font-semibold text-[#E05A1B] hover:underline ml-0.5"
                   >
@@ -505,7 +715,8 @@ function AuthSplitScreen({ initialMode }: AuthSplitScreenProps) {
                 <span>
                   Already have an account?{' '}
                   <Link
-                    to="/login"
+                    to={`/login${location.search}`}
+                    state={location.state}
                     onClick={() => setMode('login')}
                     className="font-semibold text-[#E05A1B] hover:underline ml-0.5"
                   >
@@ -550,78 +761,37 @@ export function RegisterPage() {
 }
 
 export function ForgotPasswordPage() {
-  const [email, setEmail] = React.useState('');
-  const [submitted, setSubmitted] = React.useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email.includes('@')) {
-      setSubmitted(true);
-    }
-  };
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-[#faf9f6] font-inter flex flex-col justify-center py-16 px-4 sm:px-6">
-      <div className="mx-auto w-full max-w-md bg-white border border-[#dfe2ea] p-8 rounded-xl shadow-xs">
-        <div className="text-center mb-8">
-          <Link to="/" className="font-bricolage text-2xl font-black uppercase tracking-tight text-[#0d1220] inline-block">
-            FUNKY <span className="text-[#E05A1B]">FOX</span>
-          </Link>
-          <h1 className="mt-4 font-bricolage text-2xl font-bold text-[#0d1220]">
-            Reset Password
-          </h1>
-          <p className="mt-1 text-xs text-[#5b6478]">
-            Enter your email and we'll send demo instructions to reset your password.
-          </p>
+      <div className="mx-auto w-full max-w-md bg-white border border-[#dfe2ea] p-8 rounded-xl shadow-xs text-center">
+        <Link to="/" className="font-bricolage text-2xl font-black uppercase tracking-tight text-[#0d1220] inline-block">
+          FUNKY <span className="text-[#E05A1B]">FOX</span>
+        </Link>
+        <div className="w-12 h-12 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center text-[#E05A1B] mx-auto mt-6 mb-3 shadow-xs">
+          <KeyRound size={22} />
         </div>
+        <h1 className="font-bricolage text-2xl font-bold text-[#0d1220]">
+          Passwordless Sign-In Active
+        </h1>
+        <p className="mt-2 text-xs sm:text-sm text-[#5b6478] leading-relaxed">
+          Funky Fox uses instant, secure 6-digit one-time email codes. You never need to remember or reset a password.
+        </p>
 
-        {submitted ? (
-          <div className="p-4 rounded-xl bg-green-50 border border-green-200 text-center">
-            <CheckCircle2 size={32} className="mx-auto text-green-600 mb-2" />
-            <h3 className="text-sm font-bold text-green-900">Demo Reset Email Sent</h3>
-            <p className="mt-1 text-xs text-green-700 leading-relaxed">
-              In production, a secure verification link would be sent to <span className="font-semibold">{email}</span>. Since this is an interactive demo, your demo session remains active.
-            </p>
-            <Link
-              to="/login"
-              className="mt-4 inline-block py-2.5 px-6 rounded-lg bg-[#0d1220] text-white text-xs font-semibold hover:bg-[#1a233a] transition-colors"
-            >
-              Return to Login
-            </Link>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-[#0d1220] mb-1.5">
-                Your Email Address
-              </label>
-              <div className="ff-auth-input-wrap">
-                <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] pointer-events-none" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  placeholder="you@example.com"
-                  className="ff-auth-input"
-                />
-              </div>
-            </div>
+        <button
+          type="button"
+          onClick={() => navigate('/login')}
+          className="ff-primary-btn mt-6 cursor-pointer"
+        >
+          Sign In with Email OTP →
+        </button>
 
-            <button
-              type="submit"
-              className="ff-primary-btn mt-2"
-            >
-              Send Reset Link
-            </button>
-
-            <div className="text-center pt-2">
-              <Link to="/login" className="text-xs font-semibold text-[#5b6478] hover:text-[#0d1220]">
-                Back to Sign in
-              </Link>
-            </div>
-          </form>
-        )}
+        <div className="mt-4">
+          <Link to="/" className="text-xs font-semibold text-[#5b6478] hover:text-[#0d1220]">
+            Return to Store Home
+          </Link>
+        </div>
       </div>
     </div>
   );

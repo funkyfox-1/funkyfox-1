@@ -187,6 +187,27 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
     }
   }, [product?.id]);
 
+  // Track and load Recently Viewed Products
+  const [recentlyViewed, setRecentlyViewed] = React.useState<Product[]>([])
+
+  React.useEffect(() => {
+    if (!product) return
+    try {
+      const STORAGE_KEY = 'funkyfox_recently_viewed'
+      const raw = localStorage.getItem(STORAGE_KEY)
+      let ids: string[] = raw ? JSON.parse(raw) : []
+      ids = ids.filter((i) => i !== product.id)
+      const resolved = ids
+        .map((pid) => storeService.getProductById(pid) || products.find((p) => p.id === pid))
+        .filter((p): p is Product => Boolean(p))
+        .slice(0, 4)
+      setRecentlyViewed(resolved)
+
+      const updatedIds = [product.id, ...ids].slice(0, 12)
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedIds))
+    } catch {}
+  }, [product?.id])
+
   // Reset selections when product id changes
   React.useEffect(() => {
     if (product) {
@@ -269,6 +290,15 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
 
     // Auth Guard: must be logged in before adding to bag
     if (!isDemoLoggedIn()) {
+      try {
+        sessionStorage.setItem('funkyfox_auth_return_to', `/products/${product.id}`);
+        sessionStorage.setItem('funkyfox_auth_pending_add', JSON.stringify({
+          product,
+          color: selectedColor,
+          size: selectedSize || product.sizes[0],
+          qty: quantity
+        }));
+      } catch {}
       showToast('Please create an account or sign in to add items to your bag.', { type: 'info' });
       navigate('/login', {
         state: {
@@ -996,12 +1026,8 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
             <section aria-labelledby="similar-heading">
               <div className="flex items-center justify-between mb-6 sm:mb-8">
                 <div>
-                  <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.25em] text-soft">
-                    <span aria-hidden="true" className="h-[2px] w-5 rounded-full bg-fox" />
-                    Same Category &amp; Silhouette
-                  </p>
-                  <h2 id="similar-heading" className="mt-1.5 font-display text-xl sm:text-2xl font-black uppercase text-ink">
-                    Similar Products
+                  <h2 id="similar-heading" className="font-display text-xl sm:text-2xl font-black uppercase tracking-tight text-ink">
+                    Similar Silhouettes
                   </h2>
                 </div>
                 <Link
@@ -1177,12 +1203,8 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
             <section aria-labelledby="trending-heading">
               <div className="flex items-center justify-between mb-6 sm:mb-8">
                 <div>
-                  <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.25em] text-soft">
-                    <span aria-hidden="true" className="h-[2px] w-5 rounded-full bg-fox" />
-                    Community Most Wanted
-                  </p>
-                  <h2 id="trending-heading" className="mt-1.5 font-display text-xl sm:text-2xl font-black uppercase text-ink">
-                    Trending Now
+                  <h2 id="trending-heading" className="font-display text-xl sm:text-2xl font-black uppercase tracking-tight text-ink">
+                    Trending in {product.category}
                   </h2>
                 </div>
                 <Link
@@ -1358,11 +1380,7 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
             <section aria-labelledby="complete-heading">
               <div className="flex items-center justify-between mb-6 sm:mb-8">
                 <div>
-                  <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.25em] text-soft">
-                    <span aria-hidden="true" className="h-[2px] w-5 rounded-full bg-fox" />
-                    Layering &amp; Styling Guide
-                  </p>
-                  <h2 id="complete-heading" className="mt-1.5 font-display text-xl sm:text-2xl font-black uppercase text-ink">
+                  <h2 id="complete-heading" className="font-display text-xl sm:text-2xl font-black uppercase tracking-tight text-ink">
                     Complete The Look
                   </h2>
                 </div>
@@ -1527,6 +1545,126 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
                           ))}
                         </div>
                       )}
+                    </li>
+                  )
+                })}
+              </ul>
+            </section>
+          )}
+
+          {/* TIER 4: Recently Viewed Products */}
+          {recentlyViewed.length > 0 && (
+            <section aria-labelledby="recently-viewed-heading">
+              <div className="flex items-center justify-between mb-6 sm:mb-8">
+                <div>
+                  <h2 id="recently-viewed-heading" className="font-display text-xl sm:text-2xl font-black uppercase tracking-tight text-ink">
+                    Recently Viewed
+                  </h2>
+                </div>
+              </div>
+
+              <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-3 gap-y-9 sm:gap-x-5 sm:gap-y-11 lg:gap-x-6">
+                {recentlyViewed.map((rel) => {
+                  const isItemWishlisted = isInDemoWishlist(rel.id)
+                  return (
+                    <li className="group min-w-0" key={rel.id}>
+                      <div className="relative overflow-hidden bg-[#eeeae3] rounded-sm">
+                        <Link
+                          to={`/products/${rel.id}`}
+                          aria-label={`View ${rel.name}`}
+                          className="block focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ink"
+                        >
+                          <img
+                            src={rel.image}
+                            alt={rel.alt || rel.name}
+                            width="1024"
+                            height="1536"
+                            loading="lazy"
+                            onError={(e) => {
+                              e.currentTarget.onerror = null
+                              e.currentTarget.src = getCategoryFallbackImage(rel.category)
+                            }}
+                            className="aspect-[3/4] w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-[1.035] motion-reduce:transition-none"
+                          />
+                        </Link>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            if (!isDemoLoggedIn()) {
+                              showToast('Please create an account or sign in to save items to your wishlist.', { type: 'info' })
+                              navigate('/login', {
+                                state: {
+                                  from: `/products/${product.id}`,
+                                  reason: 'Please create an account or sign in to save items to your wishlist.'
+                                }
+                              })
+                              return
+                            }
+                            const added = toggleDemoWishlist(rel.id)
+                            showToast(added ? `Saved ${rel.name} to Wishlist` : `Removed ${rel.name} from Wishlist`, {
+                              type: added ? 'success' : 'info'
+                            })
+                          }}
+                          aria-label={isItemWishlisted ? `Remove ${rel.name} from saved items` : `Save ${rel.name} to wishlist`}
+                          className="absolute top-2.5 right-2.5 z-10 flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-full bg-white/90 text-neutral-600 shadow-sm backdrop-blur-xs transition-transform hover:scale-110 hover:bg-white cursor-pointer"
+                        >
+                          <Heart
+                            size={14}
+                            className={isItemWishlisted ? 'fill-rose-500 text-rose-500' : 'text-neutral-700'}
+                          />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (!isDemoLoggedIn()) {
+                              showToast('Please create an account or sign in to add items to your bag.', { type: 'info' })
+                              navigate('/login', {
+                                state: {
+                                  from: `/products/${product.id}`,
+                                  pendingAdd: {
+                                    product: rel,
+                                    color: rel.colors?.[0]?.name || 'Default',
+                                    size: rel.sizes?.[0] || 'M',
+                                    qty: 1
+                                  },
+                                  reason: 'Please create an account or sign in to add items to your bag.'
+                                }
+                              })
+                              return
+                            }
+                            addToCart(rel, rel.colors?.[0]?.name || 'Default')
+                          }}
+                          disabled={!rel.inStock}
+                          aria-label={rel.inStock ? `Quick add ${rel.name} to bag` : `${rel.name} is sold out`}
+                          className={`absolute bottom-3 right-3 flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center text-ink shadow-sm transition-colors focus-visible:outline-2 focus-visible:outline-fox ${
+                            rel.inStock
+                              ? 'bg-white hover:bg-fox hover:text-white cursor-pointer'
+                              : 'cursor-not-allowed bg-white/70 text-soft'
+                          }`}
+                        >
+                          <Plus size={16} strokeWidth={2} />
+                        </button>
+                      </div>
+
+                      <div className="mt-3.5 flex flex-col gap-1 sm:mt-4">
+                        <Link
+                          to={`/products/${rel.id}`}
+                          className="w-fit text-[12px] font-semibold leading-snug text-ink transition-colors hover:text-fox-deep sm:text-[14px]"
+                        >
+                          {rel.name}
+                        </Link>
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-[12px] font-semibold text-ink sm:text-[14px]">
+                            {formatPrice(rel.price)}
+                          </span>
+                          {rel.originalPrice && rel.originalPrice > rel.price && (
+                            <span className="text-[11px] font-normal text-soft line-through sm:text-[12px]">
+                              {formatPrice(rel.originalPrice)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </li>
                   )
                 })}

@@ -15,14 +15,18 @@ import {
   Users,
   Inbox,
   RefreshCw,
+  Printer,
 } from 'lucide-react';
 import { storeService } from '../services/storeService';
 import { StatCard } from '../components/ui/StatCard';
 import { Badge } from '../components/ui/Badge';
+import { AdminOrder } from '../lib/types';
+import { PrintableInvoice } from '../components/orders/PrintableInvoice';
 
 export function Dashboard() {
   const [refreshTick, setRefreshTick] = React.useState(0);
   const [syncing, setSyncing] = React.useState(false);
+  const [printingOrder, setPrintingOrder] = React.useState<AdminOrder | null>(null);
 
   React.useEffect(() => {
     const handleUpdate = () => setRefreshTick((t) => t + 1);
@@ -262,12 +266,23 @@ export function Dashboard() {
                           </Badge>
                         </td>
                         <td className="py-3.5 px-4 text-right">
-                          <Link
-                            to={`/admin/orders/${order.id}`}
-                            className="px-2.5 py-1 text-[11px] font-semibold text-zinc-700 bg-zinc-100 hover:bg-zinc-200 rounded-lg transition-colors inline-block"
-                          >
-                            Details
-                          </Link>
+                          <div className="flex items-center justify-end gap-1.5">
+                            <button
+                              type="button"
+                              onClick={() => setPrintingOrder(order)}
+                              className="p-1.5 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 rounded-lg transition-colors cursor-pointer"
+                              title="Print Invoice"
+                              aria-label={`Print invoice for ${order.orderNumber}`}
+                            >
+                              <Printer size={13} />
+                            </button>
+                            <Link
+                              to={`/admin/orders/${order.id}`}
+                              className="px-2.5 py-1 text-[11px] font-semibold text-zinc-700 bg-zinc-100 hover:bg-zinc-200 rounded-lg transition-colors inline-block"
+                            >
+                              Details
+                            </Link>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -341,6 +356,15 @@ export function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Tax Invoice Modal Preview */}
+      {printingOrder && (
+        <PrintableInvoice
+          order={printingOrder}
+          onClose={() => setPrintingOrder(null)}
+          isModal={true}
+        />
+      )}
     </div>
   );
 }

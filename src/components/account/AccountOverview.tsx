@@ -70,7 +70,7 @@ export default function AccountOverview() {
       sublabel: user ? `${user.name} · ${user.email}` : undefined,
       icon: User,
       action: () => setIsAccountModalOpen(true),
-      badge: user?.tier || 'Member'
+      badge: 'Profile'
     },
     {
       id: 'orders',
@@ -253,12 +253,9 @@ export default function AccountOverview() {
                   {user.name}
                 </h2>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <span className="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full bg-[#f16c24]/10 text-[#f16c24]">
-                    <Sparkles size={11} />
-                    {user.tier}
-                  </span>
-                  <span className="text-xs text-[#706d66]">
-                    · {user.rewardsPoints} points
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                    <CheckCircle2 size={11} className="text-emerald-600" />
+                    Verified Customer
                   </span>
                 </div>
               </div>

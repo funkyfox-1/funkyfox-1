@@ -14,25 +14,31 @@ interface LineupCategory {
 const LINEUP_ITEMS: LineupCategory[] = [
   {
     num: '01',
+    title: 'ESSENTIALS',
+    image: '/images/category-essentials.jpg',
+    link: '/products?category=Essentials',
+    featured: true,
+  },
+  {
+    num: '02',
     title: 'T-SHIRTS',
     image: '/images/category-tshirts.jpg',
     link: '/products?category=T-Shirts',
   },
   {
-    num: '02',
+    num: '03',
     title: 'SHIRTS',
     image: '/images/category-shirts.jpg',
     link: '/products?category=Shirts',
   },
   {
-    num: '03',
+    num: '04',
     title: 'TROUSERS & JEANS',
     image: '/images/category-trousers.jpg',
     link: '/products?category=Trousers%20%26%20Jeans',
-    featured: true, // Orange active circle button matching reference image
   },
   {
-    num: '04',
+    num: '05',
     title: 'JACKETS',
     image: '/images/category-jackets.jpg',
     link: '/products?category=Jackets',
@@ -79,8 +85,8 @@ export default function EverydayLineup() {
           </Link>
         </div>
 
-        {/* 4 Category Cards matching reference screenshot */}
-        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+        {/* 5 Category Cards matching reference screenshot */}
+        <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5 lg:gap-5">
           {LINEUP_ITEMS.map((item) => (
             <Link
               key={item.num}

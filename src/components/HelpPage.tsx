@@ -454,12 +454,9 @@ export default function HelpPage() {
           <div className="help-contact-modal">
             <div className="help-modal-header">
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-[.25em] text-soft">
-                  Customer Support
-                </p>
                 <h3
                   id="contact-modal-title"
-                  className="font-display text-xl font-black uppercase tracking-tight text-ink sm:text-2xl mt-0.5"
+                  className="font-display text-xl font-black uppercase tracking-tight text-ink sm:text-2xl"
                 >
                   Get In Touch
                 </h3>

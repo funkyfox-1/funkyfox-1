@@ -49,7 +49,7 @@ export default function FloatingNavbar({ cartCount, onOpenSearch }: FloatingNavb
     { label: 'Home', path: '/' },
     { label: 'Shop', path: '/products' },
     { label: 'About Us', path: '/about' },
-    { label: 'Rewards', path: '/account' },
+    { label: 'Account', path: '/account' },
   ];
 
   return (
@@ -212,7 +212,7 @@ export default function FloatingNavbar({ cartCount, onOpenSearch }: FloatingNavb
                   <ArrowRight size={14} className="text-neutral-400" />
                 </Link>
                 <Link to="/account" className="fox-nav-drawer-link">
-                  <span>Customer Account & Rewards</span>
+                  <span>Customer Account</span>
                   <ArrowRight size={14} className="text-neutral-400" />
                 </Link>
                 <Link to="/help" className="fox-nav-drawer-link">

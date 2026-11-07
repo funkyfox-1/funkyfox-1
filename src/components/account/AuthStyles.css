@@ -61,6 +61,13 @@
   box-shadow: 0 0 0 3px rgba(224, 90, 27, 0.16);
 }
 
+@media (max-width: 640px) {
+  .ff-auth-input {
+    font-size: 16px !important;
+    height: 48px;
+  }
+}
+
 /* SSO Buttons */
 .ff-sso-btn {
   display: flex;

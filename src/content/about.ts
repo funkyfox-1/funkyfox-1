@@ -82,15 +82,15 @@ export const aboutPageContent = {
    */
   founder: {
     eyebrow: "Behind the Brand",
-    name: "Founder Name",
+    name: "Syed Mehaboob",
     role: "Founder, Funky Fox",
     introduction: [
       "Funky Fox started with a simple belief: everyday clothing should feel comfortable, look considered, and let your personality come through without trying too hard.",
       "Every piece we bring into the collection is chosen with care for how it wears in real life — easy to style, honest in quality, and made to feel like yours from the very first wear.",
     ],
     portrait: {
-      src: "https://images.pexels.com/photos/8484131/pexels-photo-8484131.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=900",
-      alt: "Founder of Funky Fox in the clothing studio",
+      src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=900&h=1200",
+      alt: "Syed Mehaboob, Founder of Funky Fox",
     },
   },
 } as const;

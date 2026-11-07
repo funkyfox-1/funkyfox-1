@@ -155,7 +155,7 @@ export default function AccountProfile() {
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-bold uppercase tracking-widest text-[#E87535] bg-[#E87535]/15 px-2.5 py-0.5 rounded-full border border-[#E87535]/30">
-                  {user?.tier || 'Fox Club Gold'}
+                  Customer
                 </span>
                 <span className="text-[11px] text-neutral-400">
                   Member since {user?.memberSince || 'October 2024'}
@@ -173,7 +173,7 @@ export default function AccountProfile() {
           <div className="flex items-center gap-1.5 self-start sm:self-auto px-3 py-1 rounded-full bg-white/10 border border-white/15">
             <CheckCircle2 size={13} className="text-emerald-400 shrink-0" />
             <span className="text-xs font-semibold text-neutral-200">
-              Verified Member
+              Verified Customer
             </span>
           </div>
         </div>
@@ -185,11 +185,8 @@ export default function AccountProfile() {
             <span className="fox-profile-stat-label">Lifetime Orders</span>
           </div>
           <div className="fox-profile-stat-box">
-            <div className="flex items-baseline gap-1">
-              <span className="fox-profile-stat-val text-[#E87535]">{user?.rewardsPoints || 450}</span>
-              <span className="text-[11px] font-bold text-neutral-400">/ 500 PTS</span>
-            </div>
-            <span className="fox-profile-stat-label">50 pts to Platinum</span>
+            <span className="fox-profile-stat-val text-[#E87535]">All India</span>
+            <span className="fox-profile-stat-label">Doorstep Express Delivery</span>
           </div>
           <div className="fox-profile-stat-box">
             <span className="fox-profile-stat-val">Size {preferredSize}</span>
@@ -471,8 +468,8 @@ export default function AccountProfile() {
               <div className="flex items-center gap-3">
                 <Sparkles size={17} className="text-[#E87535]" />
                 <div>
-                  <p className="text-xs font-bold text-ink">Early Access Drop Invites (Fox Club VIP)</p>
-                  <p className="text-[11px] text-neutral-500">Shop limited-edition seasonal capsules 24 hours before public release.</p>
+                  <p className="text-xs font-bold text-ink">Early Access Drop Invites</p>
+                  <p className="text-[11px] text-neutral-500">Shop limited-edition seasonal capsules before public release.</p>
                 </div>
               </div>
               <input

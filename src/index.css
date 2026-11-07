@@ -273,3 +273,46 @@ a {
     animation: none !important;
   }
 }
+
+/* Printable Tax Invoice & Packing Slip Formatting for Admin Orders */
+@media print {
+  /* Hide all interactive admin chrome and storefront overlays */
+  aside,
+  header,
+  nav,
+  .admin-no-print,
+  .pdp-sticky-bar,
+  #admin-global-search,
+  button {
+    display: none !important;
+  }
+
+  body, html {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 11pt !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .admin-printable-invoice {
+    display: block !important;
+    width: 100% !important;
+    background: #ffffff !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 1.2cm;
+  }
+}

@@ -29,6 +29,7 @@ import { Badge } from '../components/ui/Badge';
 import { useAdminAuth } from '../context/AdminAuthContext';
 import { useAdminToast } from '../context/ToastContext';
 import { Modal } from '../components/ui/Modal';
+import { PrintableInvoice } from '../components/orders/PrintableInvoice';
 
 // Valid Order Lifecycle State Machine
 const VALID_TRANSITIONS: Record<OrderStatus, OrderStatus[]> = {
@@ -71,6 +72,7 @@ export function OrderDetail() {
   const [copiedAwb, setCopiedAwb] = React.useState(false);
   const [refreshingTracking, setRefreshingTracking] = React.useState(false);
   const [showAllScans, setShowAllScans] = React.useState(false);
+  const [showPrintModal, setShowPrintModal] = React.useState(false);
 
   const loadData = () => {
     if (!id) return;
@@ -201,7 +203,7 @@ export function OrderDetail() {
   };
 
   const handlePrintInvoice = () => {
-    window.print();
+    setShowPrintModal(true);
   };
 
   return (
@@ -806,6 +808,20 @@ export function OrderDetail() {
           </div>
         </Modal>
       )}
+
+      {/* Tax Invoice & Packaging Slip Preview Modal */}
+      {showPrintModal && (
+        <PrintableInvoice
+          order={order}
+          onClose={() => setShowPrintModal(false)}
+          isModal={true}
+        />
+      )}
+
+      {/* Direct Print Document (Triggered on native Ctrl+P or window.print) */}
+      <div className="hidden print:block">
+        <PrintableInvoice order={order} isModal={false} />
+      </div>
     </div>
   );
 }

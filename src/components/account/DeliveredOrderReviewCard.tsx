@@ -80,17 +80,9 @@ export default function DeliveredOrderReviewCard({ order, onReviewSubmitted }: D
         fitFeedback: mappedFit
       });
 
-      // 2. Award +50 Fox Club rewards points
-      const currentUser = getDemoUser();
-      if (currentUser) {
-        updateDemoProfile({
-          rewardsPoints: (currentUser.rewardsPoints || 0) + 50
-        });
-      }
-
       setIsSubmitting(false);
       setIsSubmitted(true);
-      showToast('Review submitted! +50 Fox Club points credited.', { type: 'success' });
+      showToast('Review submitted! Thank you for your feedback.', { type: 'success' });
       if (onReviewSubmitted) onReviewSubmitted();
     }, 700);
   };
@@ -180,7 +172,7 @@ export default function DeliveredOrderReviewCard({ order, onReviewSubmitted }: D
               How did your fit turn out?
             </h3>
             <p className="text-xs text-[#666259] mt-1 leading-relaxed">
-              Rate your piece to earn <strong className="text-[#E87535]">+50 Fox Club rewards points</strong> and help fellow members dial in their sizing.
+              Rate your piece to help fellow customers dial in their sizing.
             </p>
           </div>
 

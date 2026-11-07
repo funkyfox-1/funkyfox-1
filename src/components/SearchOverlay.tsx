@@ -160,11 +160,7 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
             <div>
               {/* Quick Category Suggestions */}
               <div>
-                <p className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[.25em] text-soft">
-                  <span aria-hidden="true" className="h-[2.5px] w-5 rounded-full bg-fox" />
-                  Quick Discovery
-                </p>
-                <h2 className="mt-1.5 font-display text-lg font-black uppercase tracking-tight text-ink sm:text-xl">
+                <h2 className="font-display text-lg font-black uppercase tracking-tight text-ink sm:text-xl">
                   WHAT ARE YOU LOOKING FOR?
                 </h2>
 

@@ -29,7 +29,7 @@ export function StatCard({
         </div>
       </div>
       <div className="mt-3">
-        <div className="text-2xl font-bold tracking-tight text-zinc-900">{value}</div>
+        <div className="text-2xl font-black tracking-tight text-zinc-900 tabular-nums font-sans">{value}</div>
         <div className="mt-1 flex items-center gap-2">
           {change && (
             <span

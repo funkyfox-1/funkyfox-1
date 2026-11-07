@@ -78,6 +78,7 @@ function seedAdminProducts(): AdminProduct[] {
 
 function seedAdminCategories(): AdminCategory[] {
   const images = [
+    '/images/category-essentials.jpg',
     '/images/category-tshirts.jpg',
     '/images/category-shirts.jpg',
     '/images/category-trousers.jpg',
@@ -338,9 +339,7 @@ class StoreService {
 
       // Notify all active admin and storefront subscribers of the synced data
       if (typeof window !== 'undefined') {
-        if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('funkyfox:store_updated'));
-      }
       }
     } catch (err) {
       console.error('[StoreService] Failed to sync from Supabase:', err);
