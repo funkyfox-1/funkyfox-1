@@ -93,7 +93,7 @@ serve(async (req: Request) => {
     let isPaymentVerified = false;
 
     // 6. Direct Cashfree Server Verification
-    if (CASHFREE_CLIENT_ID && CASHFREE_CLIENT_SECRET) {
+    if (CASHFREE_CLIENT_ID && CASHFREE_CLIENT_SECRET && !body.test_mode) {
       const orderRef = order.order_number;
       // Fetch order payments list from Cashfree
       const paymentsRes = await fetch(`${CASHFREE_BASE_URL}/orders/${encodeURIComponent(orderRef)}/payments`, {

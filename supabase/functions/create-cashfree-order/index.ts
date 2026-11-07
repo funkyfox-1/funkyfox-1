@@ -120,7 +120,7 @@ serve(async (req: Request) => {
     const customerId = (order.customer_id || `cust_${order.id.replace(/[^a-zA-Z0-9]/g, '').slice(0, 15)}`).slice(0, 50);
 
     const origin = req.headers.get('origin') || FRONTEND_URL;
-    const returnUrl = `${origin}/order-confirmation?order_id=${encodeURIComponent(order.id)}&order_token={order_token}`;
+    const returnUrl = `${origin}/order-confirmation?order_id=${encodeURIComponent(order.id)}&cf_order_id={order_id}`;
     const notifyUrl = `${SUPABASE_URL}/functions/v1/cashfree-webhook`;
 
     let paymentSessionId = '';
