@@ -578,18 +578,15 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
 
       // CASE 2: Online Payment via Cashfree
       const cashfreeEnv = (import.meta.env.VITE_CASHFREE_ENVIRONMENT || 'sandbox') as 'sandbox' | 'production'
-      const cashfreeClientId = (import.meta.env.VITE_CASHFREE_CLIENT_ID || '').trim()
-      const isTestPlaceholder = !cashfreeClientId || cashfreeClientId === 'cf_live_or_test_client_id'
 
-      // Create official Cashfree order session on server
+      // Create official Cashfree order session on secured Supabase Edge Function
       const orderResp = await CashfreeService.createOrder(created.id)
       if (!orderResp.success || !orderResp.paymentSessionId) {
         throw new Error(orderResp.error || 'Failed to initialize Cashfree payment order.')
       }
 
-      if (isTestPlaceholder && orderResp.paymentSessionId.startsWith('session_test_')) {
-        // Merchant Account Under Review / Preview Test Mode:
-        // Automatically verify test payment session
+      if (orderResp.paymentSessionId.startsWith('session_test_')) {
+        // Test Simulation Mode (when backend runs with test fixtures)
         await CashfreeService.verifyPayment({
           order_id: created.id,
           cf_order_id: orderResp.cfOrderId,
@@ -615,7 +612,7 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
         return
       }
 
-      // Open official Cashfree checkout modal
+      // Open official Cashfree checkout modal with session from Edge Function
       await CashfreeService.openCheckout({
         paymentSessionId: orderResp.paymentSessionId,
         environment: cashfreeEnv,
