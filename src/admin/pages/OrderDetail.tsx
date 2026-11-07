@@ -397,10 +397,16 @@ export function OrderDetail() {
               </Badge>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs">
               <div>
                 <span className="text-zinc-400 block text-[11px]">Payment Mode</span>
                 <span className="font-bold text-zinc-900 uppercase font-mono">{order.paymentMethod}</span>
+              </div>
+              <div>
+                <span className="text-zinc-400 block text-[11px]">Payment Provider</span>
+                <span className="font-semibold text-zinc-800 uppercase font-mono">
+                  {order.paymentDetails?.provider || (order.paymentDetails?.razorpayPaymentId ? 'Razorpay' : order.paymentDetails?.cfPaymentId ? 'Cashfree' : 'Direct')}
+                </span>
               </div>
               <div>
                 <span className="text-zinc-400 block text-[11px]">Settlement Status</span>
@@ -411,7 +417,7 @@ export function OrderDetail() {
               <div>
                 <span className="text-zinc-400 block text-[11px]">Transaction ID</span>
                 <span className="font-mono text-zinc-800">
-                  {order.paymentDetails?.transactionId || order.paymentDetails?.razorpayPaymentId || order.id}
+                  {order.paymentDetails?.cfPaymentId || order.paymentDetails?.transactionId || order.paymentDetails?.razorpayPaymentId || order.id}
                 </span>
               </div>
             </div>

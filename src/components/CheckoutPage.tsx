@@ -17,7 +17,7 @@ import {
 } from 'lucide-react'
 import { products, formatPrice, getCategoryFallbackImage } from '../data/products'
 import { isDemoLoggedIn, getDemoUser, getDemoAddresses, createDemoOrder } from '../data/accountMockData'
-import { RazorpayService } from '../services/razorpayService'
+import { CashfreeService } from '../services/cashfreeService'
 import { calculateShipping, PROVISIONAL_SHIPPING_POLICY } from '../config/shipping'
 import { CouponService, CouponValidationResult } from '../services/api'
 import { showToast } from '../utils/toast'
@@ -491,9 +491,10 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
     setStage('review')
   }
 
-  // Pre-load Razorpay SDK script on component mount
+  // Pre-load Cashfree SDK on component mount
   React.useEffect(() => {
-    RazorpayService.loadScript().catch(() => {})
+    const env = (import.meta.env.VITE_CASHFREE_ENVIRONMENT || 'sandbox') as 'sandbox' | 'production'
+    CashfreeService.getCashfreeInstance(env).catch(() => {})
   }, [])
 
   // Clear customer bag and idempotency key from storage on successful verified order
@@ -547,14 +548,14 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
         couponCode: appliedCoupon?.code?.trim() || undefined,
         shippingCharge: effectiveShipping,
         total: orderTotal,
-        paymentMethod: selectedPaymentMethod || 'upi',
+        paymentMethod: selectedPaymentMethod === 'cod' ? 'cod' : 'cashfree',
       })
 
       const orderRef = created?.orderNumber || `FF-${Math.floor(100000 + Math.random() * 900000)}`
       const selectedPayTitle =
-        PAYMENT_METHODS.find((p) => p.id === selectedPaymentMethod)?.title || 'UPI'
+        PAYMENT_METHODS.find((p) => p.id === selectedPaymentMethod)?.title || 'Online Payment'
 
-      // CASE 1: Cash on Delivery (COD) - 100% Independent of Razorpay
+      // CASE 1: Cash on Delivery (COD) - 100% Independent of Online Gateway
       if (selectedPaymentMethod === 'cod') {
         clearCheckoutSession()
         await new Promise((resolve) => setTimeout(resolve, 300))
@@ -575,12 +576,26 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
         return
       }
 
-      // CASE 2: Online Payment via Razorpay
-      const razorpayKeyId = (import.meta.env.VITE_RAZORPAY_KEY_ID || '').trim()
-      const isTestPlaceholder = !razorpayKeyId || razorpayKeyId === 'rzp_live_or_test_key_id'
+      // CASE 2: Online Payment via Cashfree
+      const cashfreeEnv = (import.meta.env.VITE_CASHFREE_ENVIRONMENT || 'sandbox') as 'sandbox' | 'production'
+      const cashfreeClientId = (import.meta.env.VITE_CASHFREE_CLIENT_ID || '').trim()
+      const isTestPlaceholder = !cashfreeClientId || cashfreeClientId === 'cf_live_or_test_client_id'
 
-      if (isTestPlaceholder) {
-        // Merchant Account Under Review: Process order in preview test mode
+      // Create official Cashfree order session on server
+      const orderResp = await CashfreeService.createOrder(created.id)
+      if (!orderResp.success || !orderResp.paymentSessionId) {
+        throw new Error(orderResp.error || 'Failed to initialize Cashfree payment order.')
+      }
+
+      if (isTestPlaceholder && orderResp.paymentSessionId.startsWith('session_test_')) {
+        // Merchant Account Under Review / Preview Test Mode:
+        // Automatically verify test payment session
+        await CashfreeService.verifyPayment({
+          order_id: created.id,
+          cf_order_id: orderResp.cfOrderId,
+          cf_payment_id: `cf_test_${Date.now()}`
+        }).catch(() => {})
+
         clearCheckoutSession()
         await new Promise((resolve) => setTimeout(resolve, 400))
         navigate('/order-confirmation', {
@@ -600,65 +615,51 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
         return
       }
 
-      // Active Razorpay Merchant Key present: Create order on server and open Razorpay modal
-      const orderResp = await RazorpayService.createOrder(created.id)
-      if (!orderResp.success || !orderResp.razorpayOrderId) {
-        throw new Error(orderResp.error || 'Failed to initialize Razorpay payment order.')
-      }
-
-      await RazorpayService.openCheckout({
-        keyId: razorpayKeyId,
-        razorpayOrderId: orderResp.razorpayOrderId,
-        amountPaise: orderResp.amount || Math.round(orderTotal * 100),
-        currency: orderResp.currency || 'INR',
-        name: 'Funky Fox Clothing',
-        description: `Order #${orderRef}`,
-        customerName: values.fullName,
-        customerEmail: values.email,
-        customerPhone: values.phone,
-        onSuccess: async (payResponse) => {
-          try {
-            // Verify HMAC signature server-side
-            const verifyResp = await RazorpayService.verifyPayment({
-              order_id: created.id,
-              razorpay_order_id: payResponse.razorpay_order_id,
-              razorpay_payment_id: payResponse.razorpay_payment_id,
-              razorpay_signature: payResponse.razorpay_signature,
-            })
-
-            if (!verifyResp.verified) {
-              setSubmitError(verifyResp.error || 'Payment verification failed. Please contact support.')
-              setIsSubmitting(false)
-              return
-            }
-
-            clearCheckoutSession()
-            navigate('/order-confirmation', {
-              state: {
-                orderReference: orderRef,
-                orderId: created?.id,
-                customerName: values.fullName,
-                customerEmail: values.email,
-                deliveryCity: values.city,
-                deliveryState: values.state,
-                deliveryPincode: values.pincode,
-                orderTotal: created?.total || orderTotal,
-                paymentMethod: selectedPayTitle,
-                itemsCount: totalItems,
-                transactionId: payResponse.razorpay_payment_id,
-              },
-            })
-          } catch (verifyErr: any) {
-            console.error('[Checkout] Post-payment verification error:', verifyErr)
-            setSubmitError('Payment was captured by gateway, but order confirmation timed out. Our team will verify your payment.')
-            setIsSubmitting(false)
-          }
-        },
+      // Open official Cashfree checkout modal
+      await CashfreeService.openCheckout({
+        paymentSessionId: orderResp.paymentSessionId,
+        environment: cashfreeEnv,
+        redirectTarget: '_modal',
         onDismiss: () => {
           setIsSubmitting(false)
-          setSubmitError('Payment was cancelled. Your order remains pending; you may retry or choose Cash on Delivery.')
+          setSubmitError('Payment was cancelled or closed. Your order remains pending; you may retry or choose Cash on Delivery.')
         },
       })
+
+      // Verify payment status after modal finishes
+      try {
+        const verifyResp = await CashfreeService.verifyPayment({
+          order_id: created.id,
+          cf_order_id: orderResp.cfOrderId,
+        })
+
+        if (!verifyResp.verified) {
+          setSubmitError(verifyResp.error || 'Payment verification failed. Please contact customer support.')
+          setIsSubmitting(false)
+          return
+        }
+
+        clearCheckoutSession()
+        navigate('/order-confirmation', {
+          state: {
+            orderReference: orderRef,
+            orderId: created?.id,
+            customerName: values.fullName,
+            customerEmail: values.email,
+            deliveryCity: values.city,
+            deliveryState: values.state,
+            deliveryPincode: values.pincode,
+            orderTotal: created?.total || orderTotal,
+            paymentMethod: selectedPayTitle,
+            itemsCount: totalItems,
+            transactionId: verifyResp.cfPaymentId,
+          },
+        })
+      } catch (verifyErr: any) {
+        console.error('[Checkout] Post-payment verification error:', verifyErr)
+        setSubmitError('Payment was captured by gateway, but order confirmation timed out. Our team will verify your payment.')
+        setIsSubmitting(false)
+      }
     } catch (err: any) {
       const message =
         err?.message || 'Order submission failed. Please check product stock and try again.'

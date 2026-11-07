@@ -142,9 +142,13 @@ export interface AdminOrder {
   shippingCharge: number;
   tax: number;
   total: number;
-  paymentMethod: 'razorpay' | 'cod' | 'upi' | 'card' | 'netbanking';
+  paymentMethod: 'cashfree' | 'razorpay' | 'cod' | 'upi' | 'card' | 'netbanking';
   paymentStatus: PaymentStatus;
   paymentDetails?: {
+    provider?: string;
+    cfPaymentId?: string;
+    cfOrderId?: string | number;
+    paymentSessionId?: string;
     transactionId?: string;
     razorpayOrderId?: string;
     razorpayPaymentId?: string;
