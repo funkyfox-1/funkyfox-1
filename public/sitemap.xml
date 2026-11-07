@@ -1,0 +1,1614 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <url>
+    <loc>https://funkyfox.in/</loc>
+    <lastmod>2026-11-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products</loc>
+    <lastmod>2026-11-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/about</loc>
+    <lastmod>2026-11-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/help</loc>
+    <lastmod>2026-11-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/contact</loc>
+    <lastmod>2026-11-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/sage-olive-linen-kurta</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/products/ethnic-linen-kurta.webp</image:loc>
+      <image:title><![CDATA[Minimalist Sage Linen Kurta Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/sandstone-nehru-jacket</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/products/ethnic-nehru-jacket.webp</image:loc>
+      <image:title><![CDATA[Textured Nehru Waistcoat & Kurta Set]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/heavyweight-boxy-tee</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Heavyweight Boxy Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/waffle-knit-crew-tee</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/products/demo-waffle-knit-crew-tee.png</image:loc>
+      <image:title><![CDATA[Waffle-Knit Crew Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-relaxed-slub-cotton</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Relaxed Slub Cotton Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/midnight-asymmetric-kurta</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/products/ethnic-asymmetric-kurta.webp</image:loc>
+      <image:title><![CDATA[Midnight Asymmetric Festive Kurta]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-breton-striped-crew</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Breton Striped Crew Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-minimal-tokyo-graphic</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Minimal Tokyo Graphic Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-oversized-drop-shoulder</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1562157873-818bc0726f68?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Oversized Drop-Shoulder Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-garment-dyed-heavyweight</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1527719327859-c6ce80353573?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Garment-Dyed Heavyweight Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-knit-collar-resort-polo</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Knit Collar Resort Polo]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-vintage-athletic-crew</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1578587018452-892bacefd3f2?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Vintage Athletic Crew Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-acid-wash-boxy</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/product-tshirt.webp</image:loc>
+      <image:title><![CDATA[Acid Wash Boxy T-Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-textured-ribbed-crew</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/category-tshirts.jpg</image:loc>
+      <image:title><![CDATA[Textured Ribbed Crew Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-raw-edge-pocket</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Raw Edge Pocket T-Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-retro-motoring-graphic</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Retro Motoring Graphic Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-organic-cotton-everyday</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Organic Cotton Everyday Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-zip-neck-textured-polo</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/products/demo-zip-neck-textured-polo.png</image:loc>
+      <image:title><![CDATA[Zip-Neck Textured Polo]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-micro-stripe-relaxed</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Micro-Stripe Relaxed Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-heavyweight-street</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Heavyweight Street Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-washed-terry-crew</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1562157873-818bc0726f68?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Washed Terry Crew Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-sun-faded-cotton</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1527719327859-c6ce80353573?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Sun-Faded Cotton Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-minimal-monochrome</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Minimal Monochrome Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-chunky-collar-heavy</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1578587018452-892bacefd3f2?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Chunky Collar Heavy Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-clean-cut-vneck</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/product-tshirt.webp</image:loc>
+      <image:title><![CDATA[Clean-Cut V-Neck Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-split-hem-relaxed</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/category-tshirts.jpg</image:loc>
+      <image:title><![CDATA[Split-Hem Relaxed T-Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-abstract-line-graphic</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Abstract Line Graphic Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-tipped-collar-pique-polo</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Tipped Collar Pique Polo]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-pigment-dyed-pocket</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Pigment-Dyed Pocket Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-vintage-sports-club</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Vintage Sports Club Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-mercerised-cotton</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Mercerised Cotton Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-loose-fit-skater</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Loose-Fit Skater T-Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-waffle-knit-henley</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1562157873-818bc0726f68?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Waffle-Knit Henley Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-subtle-embroidery-crew</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1527719327859-c6ce80353573?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Subtle Embroidery Crew Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-mineral-wash-oversized</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Mineral Wash Oversized Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-fine-ribbed-everyday</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1578587018452-892bacefd3f2?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Fine-Ribbed Everyday Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-colourblock-casual-polo</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/product-tshirt.webp</image:loc>
+      <image:title><![CDATA[Colourblock Casual Polo]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-distressed-collar-heavy</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/category-tshirts.jpg</image:loc>
+      <image:title><![CDATA[Distressed Collar Heavy Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-washed-charcoal-boxy</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Washed Charcoal Boxy Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-bold-type-editorial</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Bold Type Editorial Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-slub-jersey-pocket</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Slub Jersey Pocket Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-retro-striped-cotton-polo</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Retro Striped Cotton Polo]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-heavy-drape-relaxed</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Heavy Drape Relaxed Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-essential-organic-crew-white</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Essential Organic Crew - White]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-core-black-everyday</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1562157873-818bc0726f68?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Core Black Everyday Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/relaxed-fit-shirt</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/product-shirt.webp</image:loc>
+      <image:title><![CDATA[Relaxed Fit Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/linen-blend-resort-shirt</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Linen-Blend Resort Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/classic-oxford-overshirt</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Classic Oxford Overshirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/corduroy-overshirt</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1607345366928-199ea26cfe3e?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Corduroy Overshirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-gingham-poplin-buttondown</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1607345366928-199ea26cfe3e?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Gingham Poplin Button-Down]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-washed-indigo-chambray</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Washed Indigo Chambray Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-camp-collar-linen</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Camp Collar Linen Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-classic-striped-oxford</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1588359348347-9bc6cbbb689e?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Classic Striped Oxford Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-brushed-cotton-check</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1620012253295-c15c429f6dd1?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Brushed Cotton Check Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-textured-twill-overshirt</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1621072156002-e2fccdc0b176?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Textured Twill Overshirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-mandarin-collar-linen</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1604695573706-53170668f6a6?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Mandarin Collar Linen Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-cuban-collar-resort</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1622445268462-349f48512130?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Cuban Collar Resort Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-seersucker-striped</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/product-shirt.webp</image:loc>
+      <image:title><![CDATA[Seersucker Striped Summer Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-garment-dyed-utility</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/category-shirts.jpg</image:loc>
+      <image:title><![CDATA[Garment-Dyed Utility Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-micro-houndstooth-casual</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Micro-Houndstooth Casual Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-vintage-flannel-overshirt</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Vintage Flannel Overshirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-clean-poplin-casual</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1607345366928-199ea26cfe3e?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Clean Poplin Casual Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-short-sleeve-textured</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Short-Sleeve Textured Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-slub-linen-relaxed</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Slub Linen Relaxed Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-tattersall-check-oxford</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1588359348347-9bc6cbbb689e?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Tattersall Check Oxford Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-lightweight-denim-work</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1620012253295-c15c429f6dd1?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Lightweight Denim Work Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-vertical-stripe-camp</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1621072156002-e2fccdc0b176?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Vertical Stripe Camp Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-minimal-snap-button</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1604695573706-53170668f6a6?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Minimal Snap-Button Overshirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-herringbone-cotton-casual</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1622445268462-349f48512130?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Herringbone Cotton Casual Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-raw-silk-blend-resort</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/product-shirt.webp</image:loc>
+      <image:title><![CDATA[Raw-Silk Blend Resort Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-windowpane-plaid-casual</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/category-shirts.jpg</image:loc>
+      <image:title><![CDATA[Windowpane Plaid Casual Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-soft-brushed-twill</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Soft-Brushed Twill Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-grandad-collar-cotton</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Grandad Collar Cotton Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-washed-linen-overshirt</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1607345366928-199ea26cfe3e?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Washed Linen Overshirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-retro-bowling-casual</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Retro Bowling Casual Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-classic-chambray-buttondown</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Classic Chambray Button-Down]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/trouser-slim-tapered-cotton</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1582552938357-32b906df40cb?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Slim-Tapered Cotton Trousers]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/trouser-stretch-twill-commuter</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1584370848010-d7fe6bc767ec?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Stretch Twill Commuter Pants]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/trouser-essential-black-chinos</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Essential Black Casual Chinos]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-buffalo-check-flannel</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1588359348347-9bc6cbbb689e?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Buffalo Check Flannel Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-heavy-drape-poplin</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1620012253295-c15c429f6dd1?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Heavy Drape Poplin Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-slub-cotton-short-sleeve</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1621072156002-e2fccdc0b176?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Slub Cotton Short-Sleeve Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-utility-pocket-cotton</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1604695573706-53170668f6a6?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Utility Pocket Cotton Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-pinpoint-oxford-casual</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1622445268462-349f48512130?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Pinpoint Oxford Casual Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-striped-linen-blend</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/product-shirt.webp</image:loc>
+      <image:title><![CDATA[Striped Linen-Blend Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-heavy-cord-workshirt</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/category-shirts.jpg</image:loc>
+      <image:title><![CDATA[Heavy Cord Workshirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-monochrome-black-casual</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Monochrome Black Casual Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/shirt-pure-cotton-white-oxford</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Pure Cotton White Oxford Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/everyday-straight-leg-jeans</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/product-jeans.webp</image:loc>
+      <image:title><![CDATA[Everyday Straight-Leg Jeans]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/relaxed-tapered-chinos</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/products/demo-relaxed-tapered-chinos.jpg</image:loc>
+      <image:title><![CDATA[Relaxed Tapered Chinos]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/pleated-wide-leg-trousers</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/products/demo-pleated-wide-leg-trousers.jpg</image:loc>
+      <image:title><![CDATA[Pleated Wide-Leg Trousers]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/drawstring-utility-pants</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Drawstring Utility Pants]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jeans-raw-indigo-straight</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Raw Indigo Straight Jeans]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/trouser-slim-stretch-chinos</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Slim-Stretch Casual Chinos]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jeans-carpenter-denim</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1517445312882-bc9910d016b7?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Carpenter Denim with Hammer Loop]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jeans-vintage-fade-relaxed</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1565084888279-aca607ecce0c?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Vintage Fade Relaxed Jeans]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/trouser-ripstop-cargo</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1582552938357-32b906df40cb?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Ripstop Cargo Trousers]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/trouser-double-knee-workwear</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1584370848010-d7fe6bc767ec?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Double-Knee Workwear Pants]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jeans-washed-charcoal-slim</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Washed Charcoal Slim Jeans]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/trouser-pleated-casual-chinos</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1506630448388-4e683c67ddb0?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Pleated Casual Chinos]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jeans-wide-leg-skater</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/product-jeans.webp</image:loc>
+      <image:title><![CDATA[Wide-Leg Skater Jeans]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/trouser-linen-blend-drawstring</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/category-trousers.jpg</image:loc>
+      <image:title><![CDATA[Linen-Blend Drawstring Trousers]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/trouser-tapered-utility-cargo</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1542272604-780c96856592?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Tapered Utility Cargo Pants]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/trouser-heavy-cotton-twill</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Heavy Cotton Twill Trousers]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jeans-light-stonewash-straight</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Light Stonewash Straight Jeans]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/trouser-corduroy-relaxed</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Corduroy Relaxed Trousers]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/trouser-easy-stretch-everyday-chinos</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1517445312882-bc9910d016b7?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Easy-Stretch Everyday Chinos]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/trouser-cropped-straight-leg</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1565084888279-aca607ecce0c?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Cropped Straight-Leg Trousers]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jeans-distressed-vintage-wash</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1582552938357-32b906df40cb?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Distressed Vintage Wash Jeans]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jeans-drawstring-relaxed-denim</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1584370848010-d7fe6bc767ec?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Drawstring Relaxed Denim]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/trouser-classic-regular-fit-khakis</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1552902865-b72c031ac5ea?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Classic Regular-Fit Khakis]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jeans-monochrome-black-straight</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1506630448388-4e683c67ddb0?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Monochrome Black Straight Jeans]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/trouser-herringbone-wool-blend</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/product-jeans.webp</image:loc>
+      <image:title><![CDATA[Herringbone Wool-Blend Trousers]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/trouser-loose-fit-carpenter</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/category-trousers.jpg</image:loc>
+      <image:title><![CDATA[Loose-Fit Carpenter Pants]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/trouser-washed-olive-military-cargos</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1542272604-780c96856592?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Washed Olive Military Cargos]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jeans-classic-dark-wash-slim</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Classic Dark-Wash Slim Jeans]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/trouser-casual-linen-everyday</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Casual Linen Everyday Trousers]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/trouser-heavy-canvas-utility</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Heavy Canvas Utility Trousers]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jeans-baggy-fit-90s-blue</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1517445312882-bc9910d016b7?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Baggy-Fit 90s Blue Jeans]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/canvas-workwear-jacket</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/products/demo-canvas-workwear-jacket.jpg</image:loc>
+      <image:title><![CDATA[Canvas Workwear Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/minimalist-bomber-jacket</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/products/demo-minimalist-bomber-jacket.jpg</image:loc>
+      <image:title><![CDATA[Minimalist Bomber Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/denim-overshirt-jacket</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/products/demo-denim-overshirt-jacket.png</image:loc>
+      <image:title><![CDATA[Denim Overshirt Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-classic-twill-harrington</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Classic Twill Harrington Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-washed-sherpa-trucker</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Washed Sherpa Trucker Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-matte-nylon-windbreaker</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1578932750294-f5075e85f44a?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Matte Nylon Windbreaker]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-cotton-twill-coach</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1520975954732-35dd22299614?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Cotton Twill Coach Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-heavy-corduroy-trucker</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1543076447-215ad9ba6923?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Heavy Corduroy Trucker Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-quilted-liner-zip</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Quilted Liner Zip Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-multi-pocket-field</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Multi-Pocket Field Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-waxed-cotton-chore</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1525450824786-227cbef70703?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Waxed Cotton Chore Coat]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-retro-track-zip</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/product-jacket.webp</image:loc>
+      <image:title><![CDATA[Retro Track Zip Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-casual-polar-fleece</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/category-jackets.jpg</image:loc>
+      <image:title><![CDATA[Casual Polar Fleece Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-vintage-black-denim</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Vintage Black Denim Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-lightweight-hooded-rain-shell</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1548883354-7622d03aca27?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Lightweight Hooded Rain Shell]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-heavy-wool-blend-overshirt</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Heavy Wool-Blend Overshirt Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-safari-pocket-utility</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Safari Pocket Utility Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-minimalist-zip-overcoat</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1578932750294-f5075e85f44a?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Minimalist Zip Overcoat]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-fleece-lined-cotton-trucker</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1520975954732-35dd22299614?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Fleece-Lined Cotton Trucker]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-reversible-souvenir-bomber</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1543076447-215ad9ba6923?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Reversible Souvenir Bomber Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-washed-canvas-chore</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Washed Canvas Chore Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-lightweight-harrington-khaki</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Lightweight Harrington - Khaki]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-water-repellent-commuter</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1525450824786-227cbef70703?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Water-Repellent Commuter Shell]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-classic-mac-rain</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/product-jacket.webp</image:loc>
+      <image:title><![CDATA[Classic Mac Rain Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-distressed-denim-trucker</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/category-jackets.jpg</image:loc>
+      <image:title><![CDATA[Distressed Denim Trucker Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-snap-front-flannel-shacket</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Snap-Front Flannel Shacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-cotton-ripstop-field</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1548883354-7622d03aca27?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Cotton Ripstop Field Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-varsity-collar-casual</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Varsity Collar Casual Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/jacket-tailored-casual-blazer</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Tailored Casual Blazer Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/junior-boxy-graphic-tee</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/trending/tops.png</image:loc>
+      <image:title><![CDATA[Junior Boxy Graphic Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/teen-knit-crewneck-sweater</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/trending/sweaters.png</image:loc>
+      <image:title><![CDATA[Teen Knit Crewneck Sweater]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/youth-relaxed-cargo-sweatpants</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/trending/bottoms.png</image:loc>
+      <image:title><![CDATA[Youth Relaxed Cargo Sweatpants]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/teen-everyday-overshirt-jacket</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/trending/clothing.png</image:loc>
+      <image:title><![CDATA[Teen Everyday Overshirt Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/essential-cotton-t-shirt</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/product-tshirt.webp</image:loc>
+      <image:title><![CDATA[Essential Cotton T-Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/trouser-pleated-flannel</loc>
+    <lastmod>2026-11-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1565084888279-aca607ecce0c?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Pleated Flannel Trousers]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/lightweight-utility-jacket</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/product-jacket.webp</image:loc>
+      <image:title><![CDATA[Lightweight Utility Jacket]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/tshirt-classic-pique-polo</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Classic Pique Polo Shirt]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/vintage-wash-pocket-tee</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title><![CDATA[Vintage Wash Pocket Tee]]></image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://funkyfox.in/products/modern-bandhgala-kurta</loc>
+    <lastmod>2026-11-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>/images/products/ethnic-bandhgala-rust.webp</image:loc>
+      <image:title><![CDATA[Terracotta Raw Silk Bandhgala Kurta]]></image:title>
+    </image:image>
+  </url>
+</urlset>

@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { getDemoOrders } from '../data/accountMockData'
+import { analyticsService } from '../services/analyticsService'
 
 export default function OrderConfirmationPage() {
   const location = useLocation()
@@ -9,12 +10,22 @@ export default function OrderConfirmationPage() {
     orderId?: string
     customerName?: string
     customerEmail?: string
+    customerPhone?: string
     deliveryCity?: string
     deliveryState?: string
     deliveryPincode?: string
     orderTotal?: number
     paymentMethod?: string
     itemsCount?: number
+    couponCode?: string
+    transactionId?: string
+    items?: Array<{
+      id: string
+      name: string
+      price: number
+      quantity?: number
+      category?: string
+    }>
   } | null
 
   // Check if we have an active order from checkout navigation or latest confirmed demo order
@@ -37,7 +48,32 @@ export default function OrderConfirmationPage() {
 
   React.useEffect(() => {
     window.scrollTo(0, 0)
-  }, [])
+
+    if (hasValidOrder) {
+      const targetId = orderData?.orderId || orderData?.orderReference || existingOrders[0]?.id || existingOrders[0]?.orderNumber || 'ORD-NEW'
+      const targetNumber = orderData?.orderReference || existingOrders[0]?.orderNumber || targetId
+      const targetTotal = Number(orderData?.orderTotal ?? existingOrders[0]?.total ?? 0)
+
+      analyticsService.trackPurchase({
+        id: targetId,
+        orderNumber: targetNumber,
+        total: targetTotal,
+        shipping: 0,
+        couponCode: orderData?.couponCode,
+        customer: {
+          email: orderData?.customerEmail,
+          phone: orderData?.customerPhone,
+          name: orderData?.customerName,
+        },
+        items: orderData?.items || existingOrders[0]?.items?.map((it: any) => ({
+          id: it.id || it.product?.id || 'PROD',
+          name: it.product?.name || 'Funky Fox Garment',
+          price: it.price || it.product?.price || 0,
+          quantity: it.quantity || it.qty || 1,
+        })) || [],
+      })
+    }
+  }, [hasValidOrder, orderData, existingOrders])
 
   return (
     <div className="min-h-screen w-full bg-[#FBF8F1] flex flex-col items-center justify-between px-4 py-8 sm:py-12 selection:bg-[#f16c24]/20 selection:text-[#1c1d1a]">

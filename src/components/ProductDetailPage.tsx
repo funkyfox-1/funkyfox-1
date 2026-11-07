@@ -28,6 +28,8 @@ import { DeliveryService, PincodeDeliveryResult } from '../services/api'
 import { ErrorState } from './feedback'
 import Footer from './Footer'
 import JellyRadio from './ui/JellyRadio'
+import { SEOHead } from './seo/SEOHead'
+import { analyticsService } from '../services/analyticsService'
 import './ui/TactileOrderButton.css'
 import './ProductDetailPage.css'
 
@@ -171,6 +173,19 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
 
   // Related products color selection states
   const [relatedProductColors, setRelatedProductColors] = React.useState<Record<string, string>>({})
+
+  // Track product view (GA4 view_item & Meta ViewContent)
+  React.useEffect(() => {
+    if (product) {
+      analyticsService.trackViewItem({
+        id: product.id,
+        name: product.name,
+        category: product.category,
+        price: Number(product.price),
+        sku: (product as any).sku || product.id,
+      });
+    }
+  }, [product?.id]);
 
   // Reset selections when product id changes
   React.useEffect(() => {
@@ -365,6 +380,24 @@ export default function ProductDetailPage({ addToCart }: ProductDetailPageProps)
 
   return (
     <div className="pdp-page pb-24 sm:pb-28">
+      {/* Dynamic SEO Meta & Product Schema JSON-LD */}
+      <SEOHead
+        title={`${product.name} | Funky Fox`}
+        description={product.description || `${product.name} - Everyday menswear essentials by Funky Fox India.`}
+        canonicalUrl={`https://funkyfox.in/products/${(product as any).slug || product.id}`}
+        ogImage={product.image}
+        ogType="product"
+        product={{
+          name: product.name,
+          description: product.description,
+          image: product.image,
+          price: Number(product.price),
+          sku: (product as any).sku || product.id,
+          inStock: product.inStock,
+          category: product.category,
+          url: `https://funkyfox.in/products/${(product as any).slug || product.id}`,
+        }}
+      />
       <div className="pdp-container">
         {/* Breadcrumb Navigation */}
         <nav aria-label="Breadcrumb" className="pt-6 sm:pt-8 text-xs font-medium text-soft">

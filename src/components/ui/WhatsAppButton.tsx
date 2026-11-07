@@ -4,12 +4,17 @@ import { useLocation } from 'react-router-dom';
 export default function WhatsAppButton() {
   const location = useLocation();
 
-  // Hide floating button on admin routes or checkout review
-  if (location.pathname.startsWith('/admin') || location.pathname === '/checkout') {
+  // Hide floating button on admin routes, checkout, or order confirmation to prevent blocking checkout CTAs
+  if (
+    location.pathname.startsWith('/admin') ||
+    location.pathname === '/checkout' ||
+    location.pathname === '/order-confirmation'
+  ) {
     return null;
   }
 
-  const phone = '919493551595';
+  const configuredPhone = (import.meta.env.VITE_WHATSAPP_PHONE || '919493551595').replace(/[^0-9]/g, '');
+  const phone = configuredPhone || '919493551595';
   const defaultText = encodeURIComponent(
     'Hi Funky Fox team! I would like to inquire about your menswear collection and orders.'
   );
@@ -18,7 +23,7 @@ export default function WhatsAppButton() {
   return (
     <aside
       aria-label="WhatsApp customer support"
-      className="fixed bottom-5 right-5 z-40 print:hidden"
+      className="fixed bottom-6 right-5 sm:bottom-6 sm:right-6 z-40 print:hidden"
     >
       <a
         href={waUrl}

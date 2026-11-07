@@ -1,0 +1,13 @@
+# Funky Fox Robots Configuration
+# https://funkyfox.in
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /checkout
+Disallow: /order-confirmation
+Disallow: /account/
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://funkyfox.in/sitemap.xml

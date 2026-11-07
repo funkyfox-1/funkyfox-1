@@ -26,6 +26,7 @@ import SlideCommit from './SlideCommit'
 import type { CartItem } from './CartPage'
 import Footer from './Footer'
 import { storeService } from '../admin/services/storeService'
+import { analyticsService } from '../services/analyticsService'
 import './CheckoutPage.css'
 
 interface CheckoutPageProps {
@@ -256,6 +257,30 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
     const pricingSig = `subtotal:${subtotal}|shipping:${effectiveShipping}|total:${orderTotal}|coupon:${(appliedCoupon?.code || '').trim().toUpperCase()}`
     return `${custSig}::${addrSig}::${itemsSig}::${selectedPaymentMethod}::${pricingSig}`
   }, [cartItems, values, selectedPaymentMethod, subtotal, effectiveShipping, orderTotal, appliedCoupon])
+
+  // Helper to map cart items to analytics items with resolved product metadata
+  const getCartAnalyticsItems = React.useCallback(() => {
+    return cartItems.map((ci) => {
+      const prod = storeService.getProductById(ci.id) || products.find((p) => p.id === ci.id || (p as any).slug === ci.id)
+      return {
+        id: ci.id,
+        name: prod?.name || 'Funky Fox Garment',
+        price: prod?.price || 0,
+        quantity: ci.qty,
+        category: (prod as any)?.category || 'Menswear',
+      }
+    })
+  }, [cartItems])
+
+  // Track begin_checkout event once on checkout mount
+  const trackedCheckoutRef = React.useRef(false)
+  React.useEffect(() => {
+    if (!trackedCheckoutRef.current && cartItems && cartItems.length > 0) {
+      trackedCheckoutRef.current = true
+      const analyticsItems = getCartAnalyticsItems()
+      analyticsService.trackBeginCheckout(analyticsItems, orderTotal, appliedCoupon?.code)
+    }
+  }, [cartItems, orderTotal, appliedCoupon, getCartAnalyticsItems])
 
   // Persistent client-side idempotency key surviving reloads and retries
   const [idempotencyKey, setIdempotencyKey] = React.useState<string>(() => {
@@ -565,12 +590,15 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
             orderId: created?.id,
             customerName: values.fullName,
             customerEmail: values.email,
+            customerPhone: values.phone,
             deliveryCity: values.city,
             deliveryState: values.state,
             deliveryPincode: values.pincode,
             orderTotal: created?.total || orderTotal,
             paymentMethod: selectedPayTitle,
             itemsCount: totalItems,
+            couponCode: appliedCoupon?.code?.trim() || undefined,
+            items: getCartAnalyticsItems(),
           },
         })
         return
@@ -601,12 +629,15 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
             orderId: created?.id,
             customerName: values.fullName,
             customerEmail: values.email,
+            customerPhone: values.phone,
             deliveryCity: values.city,
             deliveryState: values.state,
             deliveryPincode: values.pincode,
             orderTotal: created?.total || orderTotal,
             paymentMethod: `${selectedPayTitle} (Preview Test Mode)`,
             itemsCount: totalItems,
+            couponCode: appliedCoupon?.code?.trim() || undefined,
+            items: getCartAnalyticsItems(),
           },
         })
         return
@@ -643,6 +674,7 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
             orderId: created?.id,
             customerName: values.fullName,
             customerEmail: values.email,
+            customerPhone: values.phone,
             deliveryCity: values.city,
             deliveryState: values.state,
             deliveryPincode: values.pincode,
@@ -650,6 +682,8 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
             paymentMethod: selectedPayTitle,
             itemsCount: totalItems,
             transactionId: verifyResp.cfPaymentId,
+            couponCode: appliedCoupon?.code?.trim() || undefined,
+            items: getCartAnalyticsItems(),
           },
         })
       } catch (verifyErr: any) {

@@ -45,6 +45,7 @@ import {
 } from "./data/products";
 import { calculateShipping, PROVISIONAL_SHIPPING_POLICY } from "./config/shipping";
 import { OfflineBanner, Toast } from "./components/feedback";
+import { analyticsService } from "./services/analyticsService";
 const AdminRouter = React.lazy(() =>
   import("./admin/AdminRouter").then((m) => ({ default: m.AdminRouter }))
 );
@@ -371,6 +372,14 @@ function Storefront() {
 
   const [, setStoreSyncTick] = React.useState(0);
   React.useEffect(() => {
+    analyticsService.init();
+  }, []);
+
+  React.useEffect(() => {
+    analyticsService.trackPageView(Q.pathname);
+  }, [Q.pathname]);
+
+  React.useEffect(() => {
     const handleSync = () => setStoreSyncTick((t) => t + 1);
     window.addEventListener("funkyfox:store_updated", handleSync);
     return () => window.removeEventListener("funkyfox:store_updated", handleSync);
@@ -507,6 +516,17 @@ function Storefront() {
           ];
     });
     X(`${qtyToAdd > 1 ? `${qtyToAdd}x ` : ""}${w.name} (${validSize}) added to bag`);
+    try {
+      analyticsService.trackAddToCart(
+        {
+          id: w.id,
+          name: w.name,
+          category: w.category,
+          price: Number(w.price),
+        },
+        qtyToAdd
+      );
+    } catch {}
   }
   function J(w, ct) {
     s((G) =>
