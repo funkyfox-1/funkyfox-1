@@ -610,7 +610,7 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
 
   // Pre-load Cashfree SDK on component mount
   React.useEffect(() => {
-    const env = (import.meta.env.VITE_CASHFREE_ENVIRONMENT || 'sandbox') as 'sandbox' | 'production'
+    const env = (import.meta.env.VITE_CASHFREE_ENVIRONMENT || 'production') as 'sandbox' | 'production'
     CashfreeService.getCashfreeInstance(env).catch(() => {})
   }, [])
 
@@ -714,7 +714,7 @@ export default function CheckoutPage({ cartItems }: CheckoutPageProps) {
       }
 
       // CASE 2: Online Payment via Cashfree
-      const cashfreeEnv = (import.meta.env.VITE_CASHFREE_ENVIRONMENT || 'sandbox') as 'sandbox' | 'production'
+      const cashfreeEnv = (import.meta.env.VITE_CASHFREE_ENVIRONMENT || 'production') as 'sandbox' | 'production'
 
       // Create official Cashfree order session on secured Supabase Edge Function
       const orderResp = await CashfreeService.createOrder(created.id)

@@ -41,7 +41,7 @@ export class CashfreeService {
   /**
    * Loads and caches the official Cashfree JS SDK instance
    */
-  static async getCashfreeInstance(environment: 'sandbox' | 'production' = 'sandbox'): Promise<any> {
+  static async getCashfreeInstance(environment: 'sandbox' | 'production' = 'production'): Promise<any> {
     const targetMode = environment === 'production' ? 'production' : 'sandbox';
 
     if (this.sdkPromise && this.cachedMode === targetMode) {
@@ -160,7 +160,7 @@ export class CashfreeService {
    * Launches official Cashfree checkout modal or redirect
    */
   static async openCheckout(options: CashfreeCheckoutOptions): Promise<any> {
-    const { paymentSessionId, environment = 'sandbox', redirectTarget = '_modal', onDismiss } = options;
+    const { paymentSessionId, environment = 'production', redirectTarget = '_modal', onDismiss } = options;
 
     const cashfree = await this.getCashfreeInstance(environment);
     if (!cashfree) {
