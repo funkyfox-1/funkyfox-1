@@ -15,8 +15,7 @@ import {
   MailCheck,
   Lock,
   Eye,
-  EyeOff,
-  Sparkles
+  EyeOff
 } from 'lucide-react';
 import { loginDemo, getDemoUser, isDemoLoggedIn } from '../../data/accountMockData';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
@@ -174,10 +173,6 @@ function AuthSplitScreen({ initialMode }: AuthSplitScreenProps) {
     }
 
     navigate(returnTo, { replace: true });
-  };
-
-  const handleDemoCustomerLogin = () => {
-    handleSuccessfulAuth('prashanth@funkyfox.in', 'Prashanth Poloju', '+91 98765 43210');
   };
 
   const handlePasswordLogin = async (e: React.FormEvent) => {
@@ -994,28 +989,6 @@ function AuthSplitScreen({ initialMode }: AuthSplitScreenProps) {
                     </button>
                   </form>
                 )}
-
-                {/* Quick Access Divider */}
-                <div className="relative my-5 text-center">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-[#e2e5eb]" />
-                  </div>
-                  <div className="relative flex justify-center text-xs">
-                    <span className="bg-white px-3 font-semibold uppercase tracking-wider text-[#94a3b8] text-[10px]">
-                      or quick access
-                    </span>
-                  </div>
-                </div>
-
-                {/* Instant 1-Click Demo Customer Login Button */}
-                <button
-                  type="button"
-                  onClick={handleDemoCustomerLogin}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-orange-200 bg-orange-50/80 hover:bg-orange-100 text-[#0d1220] font-bold text-xs uppercase tracking-wider transition-all shadow-2xs cursor-pointer group"
-                >
-                  <Sparkles size={14} className="text-[#E05A1B] group-hover:scale-110 transition-transform" />
-                  <span>Continue as Demo Customer (Prashanth Poloju)</span>
-                </button>
               </div>
             )}
 
