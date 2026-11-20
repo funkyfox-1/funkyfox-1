@@ -69,7 +69,8 @@ export class CashfreeService {
    * Requests server-side Cashfree Order ID and paymentSessionId from Supabase Edge Function
    */
   static async createOrder(orderId: string): Promise<CashfreeOrderResponse> {
-    const supabaseUrl = (
+    const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+    const supabaseUrl = isLocalhost ? '' : (
       import.meta.env.VITE_SUPABASE_URL ||
       'https://gcvtitcegolmkhjqqpit.supabase.co'
     ).replace(/\/+$/, '');
@@ -119,7 +120,8 @@ export class CashfreeService {
     cf_order_id?: string | number;
     cf_payment_id?: string;
   }): Promise<CashfreeVerificationResponse> {
-    const supabaseUrl = (
+    const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+    const supabaseUrl = isLocalhost ? '' : (
       import.meta.env.VITE_SUPABASE_URL ||
       'https://gcvtitcegolmkhjqqpit.supabase.co'
     ).replace(/\/+$/, '');

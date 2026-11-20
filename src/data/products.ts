@@ -70,6 +70,37 @@ export const getCategoryFallbackImage = (category: Category | string): string =>
 
 export const products: Product[] = [
   {
+    id: "live-trial-garment-token-1rs",
+    name: "Funky Fox VIP Live ₹1 Trial Garment Token",
+    price: 1,
+    originalPrice: 199,
+    image: "/images/product-tshirt.webp",
+    images: ["/images/product-tshirt.webp", "/images/category-tshirts.jpg"],
+    alt: "Funky Fox VIP Live 1 Rupee Trial Garment Token for Cashfree Production Verification",
+    category: "T-Shirts",
+    colors: [
+      { name: "Onyx Black", value: "#1a1a1a" },
+      { name: "Pure White", value: "#f7f7f7" }
+    ],
+    sizes: ["S", "M", "L", "XL"],
+    inStock: true,
+    isNew: true,
+    isBestseller: true,
+    featuredOrder: 1,
+    description: "Official ₹1 Funky Fox Live Production Verification Token. Experience full end-to-end checkout, payment gateway capture, email notification, and admin fulfillment with a real ₹1 transaction.",
+    details: [
+      "Official 1-Rupee Live Production Payment Gateway Verification Token",
+      "Valid for immediate real payment via Cashfree Production UPI, Cards, NetBanking",
+      "Instant confirmation and real-time reflection across Storefront & Admin Portal",
+      "Eligible for immediate digital verification receipt"
+    ],
+    fitFabric: {
+      fit: "Official Live Verification Token",
+      fabric: "Digital / Physical Garment Swatch Token",
+      care: "Live Transaction Ready"
+    }
+  },
+  {
     id: "essential-reversible-leather-belt",
     name: "Reversible Full-Grain Leather Belt",
     price: 899,

@@ -154,35 +154,35 @@ const INITIAL_ORDERS: Order[] = [
     status: 'processing',
     items: [
       {
+        id: 'french-terry-hoodie',
+        name: 'French Terry Hoodie · Washed Charcoal',
+        price: 1499,
+        originalPrice: 1999,
+        color: 'Washed Charcoal',
+        size: 'L',
+        quantity: 1,
+        image: '/images/products/demo-french-terry-hoodie.jpg'
+      },
+      {
         id: 'essential-cotton-t-shirt',
         name: 'Essential Cotton T-Shirt',
         price: 599,
         originalPrice: 799,
-        color: 'Navy Blue',
+        color: 'Ivory',
         size: 'L',
         quantity: 1,
         image: '/images/product-tshirt.webp'
-      },
-      {
-        id: 'relaxed-fit-shirt',
-        name: 'Relaxed Fit Linen Shirt',
-        price: 899,
-        originalPrice: 1099,
-        color: 'Terracotta',
-        size: 'L',
-        quantity: 1,
-        image: '/images/product-shirt.webp'
       }
     ],
-    subtotal: 1498,
-    discount: 150,
+    subtotal: 2098,
+    discount: 200,
     discountCode: 'EVERYDAY10',
     shipping: 0,
-    tax: 67,
-    total: 1415,
+    tax: 94,
+    total: 1992,
     paymentMethod: {
       type: 'UPI / Google Pay',
-      last4: 'mehta@okaxis',
+      last4: 'poloju@okaxis',
       status: 'Paid',
       holderName: 'Prashanth Poloju'
     },
@@ -211,7 +211,7 @@ const INITIAL_ORDERS: Order[] = [
         label: 'Order Paid',
         date: '01 Nov 2026',
         time: '12:11 PM',
-        description: 'Payment of ₹1,415 settled successfully.',
+        description: 'Payment settled successfully via Cashfree Gateway.',
         completed: true
       },
       {
@@ -236,7 +236,7 @@ const INITIAL_ORDERS: Order[] = [
         label: 'Doorstep Delivery',
         date: '05 Nov 2026 (Est.)',
         time: 'By 06:00 PM',
-        description: 'Delivered to your saved Bandra West address.',
+        description: 'Delivered to your saved Benz Circle Vijayawada address.',
         completed: false
       }
     ]
@@ -253,7 +253,7 @@ const INITIAL_ORDERS: Order[] = [
         name: 'Lightweight Utility Jacket',
         price: 1799,
         originalPrice: 2299,
-        color: 'Caramel Brown',
+        color: 'Khaki',
         size: 'L',
         quantity: 1,
         image: '/images/product-jacket.webp'
@@ -293,7 +293,7 @@ const INITIAL_ORDERS: Order[] = [
         label: 'Order Placed',
         date: '28 Oct 2026',
         time: '10:42 AM',
-        description: 'Confirmation email and SMS sent to arjun.mehta@example.com.',
+        description: 'Confirmation email and SMS sent to prashanth@funkyfox.in.',
         completed: true
       },
       {
@@ -309,7 +309,7 @@ const INITIAL_ORDERS: Order[] = [
         label: 'With the Courier',
         date: '29 Oct 2026',
         time: '09:18 AM',
-        description: 'Handed over to carrier, scan confirmed at Mumbai sort hub.',
+        description: 'Handed over to carrier, scan confirmed at Vijayawada sort hub.',
         completed: true,
         current: true
       },
@@ -331,35 +331,35 @@ const INITIAL_ORDERS: Order[] = [
     status: 'delivered',
     items: [
       {
-        id: 'relaxed-fit-chinos',
-        name: 'Relaxed Fit Everyday Chinos',
-        price: 1299,
-        originalPrice: 1599,
-        color: 'Sand Beige',
-        size: '32',
+        id: 'canvas-workwear-jacket',
+        name: 'Canvas Workwear Chore Jacket',
+        price: 1999,
+        originalPrice: 2698,
+        color: 'Tobacco Duck',
+        size: 'L',
         quantity: 1,
-        image: '/images/product-jeans.webp'
+        image: '/images/products/demo-canvas-workwear-jacket.jpg'
       },
       {
         id: 'waffle-knit-crew-tee',
-        name: 'Waffle Knit Crew Tee',
+        name: 'Waffle-Knit Crew Tee',
         price: 749,
         originalPrice: 899,
-        color: 'Off-White',
+        color: 'Ecru',
         size: 'L',
         quantity: 1,
-        image: '/images/category-tshirts.jpg'
+        image: '/images/products/demo-waffle-knit-crew-tee.png'
       }
     ],
-    subtotal: 2048,
-    discount: 200,
-    discountCode: 'AUTUMN200',
+    subtotal: 2748,
+    discount: 250,
+    discountCode: 'AUTUMN250',
     shipping: 0,
-    tax: 92,
-    total: 1940,
+    tax: 122,
+    total: 2620,
     paymentMethod: {
       type: 'UPI / PhonePe',
-      last4: 'arjun@ybl',
+      last4: 'poloju@ybl',
       status: 'Paid',
       holderName: 'Prashanth Poloju'
     },
@@ -379,7 +379,7 @@ const INITIAL_ORDERS: Order[] = [
         label: 'Order Placed',
         date: '15 Oct 2026',
         time: '04:20 PM',
-        description: 'Order confirmed.',
+        description: 'Order confirmed and paid.',
         completed: true
       },
       {
@@ -387,7 +387,7 @@ const INITIAL_ORDERS: Order[] = [
         label: 'Shipped',
         date: '16 Oct 2026',
         time: '11:15 AM',
-        description: 'Dispatched via BlueDart.',
+        description: 'Dispatched via BlueDart AWB #BD-91823719IN.',
         completed: true
       },
       {
@@ -395,7 +395,7 @@ const INITIAL_ORDERS: Order[] = [
         label: 'Delivered',
         date: '18 Oct 2026',
         time: '02:45 PM',
-        description: 'Package delivered and received by Arjun Mehta. 15-day return window open until 02 Nov 2026.',
+        description: 'Package delivered and received by Prashanth Poloju. 15-day exchange window open.',
         completed: true,
         current: true
       }
@@ -409,31 +409,31 @@ const INITIAL_ORDERS: Order[] = [
     status: 'cancelled',
     items: [
       {
-        id: 'heavyweight-boxy-tee',
-        name: 'Heavyweight Boxy Tee',
-        price: 699,
-        originalPrice: 899,
-        color: 'Washed Olive',
-        size: 'M',
-        quantity: 2,
-        image: '/images/category-tshirts.jpg'
+        id: 'tailored-wool-overcoat',
+        name: 'Tailored Wool Overcoat',
+        price: 2999,
+        originalPrice: 3999,
+        color: 'Camel',
+        size: 'XL',
+        quantity: 1,
+        image: '/images/products/demo-tailored-wool-overcoat.jpg'
       }
     ],
-    subtotal: 1398,
+    subtotal: 2999,
     discount: 0,
     shipping: 0,
-    tax: 62,
-    total: 1460,
+    tax: 135,
+    total: 3134,
     paymentMethod: {
       type: 'UPI / Google Pay',
-      last4: 'mehta@okaxis',
+      last4: 'poloju@okaxis',
       status: 'Refunded',
       holderName: 'Prashanth Poloju'
     },
     cancellation: {
       cancelledAt: '02 Oct 2026, 10:45 AM',
       reason: 'Ordered wrong size; re-ordered in Size L.',
-      refundStatus: 'Full refund of ₹1,460 credited to original UPI VPA within 12 minutes.'
+      refundStatus: 'Full refund of ₹3,134 credited to original UPI VPA within 12 minutes.'
     },
     deliveryAddress: {
       fullName: 'Prashanth Poloju',
@@ -451,82 +451,15 @@ const INITIAL_ORDERS: Order[] = [
         label: 'Order Placed',
         date: '02 Oct 2026',
         time: '09:15 AM',
-        description: 'Order placed via online payment.',
+        description: 'Order placed online.',
         completed: true
       },
       {
         status: 'cancelled',
-        label: 'Order Cancelled',
+        label: 'Order Cancelled & Refunded',
         date: '02 Oct 2026',
         time: '10:45 AM',
-        description: 'Cancelled by customer before warehouse packaging. 100% refund initiated.',
-        completed: true,
-        current: true
-      }
-    ]
-  },
-  {
-    id: 'ff-52190',
-    orderNumber: '#52190',
-    date: '18 Sep 2026, 02:10 PM',
-    estimatedDelivery: '22 Sep 2026',
-    status: 'returned',
-    items: [
-      {
-        id: 'vintage-wash-pocket-tee',
-        name: 'Vintage Wash Pocket Tee',
-        price: 649,
-        originalPrice: 799,
-        color: 'Dusty Slate',
-        size: 'M',
-        quantity: 1,
-        image: '/images/category-tshirts.jpg'
-      }
-    ],
-    subtotal: 649,
-    discount: 0,
-    shipping: 60,
-    tax: 32,
-    total: 741,
-    paymentMethod: {
-      type: 'Cash on Delivery',
-      last4: 'COD',
-      status: 'Refunded to Bank Account',
-      holderName: 'Prashanth Poloju'
-    },
-    deliveryAddress: {
-      fullName: 'Prashanth Poloju',
-      phone: '+91 98765 43210',
-      street: 'Door No. 40-1-58, MG Road, Near Benz Circle',
-      city: 'Vijayawada',
-      state: 'Andhra Pradesh',
-      pincode: '520010',
-      country: 'India',
-      mapsUrl: 'https://maps.google.com/maps?q=16.5168591%2C80.628406&z=17&hl=en'
-    },
-    timeline: [
-      {
-        status: 'delivered',
-        label: 'Delivered',
-        date: '21 Sep 2026',
-        time: '01:30 PM',
-        description: 'Delivered via courier.',
-        completed: true
-      },
-      {
-        status: 'return_picked',
-        label: 'Return Picked Up',
-        date: '24 Sep 2026',
-        time: '11:00 AM',
-        description: 'Reverse pickup completed at doorstep.',
-        completed: true
-      },
-      {
-        status: 'returned',
-        label: 'Refund Completed',
-        date: '25 Sep 2026',
-        time: '04:15 PM',
-        description: 'Quality check approved. ₹741 credited to bank account.',
+        description: 'Cancelled by customer before dispatch. Refund settled instantly.',
         completed: true,
         current: true
       }
@@ -535,15 +468,30 @@ const INITIAL_ORDERS: Order[] = [
 ];
 
 const INITIAL_WISHLIST: string[] = [
-  'lightweight-utility-jacket',
+  'french-terry-hoodie',
+  'tailored-wool-overcoat',
+  'canvas-workwear-jacket',
   'essential-cotton-t-shirt',
-  'relaxed-fit-shirt',
-  'heavyweight-boxy-tee'
+  'lightweight-utility-jacket',
+  'relaxed-fit-shirt'
 ];
 
 const INITIAL_REVIEWS: ProductReview[] = [
   {
     id: 'rev-1',
+    productId: 'french-terry-hoodie',
+    productName: 'French Terry Hoodie · Washed Charcoal',
+    productImage: '/images/products/demo-french-terry-hoodie.jpg',
+    rating: 5,
+    title: 'Substantial 380 GSM fabric with incredible double-layer hood',
+    comment:
+      'The 380 GSM looped French terry drape is heavyweight without feeling stiff. The hood stays structured instead of flopping down, and the washed charcoal tone goes with everything.',
+    fitFeedback: 'true_to_size',
+    date: '10 Nov 2026',
+    verifiedPurchase: true
+  },
+  {
+    id: 'rev-2',
     productId: 'essential-cotton-t-shirt',
     productName: 'Essential Cotton T-Shirt',
     productImage: '/images/product-tshirt.webp',
@@ -556,16 +504,16 @@ const INITIAL_REVIEWS: ProductReview[] = [
     verifiedPurchase: true
   },
   {
-    id: 'rev-2',
-    productId: 'relaxed-fit-chinos',
-    productName: 'Relaxed Fit Everyday Chinos',
-    productImage: '/images/product-jeans.webp',
+    id: 'rev-3',
+    productId: 'tailored-wool-overcoat',
+    productName: 'Tailored Wool Overcoat · Camel',
+    productImage: '/images/products/demo-tailored-wool-overcoat.jpg',
     rating: 5,
-    title: 'Roomy through the thighs without being bag-like',
+    title: 'Architectural silhouette that fits easily over knitwear',
     comment:
-      'Finding trousers that fit athletic legs without drowning the ankles is tough. These nailed the taper. Deep front pockets and subtle waist elasticity for long days at work.',
+      'Finding an overcoat with proper shoulder structure and clean lapel roll in India is nearly impossible. This Melton wool piece nails the tailoring. Smooth lining and warm deep pockets.',
     fitFeedback: 'true_to_size',
-    date: '20 Oct 2026',
+    date: '05 Nov 2026',
     verifiedPurchase: true
   }
 ];
@@ -757,7 +705,21 @@ export function getDemoOrders(): Order[] {
     }
 
     if (cleanEmail === DEFAULT_PROFILE.email.toLowerCase()) {
+      // Reflect all live store orders in demo account alongside initial demonstration orders
+      const allConverted = allAdminOrders.map(adminOrderToCustomerOrder);
+      if (allConverted.length > 0) {
+        const initialFiltered = INITIAL_ORDERS.filter(
+          (init) => !allConverted.some((co) => co.id === init.id || co.orderNumber === init.orderNumber)
+        );
+        return [...allConverted, ...initialFiltered];
+      }
       return INITIAL_ORDERS;
+    }
+
+    // Fallback: If customer has placed orders in storeService
+    const allConverted = allAdminOrders.map(adminOrderToCustomerOrder);
+    if (allConverted.length > 0) {
+      return allConverted;
     }
 
     return [];

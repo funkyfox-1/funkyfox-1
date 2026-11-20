@@ -12,7 +12,11 @@ import {
   KeyRound,
   RefreshCw,
   ArrowLeft,
-  MailCheck
+  MailCheck,
+  Lock,
+  Eye,
+  EyeOff,
+  Sparkles
 } from 'lucide-react';
 import { loginDemo, getDemoUser, isDemoLoggedIn } from '../../data/accountMockData';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
@@ -68,6 +72,9 @@ function AuthSplitScreen({ initialMode }: AuthSplitScreenProps) {
   const [agreed, setAgreed] = React.useState(false);
   const [error, setError] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
+  const [authMethod, setAuthMethod] = React.useState<'password' | 'otp'>('password');
+  const [password, setPassword] = React.useState('');
+  const [showPassword, setShowPassword] = React.useState(false);
 
   // Email OTP Authentication States (Mandatory primary auth flow)
   const [authStep, setAuthStep] = React.useState<'form' | 'otp_screen'>('form');
@@ -167,6 +174,124 @@ function AuthSplitScreen({ initialMode }: AuthSplitScreenProps) {
     }
 
     navigate(returnTo, { replace: true });
+  };
+
+  const handleDemoCustomerLogin = () => {
+    handleSuccessfulAuth('prashanth@funkyfox.in', 'Prashanth Poloju', '+91 98765 43210');
+  };
+
+  const handlePasswordLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim() || !email.includes('@')) {
+      setError('Please provide a valid email address.');
+      return;
+    }
+    if (!password) {
+      setError('Please enter your account password.');
+      return;
+    }
+
+    setError('');
+    setIsLoading(true);
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error: loginErr } = await supabase.auth.signInWithPassword({
+          email: email.trim().toLowerCase(),
+          password,
+        });
+
+        if (loginErr) {
+          console.error('[CustomerAuth] Supabase Password Login Error:', loginErr);
+          setError(loginErr.message || 'Invalid email or password.');
+          setIsLoading(false);
+          return;
+        }
+
+        if (data?.user) {
+          setIsLoading(false);
+          const resolvedName =
+            data.user.user_metadata?.full_name ||
+            data.user.user_metadata?.name ||
+            data.user.email?.split('@')[0] ||
+            'Customer';
+          const resolvedPhone = data.user.user_metadata?.phone;
+          handleSuccessfulAuth(data.user.email || email, resolvedName, resolvedPhone);
+          return;
+        }
+      } catch (err: any) {
+        console.error('[CustomerAuth] Password login exception:', err);
+        setError(err.message || 'Authentication failed. Please verify credentials or use demo login.');
+        setIsLoading(false);
+        return;
+      }
+    } else {
+      // Local development fallback
+      handleSuccessfulAuth(email.trim().toLowerCase(), email.split('@')[0]);
+    }
+
+    setIsLoading(false);
+  };
+
+  const handlePasswordRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim() || !email.includes('@')) {
+      setError('Please provide a valid email address.');
+      return;
+    }
+    if (!name.trim()) {
+      setError('Please enter your full name.');
+      return;
+    }
+    if (!password || password.length < 6) {
+      setError('Please choose a secure password (at least 6 characters).');
+      return;
+    }
+    if (!agreed) {
+      setError('Please agree to the Terms of Service to continue.');
+      return;
+    }
+
+    setError('');
+    setIsLoading(true);
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { data, error: signupErr } = await supabase.auth.signUp({
+          email: email.trim().toLowerCase(),
+          password,
+          options: {
+            data: {
+              full_name: name.trim(),
+              name: name.trim(),
+              phone: phone.trim(),
+            },
+          },
+        });
+
+        if (signupErr) {
+          console.error('[CustomerAuth] Supabase Signup Error:', signupErr);
+          setError(signupErr.message || 'Unable to register account.');
+          setIsLoading(false);
+          return;
+        }
+
+        if (data?.user) {
+          setIsLoading(false);
+          handleSuccessfulAuth(data.user.email || email, name.trim(), phone.trim());
+          return;
+        }
+      } catch (err: any) {
+        console.error('[CustomerAuth] Signup exception:', err);
+        setError(err.message || 'Registration failed. Please try again.');
+        setIsLoading(false);
+        return;
+      }
+    } else {
+      handleSuccessfulAuth(email.trim().toLowerCase(), name.trim(), phone.trim());
+    }
+
+    setIsLoading(false);
   };
 
   const handleSendOtp = async (e?: React.FormEvent) => {
@@ -564,20 +689,20 @@ function AuthSplitScreen({ initialMode }: AuthSplitScreenProps) {
               /* ================= CREDENTIALS FORM SCREEN ================= */
               <div>
                 {/* Heading Block */}
-                <div className="mb-6">
+                <div className="mb-5">
                   <h2 className="font-bricolage text-2xl sm:text-3xl font-bold text-[#0d1220]">
-                    {mode === 'login' ? 'Sign in with One-Time Code' : 'Create your account'}
+                    {mode === 'login' ? 'Sign in to Funky Fox' : 'Create your account'}
                   </h2>
-                  <p className="mt-1.5 text-xs sm:text-sm text-[#5b6478]">
+                  <p className="mt-1 text-xs sm:text-sm text-[#5b6478]">
                     {mode === 'login'
-                      ? 'We will dispatch a secure 6-digit verification code to your email'
-                      : 'Enter your details to receive your 6-digit activation code'}
+                      ? 'Access your orders, track shipments, and save items'
+                      : 'Join the Fox Club to track orders and unlock member drops'}
                   </p>
                 </div>
 
                 {/* Auth Notice (If redirected from Add to Bag or Checkout) */}
                 {authNotice && (
-                  <div className="mb-5 p-3 rounded-lg bg-orange-50 border border-orange-200 text-left flex items-start gap-2.5">
+                  <div className="mb-4 p-3 rounded-lg bg-orange-50 border border-orange-200 text-left flex items-start gap-2.5">
                     <ShoppingBag size={16} className="text-[#E05A1B] shrink-0 mt-0.5" />
                     <div className="text-xs text-orange-950 leading-relaxed font-medium">
                       <span className="font-bold text-[#E05A1B]">Account Required: </span>
@@ -594,106 +719,303 @@ function AuthSplitScreen({ initialMode }: AuthSplitScreenProps) {
                   </div>
                 )}
 
-                {/* Mandatory Email OTP Form */}
-                <form onSubmit={handleSendOtp} className="space-y-4">
-                  {mode === 'register' && (
-                    <div>
-                      <label className="block text-[12.5px] font-semibold text-[#0d1220] mb-1.5">
-                        Full Name
-                      </label>
-                      <div className="ff-auth-input-wrap">
-                        <UserIcon
-                          size={16}
-                          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] pointer-events-none"
-                        />
-                        <input
-                          type="text"
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                          required
-                          placeholder="e.g. Rahul Sharma"
-                          className="ff-auth-input"
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Email Address */}
-                  <div>
-                    <label className="block text-[12.5px] font-semibold text-[#0d1220] mb-1.5">
-                      Email address
-                    </label>
-                    <div className="ff-auth-input-wrap">
-                      <Mail
-                        size={16}
-                        className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] pointer-events-none"
-                      />
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        placeholder="you@example.com"
-                        className="ff-auth-input"
-                      />
-                    </div>
-                  </div>
-
-                  {mode === 'register' && (
-                    <div>
-                      <label className="block text-[12.5px] font-semibold text-[#0d1220] mb-1.5">
-                        Phone Number (Optional)
-                      </label>
-                      <div className="ff-auth-input-wrap">
-                        <Phone
-                          size={16}
-                          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] pointer-events-none"
-                        />
-                        <input
-                          type="tel"
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          placeholder="+91 98765 43210"
-                          className="ff-auth-input"
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {mode === 'register' && (
-                    <label className="flex items-start gap-2 pt-1 text-xs text-[#5b6478] cursor-pointer select-none">
-                      <input
-                        type="checkbox"
-                        checked={agreed}
-                        onChange={(e) => setAgreed(e.target.checked)}
-                        className="mt-0.5 rounded border-[#dfe2ea] text-[#E05A1B] focus:ring-[#E05A1B]"
-                      />
-                      <span>
-                        I agree to the Terms of Service and Privacy Policy.
-                      </span>
-                    </label>
-                  )}
-
-                  {/* Single Mandatory OTP Dispatch Button */}
+                {/* Auth Method Selector (Password vs OTP) */}
+                <div className="flex rounded-xl bg-[#f4f5f8] p-1 mb-4">
                   <button
-                    type="submit"
-                    disabled={isLoading}
-                    className="ff-primary-btn mt-3 cursor-pointer flex items-center justify-center gap-2"
+                    type="button"
+                    onClick={() => {
+                      setAuthMethod('password');
+                      setError('');
+                    }}
+                    className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                      authMethod === 'password'
+                        ? 'bg-white text-[#0d1220] shadow-2xs'
+                        : 'text-[#5b6478] hover:text-[#0d1220]'
+                    }`}
                   >
-                    {isLoading ? (
-                      <span>Sending OTP code...</span>
-                    ) : (
-                      <>
-                        <KeyRound size={15} />
-                        <span>
-                          {mode === 'login'
-                            ? 'Send 6-Digit One-Time Code →'
-                            : 'Send 6-Digit Verification Code →'}
-                        </span>
-                      </>
-                    )}
+                    Password
                   </button>
-                </form>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAuthMethod('otp');
+                      setError('');
+                    }}
+                    className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                      authMethod === 'otp'
+                        ? 'bg-white text-[#0d1220] shadow-2xs'
+                        : 'text-[#5b6478] hover:text-[#0d1220]'
+                    }`}
+                  >
+                    One-Time Code (OTP)
+                  </button>
+                </div>
+
+                {authMethod === 'password' ? (
+                  /* ================= PASSWORD FORM ================= */
+                  <form
+                    onSubmit={mode === 'login' ? handlePasswordLogin : handlePasswordRegister}
+                    className="space-y-3.5"
+                  >
+                    {mode === 'register' && (
+                      <div>
+                        <label className="block text-[12.5px] font-semibold text-[#0d1220] mb-1.5">
+                          Full Name
+                        </label>
+                        <div className="ff-auth-input-wrap">
+                          <UserIcon
+                            size={16}
+                            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] pointer-events-none"
+                          />
+                          <input
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                            placeholder="e.g. Rahul Sharma"
+                            className="ff-auth-input"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Email Address */}
+                    <div>
+                      <label className="block text-[12.5px] font-semibold text-[#0d1220] mb-1.5">
+                        Email address
+                      </label>
+                      <div className="ff-auth-input-wrap">
+                        <Mail
+                          size={16}
+                          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] pointer-events-none"
+                        />
+                        <input
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                          placeholder="you@example.com"
+                          className="ff-auth-input"
+                        />
+                      </div>
+                    </div>
+
+                    {mode === 'register' && (
+                      <div>
+                        <label className="block text-[12.5px] font-semibold text-[#0d1220] mb-1.5">
+                          Phone Number (Optional)
+                        </label>
+                        <div className="ff-auth-input-wrap">
+                          <Phone
+                            size={16}
+                            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] pointer-events-none"
+                          />
+                          <input
+                            type="tel"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                            placeholder="+91 98765 43210"
+                            className="ff-auth-input"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Password Input */}
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="block text-[12.5px] font-semibold text-[#0d1220]">
+                          Password
+                        </label>
+                        {mode === 'login' && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setAuthMethod('otp');
+                              showToast('Enter your email to receive a login code.', { type: 'info' });
+                            }}
+                            className="text-[11px] font-semibold text-[#E05A1B] hover:underline cursor-pointer"
+                          >
+                            Forgot password?
+                          </button>
+                        )}
+                      </div>
+                      <div className="ff-auth-input-wrap">
+                        <Lock
+                          size={16}
+                          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] pointer-events-none"
+                        />
+                        <input
+                          type={showPassword ? 'text' : 'password'}
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                          placeholder={mode === 'register' ? 'At least 6 characters' : 'Enter your password'}
+                          className="ff-auth-input pr-10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] hover:text-[#0d1220] cursor-pointer"
+                        >
+                          {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
+                      </div>
+                    </div>
+
+                    {mode === 'register' && (
+                      <label className="flex items-start gap-2 pt-1 text-xs text-[#5b6478] cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={agreed}
+                          onChange={(e) => setAgreed(e.target.checked)}
+                          className="mt-0.5 rounded border-[#dfe2ea] text-[#E05A1B] focus:ring-[#E05A1B]"
+                        />
+                        <span>
+                          I agree to the Terms of Service and Privacy Policy.
+                        </span>
+                      </label>
+                    )}
+
+                    {/* Submit Button */}
+                    <button
+                      type="submit"
+                      disabled={isLoading}
+                      className="ff-primary-btn mt-2 cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      {isLoading ? (
+                        <span>Authenticating...</span>
+                      ) : (
+                        <span>
+                          {mode === 'login' ? 'Sign In →' : 'Create Account & Sign In →'}
+                        </span>
+                      )}
+                    </button>
+                  </form>
+                ) : (
+                  /* ================= EMAIL OTP FORM ================= */
+                  <form onSubmit={handleSendOtp} className="space-y-4">
+                    {mode === 'register' && (
+                      <div>
+                        <label className="block text-[12.5px] font-semibold text-[#0d1220] mb-1.5">
+                          Full Name
+                        </label>
+                        <div className="ff-auth-input-wrap">
+                          <UserIcon
+                            size={16}
+                            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] pointer-events-none"
+                          />
+                          <input
+                            type="text"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                            placeholder="e.g. Rahul Sharma"
+                            className="ff-auth-input"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Email Address */}
+                    <div>
+                      <label className="block text-[12.5px] font-semibold text-[#0d1220] mb-1.5">
+                        Email address
+                      </label>
+                      <div className="ff-auth-input-wrap">
+                        <Mail
+                          size={16}
+                          className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] pointer-events-none"
+                        />
+                        <input
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                          placeholder="you@example.com"
+                          className="ff-auth-input"
+                        />
+                      </div>
+                    </div>
+
+                    {mode === 'register' && (
+                      <div>
+                        <label className="block text-[12.5px] font-semibold text-[#0d1220] mb-1.5">
+                          Phone Number (Optional)
+                        </label>
+                        <div className="ff-auth-input-wrap">
+                          <Phone
+                            size={16}
+                            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#94a3b8] pointer-events-none"
+                          />
+                          <input
+                            type="tel"
+                            value={phone}
+                            onChange={(e) => setPhone(e.target.value)}
+                            placeholder="+91 98765 43210"
+                            className="ff-auth-input"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {mode === 'register' && (
+                      <label className="flex items-start gap-2 pt-1 text-xs text-[#5b6478] cursor-pointer select-none">
+                        <input
+                          type="checkbox"
+                          checked={agreed}
+                          onChange={(e) => setAgreed(e.target.checked)}
+                          className="mt-0.5 rounded border-[#dfe2ea] text-[#E05A1B] focus:ring-[#E05A1B]"
+                        />
+                        <span>
+                          I agree to the Terms of Service and Privacy Policy.
+                        </span>
+                      </label>
+                    )}
+
+                    {/* OTP Dispatch Button */}
+                    <button
+                      type="submit"
+                      disabled={isLoading}
+                      className="ff-primary-btn mt-3 cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      {isLoading ? (
+                        <span>Sending OTP code...</span>
+                      ) : (
+                        <>
+                          <KeyRound size={15} />
+                          <span>
+                            {mode === 'login'
+                              ? 'Send 6-Digit One-Time Code →'
+                              : 'Send 6-Digit Verification Code →'}
+                          </span>
+                        </>
+                      )}
+                    </button>
+                  </form>
+                )}
+
+                {/* Quick Access Divider */}
+                <div className="relative my-5 text-center">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-[#e2e5eb]" />
+                  </div>
+                  <div className="relative flex justify-center text-xs">
+                    <span className="bg-white px-3 font-semibold uppercase tracking-wider text-[#94a3b8] text-[10px]">
+                      or quick access
+                    </span>
+                  </div>
+                </div>
+
+                {/* Instant 1-Click Demo Customer Login Button */}
+                <button
+                  type="button"
+                  onClick={handleDemoCustomerLogin}
+                  className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-orange-200 bg-orange-50/80 hover:bg-orange-100 text-[#0d1220] font-bold text-xs uppercase tracking-wider transition-all shadow-2xs cursor-pointer group"
+                >
+                  <Sparkles size={14} className="text-[#E05A1B] group-hover:scale-110 transition-transform" />
+                  <span>Continue as Demo Customer (Prashanth Poloju)</span>
+                </button>
               </div>
             )}
 

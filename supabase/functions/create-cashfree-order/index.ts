@@ -119,7 +119,8 @@ serve(async (req: Request) => {
     const customerName = (order.customer_info?.name || 'Funky Fox Customer').trim();
     const customerId = (order.customer_id || `cust_${order.id.replace(/[^a-zA-Z0-9]/g, '').slice(0, 15)}`).slice(0, 50);
 
-    const origin = req.headers.get('origin') || FRONTEND_URL;
+    const rawOrigin = req.headers.get('origin') || FRONTEND_URL;
+    const origin = rawOrigin.startsWith('https://') ? rawOrigin : FRONTEND_URL;
     const returnUrl = `${origin.replace(/\/+$/, '')}/order-confirmation?order_id=${encodeURIComponent(order.id)}&cf_order_id={order_id}`;
     const notifyUrl = 'https://gcvtitcegolmkhjqqpit.supabase.co/functions/v1/cashfree-webhook';
 

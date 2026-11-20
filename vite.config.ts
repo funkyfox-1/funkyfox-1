@@ -25,6 +25,17 @@ export default defineConfig(async ({ mode }) => {
         '@': path.resolve(__dirname, './src'),
       },
     },
+    server: {
+      proxy: {
+        '/functions/v1': {
+          target: 'https://gcvtitcegolmkhjqqpit.supabase.co',
+          changeOrigin: true,
+          headers: {
+            origin: 'https://funkyfox.in',
+          },
+        },
+      },
+    },
     envPrefix: ['VITE_', 'NEXT_PUBLIC_'],
     define: processEnvDefines,
   };

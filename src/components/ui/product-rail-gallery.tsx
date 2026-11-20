@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { createPortal } from "react-dom";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, ShoppingBag } from "lucide-react";
 
 export type GarmentKind = "tee" | "polo" | "knit" | "hoodie" | "shirt" | "jacket" | "coat";
@@ -587,6 +587,7 @@ export function ClothingRailHero({
   className,
   ...rest
 }: ClothingRailHeroProps) {
+  const navigate = useNavigate();
   const uid = React.useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const count = items.length;
   const stageRef = React.useRef(null as HTMLDivElement | null);
@@ -1050,10 +1051,9 @@ export function ClothingRailHero({
               style={{ top: railY - (HOOK_TOP / VB_H) * h, width: boxW, height: h, zIndex: turned ? 30 : 10 + i, visibility: lifted === i ? "hidden" : undefined, transform: `translate3d(${((sim.current.x[i] ?? 0) - boxW / 2).toFixed(2)}px,0,0)` }}
               onFocus={() => { setFocusIndex(i); if (pointer.current.id < 0) { stop(); choose(i); } }}
               onClick={(event) => {
-                if (showcaseOnly) return;
-                const pending = pendingOpen.current;
-                pendingOpen.current = -1;
-                if (event.detail === 0 || pending === i) open(i);
+                if (pointer.current.moved) return;
+                const targetUrl = item.href || `/products/${item.id}`;
+                navigate(targetUrl);
               }}
             >
               <span ref={(node) => { swings.current[i] = node; }} className="absolute inset-0" style={{ transformOrigin: `50% ${(HOOK_TOP / VB_H) * 100}%` }}>

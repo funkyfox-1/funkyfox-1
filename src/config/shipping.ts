@@ -60,7 +60,7 @@ export function calculateShipping(
   merchandiseSubtotal: number,
   policy: ShippingPolicy = PROVISIONAL_SHIPPING_POLICY
 ): ShippingCalculation {
-  if (merchandiseSubtotal <= 0) {
+  if (merchandiseSubtotal <= 1) {
     return {
       shippingFee: 0,
       isFree: true,

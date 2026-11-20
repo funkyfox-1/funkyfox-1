@@ -74,7 +74,7 @@ export const CURATED_RAIL_GARMENTS: RailGarment[] = [
     description:
       '380 GSM looped French terry pullover with structured double-layer hood, front kangaroo pocket, and cotton drawcords.',
     details: ['380 GSM French Terry', 'Double-layer hood', 'Kangaroo pocket with bartacks'],
-    href: '/products/heavyweight-boxy-tee',
+    href: '/products/french-terry-hoodie',
     inStock: true,
   },
   {
@@ -104,7 +104,7 @@ export const CURATED_RAIL_GARMENTS: RailGarment[] = [
     description:
       'Tailored single-breasted overcoat cut in structured Melton wool blend with notch lapels, horn buttons, and deep welt pockets.',
     details: ['Melton wool blend', 'Structured notch lapel', 'Deep welt hand pockets'],
-    href: '/products/vintage-wash-pocket-tee',
+    href: '/products/tailored-wool-overcoat',
     inStock: true,
   },
   {

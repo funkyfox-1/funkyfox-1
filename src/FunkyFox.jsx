@@ -283,7 +283,7 @@ function HomePage({ addToCart: i }) {
         hanger="wood"
         heading="OUR TRENDS"
         caption="New season · Ten pieces on the rail"
-        showcaseOnly={true}
+        showcaseOnly={false}
         autoplay={true}
         interval={2800}
       />

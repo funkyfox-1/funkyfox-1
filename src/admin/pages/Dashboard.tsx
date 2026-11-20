@@ -203,7 +203,7 @@ export function Dashboard() {
                   When customer transactions occur on the storefront, their order details and line items will populate this operations ledger.
                 </p>
                 <a
-                  href="/shop"
+                  href="/products"
                   target="_blank"
                   rel="noreferrer"
                   className="mt-4 inline-flex items-center gap-1 text-xs font-bold text-[#FF6B35] hover:underline"
