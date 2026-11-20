@@ -44,6 +44,7 @@ export function OrdersList() {
   };
 
   React.useEffect(() => {
+    storeService.syncFromSupabase().catch(() => {});
     loadData();
     window.addEventListener('funkyfox:store_updated', loadData);
     return () => window.removeEventListener('funkyfox:store_updated', loadData);

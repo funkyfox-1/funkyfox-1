@@ -29,6 +29,7 @@ export function Dashboard() {
   const [printingOrder, setPrintingOrder] = React.useState<AdminOrder | null>(null);
 
   React.useEffect(() => {
+    storeService.syncFromSupabase().catch(() => {});
     const handleUpdate = () => setRefreshTick((t) => t + 1);
     window.addEventListener('funkyfox:store_updated', handleUpdate);
     return () => window.removeEventListener('funkyfox:store_updated', handleUpdate);

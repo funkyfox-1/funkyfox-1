@@ -218,13 +218,17 @@ class StoreService {
 
       const storedOrders = localStorage.getItem(`${STORAGE_PREFIX}orders`);
       const parsedOrders: AdminOrder[] = storedOrders ? JSON.parse(storedOrders) : [];
-      // Cleanse any legacy placeholder demo orders
-      this.orders = parsedOrders.filter((o) => !o.id.startsWith('ord-ff-902'));
+      // Cleanse any legacy placeholder demo orders; only retain authentic cloud/real orders
+      this.orders = isSupabaseConfigured
+        ? parsedOrders.filter((o) => o.id.startsWith('ord_') || o.orderNumber.startsWith('FF-26'))
+        : parsedOrders.filter((o) => !o.id.startsWith('ord-ff-902'));
 
       const storedCustomers = localStorage.getItem(`${STORAGE_PREFIX}customers`);
       const parsedCustomers: AdminCustomer[] = storedCustomers ? JSON.parse(storedCustomers) : [];
       // Cleanse any legacy placeholder demo customers
-      this.customers = parsedCustomers.filter((c) => !c.id.startsWith('cust-1') && !c.id.startsWith('cust-2'));
+      this.customers = parsedCustomers.filter(
+        (c) => !c.id.startsWith('cust-1') && !c.id.startsWith('cust-2') && !c.email.includes('example.com')
+      );
 
       const storedCoupons = localStorage.getItem(`${STORAGE_PREFIX}coupons`);
       this.coupons = storedCoupons ? JSON.parse(storedCoupons) : seedAdminCoupons();
@@ -293,12 +297,14 @@ class StoreService {
 
       // Live authoritative orders (empty array if no orders exist yet in database)
       const cloudOrders = await SupabaseDbService.fetchOrders();
-      this.orders = (cloudOrders || []).filter((o) => !o.id.startsWith('ord-ff-902'));
+      this.orders = (cloudOrders || []).filter((o) => o.id.startsWith('ord_') || o.orderNumber.startsWith('FF-26'));
       this.persist('orders', this.orders);
 
       // Live authoritative customers
       const cloudCustomers = await SupabaseDbService.fetchCustomers();
-      this.customers = (cloudCustomers || []).filter((c) => !c.id.startsWith('cust-1') && !c.id.startsWith('cust-2'));
+      this.customers = (cloudCustomers || []).filter(
+        (c) => !c.id.startsWith('cust-1') && !c.id.startsWith('cust-2') && !c.email.includes('example.com')
+      );
       this.persist('customers', this.customers);
 
       const cloudCoupons = await SupabaseDbService.fetchCoupons();

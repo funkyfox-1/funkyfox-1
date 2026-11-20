@@ -34,6 +34,7 @@ export function Analytics() {
   const [, setRefreshTick] = React.useState(0);
 
   React.useEffect(() => {
+    storeService.syncFromSupabase().catch(() => {});
     const handleStoreUpdate = () => {
       setSnapshotTime(Date.now());
       setRefreshTick((t) => t + 1);
