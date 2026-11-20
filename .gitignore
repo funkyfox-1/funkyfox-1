@@ -51,3 +51,5 @@ __pycache__/
 # Supabase local temporary files
 supabase/.temp/
 scratch/
+
+.vercel
