@@ -5,6 +5,7 @@ import { AdminSidebar } from './AdminSidebar';
 import { AdminHeader } from './AdminHeader';
 import { AdminBreadcrumbs } from './AdminBreadcrumbs';
 import { Skeleton } from '../ui/Skeleton';
+import { NewOrderNotification } from '../orders/NewOrderNotification';
 
 export function AdminLayout() {
   const { user, loading } = useAdminAuth();
@@ -34,6 +35,9 @@ export function AdminLayout() {
 
   return (
     <div className="min-h-screen bg-[#F7F8FA] flex flex-col font-sans text-zinc-900 selection:bg-[#FF6B35]/20 selection:text-[#FF6B35]">
+      {/* Real-time Top-Right New Order Notification */}
+      <NewOrderNotification />
+
       {/* Sidebar */}
       <AdminSidebar
         collapsed={collapsed}

@@ -46,16 +46,16 @@ const FAQ_DATA: FAQItem[] = [
   {
     id: 'shipping-info',
     topic: 'Shipping',
-    question: 'Where can I find shipping information?',
+    question: 'Where can I find shipping information and delivery timelines?',
     answer:
-      'Shipping details, carrier partners, and delivery guidelines will be published here before launch. Tracked doorstep delivery across India is currently being prepared.',
+      'We provide fast tracked doorstep delivery across all serviceable Indian pincodes. Orders ₹1,499 and above qualify for 100% FREE delivery, while a flat fee of ₹99 applies on smaller orders. Parcels dispatch within 24–48 hours and arrive in 3–5 business days.',
   },
   {
     id: 'shipping-track',
     topic: 'Shipping',
     question: 'How can I track my order?',
     answer:
-      'Order tracking will be enabled when our logistics network goes live. Tracking links will be provided via SMS and email confirmation once orders dispatch.',
+      'As soon as your parcel is handed over to our courier partners (Bluedart/Delhivery/Shiprocket), you will receive a real-time live tracking link via SMS, WhatsApp, and email with your AWB tracking number.',
   },
 
   // Returns & Exchanges
@@ -64,14 +64,14 @@ const FAQ_DATA: FAQItem[] = [
     topic: 'Returns & Exchanges',
     question: 'What is your return or exchange policy?',
     answer:
-      'Our official policy will be published here before launch. Please contact our team for assistance with any policy inquiries.',
+      'We offer a 7-day hassle-free return and exchange window from the date of delivery. Items must be unworn and unwashed with all original tags intact. First-time size exchanges are 100% free of charge.',
   },
   {
     id: 'returns-request',
     topic: 'Returns & Exchanges',
     question: 'How do I request a return or exchange?',
     answer:
-      'A self-service return and exchange portal will be integrated prior to our store launch. Until then, our support team is available to assist.',
+      'You can initiate an instant return or exchange by reaching out to our WhatsApp Support (+91 9493551595) or emailing info@funkyfoxmenswear.com with your order number. Refunds are credited directly back to your original source within 5–7 banking days upon inspection.',
   },
 
   // Products & Sizing

@@ -32,8 +32,11 @@ export function initSupabaseRealtime(): () => void {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'categories' }, () => {
         storeService.syncFromSupabase();
       })
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, (payload: any) => {
         storeService.syncFromSupabase();
+        if (payload?.eventType === 'INSERT' && payload?.new && typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('funkyfox:new_order', { detail: payload.new }));
+        }
       })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'order_items' }, () => {
         storeService.syncFromSupabase();

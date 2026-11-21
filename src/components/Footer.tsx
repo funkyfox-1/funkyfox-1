@@ -41,8 +41,8 @@ export default function Footer() {
         sheetInk="#ffffff"
         paperInk="#191919"
         pinBase="#E87535"
-        email="support@funkyfox.in"
-        mark="FF / 2026"
+        email="info@funkyfoxmenswear.com"
+        mark=""
         timeZone="Asia/Kolkata"
         timeLabel="IST"
         status={{
@@ -67,16 +67,16 @@ export default function Footer() {
             links: [
               { label: "WhatsApp Support", href: "https://wa.me/919493551595?text=Hi%20Funky%20Fox%2C%20I%20have%20an%20inquiry%20regarding%20products%20or%20an%20order" },
               { label: "Contact Us", href: "/help#contact" },
-              { label: "Shipping Info", href: "/help?topic=Shipping" },
-              { label: "Returns & Exchanges", href: "/help?topic=Returns%20%26%20Exchanges" },
+              { label: "Shipping Policy", href: "/shipping-policy" },
+              { label: "Returns & Exchanges", href: "/returns-refunds" },
               { label: "FAQs", href: "/#faq" },
             ],
             cta: { label: "help.", href: "/help" },
           },
         ]}
         sideLinks={[
-          { icon: "shield", label: "privacy policy", href: "/about#privacy" },
-          { icon: "doc", label: "terms of service", href: "/about#terms" },
+          { icon: "shield", label: "privacy policy", href: "/privacy" },
+          { icon: "doc", label: "terms of service", href: "/terms" },
         ]}
         socials={[
           {
@@ -84,7 +84,6 @@ export default function Footer() {
             label: "Instagram",
             href: "https://www.instagram.com/funkyfox.menswear?utm_source=ig_web_button_share_sheet&cplk=ZDNlZDc0MzIxNw==",
           },
-          { icon: "x", label: "X", href: "https://x.com" },
         ]}
         copyright="© 2026 FUNKY FOX · ALL RIGHTS RESERVED"
         credit="everyday menswear · crafted for real life"

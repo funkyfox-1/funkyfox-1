@@ -11,6 +11,8 @@ import OrderConfirmationPage from "./components/OrderConfirmationPage";
 import SearchOverlay from "./components/SearchOverlay";
 import AboutPage from "./components/AboutPage";
 import HelpPage from "./components/HelpPage";
+import { LegalPolicyPage } from "./components/policies/LegalPolicyPage";
+import { AppInstallPrompt } from "./components/AppInstallPrompt";
 import HeroHighlightsStrip from "./components/HeroHighlightsStrip";
 import EverydayLineup from "./components/EverydayLineup";
 import ShoppingProcess from "./components/ShoppingProcess";
@@ -635,6 +637,13 @@ function Storefront() {
           <Route path="/help" element={<HelpPage />} />
           <Route path="/contact" element={<HelpPage />} />
 
+          {/* Legal & Store Policies */}
+          <Route path="/terms" element={<LegalPolicyPage initialTab="terms" />} />
+          <Route path="/privacy" element={<LegalPolicyPage initialTab="privacy" />} />
+          <Route path="/shipping-policy" element={<LegalPolicyPage initialTab="shipping" />} />
+          <Route path="/returns-refunds" element={<LegalPolicyPage initialTab="returns" />} />
+          <Route path="/policies" element={<LegalPolicyPage />} />
+
           {/* Customer Authentication Routes */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
@@ -905,6 +914,9 @@ function Storefront() {
           </div>
         </div>
       )}
+
+      {/* Progressive Web App Mobile Install Shortcut */}
+      <AppInstallPrompt />
 
       {/* WhatsApp Support Floating Action Button */}
       <WhatsAppButton />

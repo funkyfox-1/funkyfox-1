@@ -518,7 +518,6 @@ const HOME = "/#home"
 
 const DEFAULT_SOCIALS: IconLink[] = [
   { icon: "ig", label: "Instagram", href: "https://www.instagram.com/funkyfox.menswear?utm_source=ig_web_button_share_sheet&cplk=ZDNlZDc0MzIxNw==" },
-  { icon: "x", label: "X", href: "https://x.com" },
 ]
 
 const DEFAULT_COLUMNS: FooterColumn[] = [
@@ -568,10 +567,10 @@ export default function PushpinTearFooter({
   logo,
   logoHref = HOME,
   socials = DEFAULT_SOCIALS,
-  email = "support@funkyfox.in",
+  email = "info@funkyfoxmenswear.com",
   newsletter = { label: "new drops, once a month · 10% off your first order", placeholder: "your@email" },
   status = { label: "dispatching daily across India" },
-  mark = "FF / 2026",
+  mark = "",
   timeZone = "Asia/Kolkata",
   timeLabel = "IST",
   columns = DEFAULT_COLUMNS,

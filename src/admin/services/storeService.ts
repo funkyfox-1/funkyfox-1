@@ -909,6 +909,7 @@ class StoreService {
     this.syncStorefrontProducts();
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('funkyfox:store_updated'));
+      window.dispatchEvent(new CustomEvent('funkyfox:new_order', { detail: newOrder }));
     }
 
     return newOrder;

@@ -1,0 +1,26 @@
+{
+  "name": "Funky Fox Menswear",
+  "short_name": "Funky Fox",
+  "description": "Everyday Menswear · Crafted for Real Life. Premium tees, shirts, trousers, jackets and denim.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0D1220",
+  "theme_color": "#E87535",
+  "categories": ["shopping", "lifestyle", "fashion"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
