@@ -59,11 +59,11 @@ export default function BrandStandardCTA() {
             {/* Left Tall Card: Model in Denim Shirt & Trousers */}
             <div className="fox-standard-tall-card group">
               <img
-                src="/images/standard/cta-model-denim.png"
+                src="/images/standard/cta-model-denim-hd.jpg"
                 alt="Funky Fox model wearing denim shirt and jeans"
                 className="fox-standard-img transition-transform duration-700 group-hover:scale-105"
                 onError={(e) => {
-                  e.currentTarget.src = '/images/standard/model-tall-clean.jpg'
+                  e.currentTarget.src = '/images/standard/cta-model-denim.png'
                 }}
               />
               <div className="fox-standard-vignette" />
@@ -79,11 +79,11 @@ export default function BrandStandardCTA() {
               {/* Top Photo: Model in Navy Zip Polo */}
               <div className="fox-standard-watch-card group">
                 <img
-                  src="/images/standard/cta-model-polo.png"
+                  src="/images/standard/cta-model-polo-hd.jpg"
                   alt="Funky Fox model in navy zip-neck polo shirt"
                   className="fox-standard-img transition-transform duration-700 group-hover:scale-105"
                   onError={(e) => {
-                    e.currentTarget.src = '/images/standard/model-watch-clean.jpg'
+                    e.currentTarget.src = '/images/standard/cta-model-polo.png'
                   }}
                 />
               </div>
@@ -92,43 +92,43 @@ export default function BrandStandardCTA() {
               <div className="fox-standard-orange-card">
                 <div>
                   <p className="fox-standard-orange-num">
-                    50K+
+                    5K+
                   </p>
                   <p className="fox-standard-orange-label">
                     Community Members
                   </p>
                 </div>
 
-                {/* Avatar Stack + +2k badge */}
+                {/* Avatar Stack + +500 badge */}
                 <div className="fox-standard-avatars-row">
                   <div className="fox-standard-avatars">
                     <img
-                      src="/images/standard/avatar-beige.png"
+                      src="/images/standard/avatar-1-hd.jpg"
                       alt="Community Member 1"
                       className="fox-standard-avatar"
                       onError={(e) => {
-                        e.currentTarget.src = '/images/standard/cta-model-beige.png'
+                        e.currentTarget.src = '/images/standard/avatar-beige.png'
                       }}
                     />
                     <img
-                      src="/images/standard/avatar-polo.png"
+                      src="/images/standard/avatar-2-hd.jpg"
                       alt="Community Member 2"
                       className="fox-standard-avatar"
                       onError={(e) => {
-                        e.currentTarget.src = '/images/standard/cta-model-polo.png'
+                        e.currentTarget.src = '/images/standard/avatar-polo.png'
                       }}
                     />
                     <img
-                      src="/images/standard/avatar-denim.png"
+                      src="/images/standard/avatar-3-hd.jpg"
                       alt="Community Member 3"
                       className="fox-standard-avatar"
                       onError={(e) => {
-                        e.currentTarget.src = '/images/standard/cta-model-denim.png'
+                        e.currentTarget.src = '/images/standard/avatar-denim.png'
                       }}
                     />
                   </div>
                   <span className="fox-standard-avatar-pill">
-                    +2k
+                    +500
                   </span>
                 </div>
               </div>
